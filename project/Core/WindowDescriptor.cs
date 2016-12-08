@@ -20,5 +20,10 @@ namespace TimeMiner.Core
         /// Size of the window (x = width, y = height)
         /// </summary>
         public IntPoint Size { get; set; }
+
+        public override string ToString()
+        {
+            return $"Title: {Title}, Location: {Location}, Size: {Size}";
+        }
     }
 }

@@ -9,5 +9,10 @@ namespace TimeMiner.Core
     public class ProcessDescriptor
     {
         public string ProcessName { get; set; }
+
+        public override string ToString()
+        {
+            return $"ProcessName: {ProcessName}";
+        }
     }
 }

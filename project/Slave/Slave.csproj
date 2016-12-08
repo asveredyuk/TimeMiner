@@ -61,6 +61,7 @@
     <Compile Include="Hooks\MouseButtonsHook.cs" />
     <Compile Include="Hooks\MouseHook.cs" />
     <Compile Include="Hooks\MouseWheelHook.cs" />
+    <Compile Include="Logger.cs" />
     <Compile Include="TestWindow.xaml.cs">
       <DependentUpon>TestWindow.xaml</DependentUpon>
     </Compile>

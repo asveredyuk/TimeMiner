@@ -31,10 +31,11 @@ namespace TimeMiner.Slave
 
         private void btTest_Click(object sender, RoutedEventArgs e)
         {
+            Logger.Self.StartLogging();
             //MessageBox.Show(hk.ActionsCount.ToString());
             //hk.Reset();
-            System.Threading.Thread.Sleep(5000);
-            MessageBox.Show(WindowsBoundary.GetForegroundWindowProcess().ProcessName);
+            //System.Threading.Thread.Sleep(5000);
+            //MessageBox.Show(WindowsBoundary.GetForegroundWindowProcess().ProcessName);
         }
     }
 }

@@ -5,11 +5,22 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
+using TimeMiner.Core;
 
 namespace TimeMiner.Slave
 {
     public static class WindowsBoundary
     {
+        /// <summary>
+        /// Get current cursor position
+        /// </summary>
+        /// <returns></returns>
+        public static Win32Point GetMousePosition()
+        {
+            Win32Point pt = new Win32Point();
+            GetCursorPos(ref pt);
+            return pt;
+        }
         /// <summary>
         /// Get process-owner of foreground window
         /// </summary>
@@ -64,6 +75,15 @@ namespace TimeMiner.Slave
         [DllImport("user32.dll", SetLastError = true)]
         [return: MarshalAs(UnmanagedType.Bool)]
         static extern bool GetWindowRect(IntPtr hWnd, ref Rect lpRect);
+        [StructLayout(LayoutKind.Sequential)]
+        public struct Win32Point
+        {
+            public int X;
+            public int Y;
+        };
+        [DllImport("user32.dll")]
+        [return: MarshalAs(UnmanagedType.Bool)]
+        internal static extern bool GetCursorPos(ref Win32Point pt);
         [DllImport("user32.dll")]
         static extern IntPtr GetForegroundWindow();
         [DllImport("user32.dll")]

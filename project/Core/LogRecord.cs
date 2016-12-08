@@ -44,5 +44,11 @@ namespace TimeMiner.Core
         /// </summary>
         public int Keystrokes { get; set; }
 
+        public override string ToString()
+        {
+            return $"Time: {Time}, PreviousRecordTime: {PreviousRecordTime}, Process: {Process}," +
+                   $" Window: {Window}, MousePosition: {MousePosition}, MouseButtonActions: {MouseButtonActions}, " +
+                   $"MouseWheelActions: {MouseWheelActions}, Keystrokes: {Keystrokes}";
+        }
     }
 }

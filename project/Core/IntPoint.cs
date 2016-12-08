@@ -19,5 +19,10 @@ namespace TimeMiner.Core
         public IntPoint()
         {
         }
+
+        public override string ToString()
+        {
+            return $"X: {X}, Y: {Y}";
+        }
     }
 }
