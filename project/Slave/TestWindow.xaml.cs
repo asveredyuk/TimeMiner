@@ -24,7 +24,7 @@ namespace TimeMiner.Slave
         public TestWindow()
         {
             InitializeComponent();
-            hk = new MouseWheelHook();
+            hk = new KeyboardHook();
             hk.Hook();
         }
 

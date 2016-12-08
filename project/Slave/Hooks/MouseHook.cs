@@ -12,7 +12,7 @@ namespace TimeMiner.Slave.Hooks
     {
         private const int WH_MOUSE_LL = 14;
 
-        protected LowLevelMouseProc _callback ;
+        protected readonly LowLevelMouseProc _callback;
 
         protected MouseHook()
         {

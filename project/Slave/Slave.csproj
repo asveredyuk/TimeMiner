@@ -57,6 +57,7 @@
     </ApplicationDefinition>
     <Compile Include="Hooks\BaseHook.cs" />
     <Compile Include="Hooks\IWinHook.cs" />
+    <Compile Include="Hooks\KeyboardHook.cs" />
     <Compile Include="Hooks\MouseButtonsHook.cs" />
     <Compile Include="Hooks\MouseHook.cs" />
     <Compile Include="Hooks\MouseWheelHook.cs" />
