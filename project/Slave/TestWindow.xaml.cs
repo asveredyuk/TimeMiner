@@ -11,6 +11,7 @@ using System.Windows.Input;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Shapes;
+using TimeMiner.Core;
 using TimeMiner.Slave.Hooks;
 
 namespace TimeMiner.Slave
@@ -24,14 +25,16 @@ namespace TimeMiner.Slave
         public TestWindow()
         {
             InitializeComponent();
-            hk = new KeyboardHook();
-            hk.Hook();
+            //hk = new KeyboardHook();
+            //hk.Hook();
         }
 
         private void btTest_Click(object sender, RoutedEventArgs e)
         {
-            MessageBox.Show(hk.ActionsCount.ToString());
-            hk.Reset();
+            //MessageBox.Show(hk.ActionsCount.ToString());
+            //hk.Reset();
+            System.Threading.Thread.Sleep(5000);
+            MessageBox.Show(WindowsBoundary.GetForegroundWindowProcess().ProcessName);
         }
     }
 }

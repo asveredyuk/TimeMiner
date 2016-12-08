@@ -22,11 +22,11 @@ namespace TimeMiner.Core
         /// <summary>
         /// Name of current foreground process
         /// </summary>
-        public string ProcName { get; set; }
+        public ProcessDescriptor Process{ get; set; }
         /// <summary>
         /// Window title of the foreground process
         /// </summary>
-        public string WindowTitle { get; set; }
+        public WindowDescriptor Window { get; set; }
         /// <summary>
         /// Mouse position at the time of record
         /// </summary>
