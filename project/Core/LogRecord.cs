@@ -12,6 +12,10 @@ namespace TimeMiner.Core
     public class LogRecord
     {
         /// <summary>
+        /// Identificator of log record
+        /// </summary>
+        public Guid Id { get; set; }
+        /// <summary>
         /// Time of the record
         /// </summary>
         public DateTime Time { get; set; }

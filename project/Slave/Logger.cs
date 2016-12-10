@@ -66,10 +66,6 @@ namespace TimeMiner.Slave
             mouseButtonsHook = new MouseButtonsHook();
             mouseWheelHook = new MouseWheelHook();
             keyboardHook = new KeyboardHook();
-            onLogRecord = delegate(LogRecord record)
-            {
-                File.AppendAllText("out.log", record.ToString() + "\r\n");
-            };
         }
         /// <summary>
         /// Destructor

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -31,7 +32,22 @@ namespace TimeMiner.Slave
 
         private void btTest_Click(object sender, RoutedEventArgs e)
         {
-            Logger.Self.StartLogging();
+            //move this to controller
+            Logger.Self.onLogRecord += delegate(LogRecord record)
+            {
+                SlaveDB.Self.AddLogRecord(record);                
+            };
+            SlaveDB.Self.onLogRecordAdded += delegate(LogRecord item, SlaveDB db)
+            {
+                
+            };
+           // MessageBox.Show(SlaveDB.Self.GetAllLogs().Count.ToString());
+            string[] arr = SlaveDB.Self.GetAllLogs().Select(t => t.ToString()).ToArray();
+            File.WriteAllLines("out.log",arr);
+
+
+            //start logging
+            //Logger.Self.StartLogging();
             //MessageBox.Show(hk.ActionsCount.ToString());
             //hk.Reset();
             //System.Threading.Thread.Sleep(5000);
