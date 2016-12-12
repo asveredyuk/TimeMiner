@@ -45,6 +45,7 @@ namespace TimeMiner.Slave
             db = new LiteDatabase("logstorage.db");
             col = db.GetCollection<LogRecord>("log");
             col.EnsureIndex(x => x.Id);
+            //col.EnsureIndex(x => x.Time);
         }
         ~SlaveDB()
         {
@@ -56,7 +57,19 @@ namespace TimeMiner.Slave
         /// <returns></returns>
         public List<LogRecord> GetAllLogs()
         {
-            return new List<LogRecord>(col.FindAll());
+            return new List<LogRecord>(col.FindAll().OrderBy(t=>t.Time));
+        }
+        /// <summary>
+        /// Get one record by given guid
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        public LogRecord GetRecordById(Guid id)
+        {
+            if (id == Guid.Empty)
+                return null;
+            LogRecord rec = col.FindById(id);
+            return rec;
         }
         /// <summary>
         /// Add new log record

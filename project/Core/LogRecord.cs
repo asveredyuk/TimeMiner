@@ -22,7 +22,7 @@ namespace TimeMiner.Core
         /// <summary>
         /// Time of the previous record
         /// </summary>
-        public DateTime PreviousRecordTime { get; set; }
+        public Guid PreviusRecordId{ get; set; }
         /// <summary>
         /// Name of current foreground process
         /// </summary>
@@ -48,11 +48,15 @@ namespace TimeMiner.Core
         /// </summary>
         public int Keystrokes { get; set; }
 
+//        public override string ToString()
+//        {
+//            return $"Time: {Time}, PreviousRecordId: {PreviusRecordId}, Process: {Process}," +
+//                   $" Window: {Window}, MousePosition: {MousePosition}, MouseButtonActions: {MouseButtonActions}, " +
+//                   $"MouseWheelActions: {MouseWheelActions}, Keystrokes: {Keystrokes}";
+//        }
         public override string ToString()
         {
-            return $"Time: {Time}, PreviousRecordTime: {PreviousRecordTime}, Process: {Process}," +
-                   $" Window: {Window}, MousePosition: {MousePosition}, MouseButtonActions: {MouseButtonActions}, " +
-                   $"MouseWheelActions: {MouseWheelActions}, Keystrokes: {Keystrokes}";
+            return $"Id: {Id}, Keystrokes: {Keystrokes}, MouseButtonActions: {MouseButtonActions}, MousePosition: {MousePosition}, MouseWheelActions: {MouseWheelActions}, PreviusRecordId: {PreviusRecordId}, Process: {Process}, Time: {Time}, Window: {Window}";
         }
     }
 }

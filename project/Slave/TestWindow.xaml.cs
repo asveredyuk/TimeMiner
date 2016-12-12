@@ -47,7 +47,7 @@ namespace TimeMiner.Slave
 
 
             //start logging
-            //Logger.Self.StartLogging();
+            Logger.Self.StartLogging();
             //MessageBox.Show(hk.ActionsCount.ToString());
             //hk.Reset();
             //System.Threading.Thread.Sleep(5000);

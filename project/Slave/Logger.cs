@@ -59,6 +59,10 @@ namespace TimeMiner.Slave
         /// </summary>
         private Thread runnerThread;
         /// <summary>
+        /// Last captured record
+        /// </summary>
+        private LogRecord lastRecord;
+        /// <summary>
         /// Make new logger
         /// </summary>
         private Logger()
@@ -106,6 +110,7 @@ namespace TimeMiner.Slave
             {
                 Thread.Sleep(LOG_INTERVAL);
                 LogRecord rec = MakeLogRecord();
+                lastRecord = rec;
                 RaiseOnLogRecord(rec);
                 ResetAllHooks();
             }
@@ -172,7 +177,7 @@ namespace TimeMiner.Slave
             LogRecord record = new LogRecord()
             {
                 Time = DateTime.Now,
-                PreviousRecordTime = default(DateTime),
+                PreviusRecordId = lastRecord == null?Guid.Empty:lastRecord.Id,
                 Process = proc,
                 Window = wind,
                 MousePosition = new IntPoint(curPos.X, curPos.Y),
