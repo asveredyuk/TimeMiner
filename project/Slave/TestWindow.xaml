@@ -5,7 +5,7 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:TimeMiner.Slave"
         mc:Ignorable="d"
-        Title="TestWindow" Height="300" Width="300">
+        Title="TestWindow" Height="300" Width="300" Loaded="Window_Loaded" Closing="Window_Closing">
     <Grid>
         <Button x:Name="btTest" Content="Test" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="75" Click="btTest_Click"/>
 

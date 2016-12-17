@@ -98,6 +98,7 @@ namespace TimeMiner.Slave
         {
             if(runnerThread == null)
                 return; //already stopped
+            runnerThread.Abort();
             runnerThread = null;
             UnHookAll();
         }
@@ -106,14 +107,22 @@ namespace TimeMiner.Slave
         /// </summary>
         private void Run()
         {
-            while (true)
+            try
             {
-                Thread.Sleep(LOG_INTERVAL);
-                LogRecord rec = MakeLogRecord();
-                lastRecord = rec;
-                RaiseOnLogRecord(rec);
-                ResetAllHooks();
+                while (true)
+                {
+                    Thread.Sleep(LOG_INTERVAL);
+                    LogRecord rec = MakeLogRecord();
+                    lastRecord = rec;
+                    RaiseOnLogRecord(rec);
+                    ResetAllHooks();
+                }
             }
+            catch (ThreadAbortException e)
+            {
+                return;
+            }
+            
         }
         /// <summary>
         /// Enable all hooks

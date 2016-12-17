@@ -33,7 +33,7 @@ namespace TimeMiner.Slave
         private void btTest_Click(object sender, RoutedEventArgs e)
         {
             //move this to controller
-            Logger.Self.onLogRecord += delegate(LogRecord record)
+            /*Logger.Self.onLogRecord += delegate(LogRecord record)
             {
                 SlaveDB.Self.AddLogRecord(record);                
             };
@@ -47,11 +47,24 @@ namespace TimeMiner.Slave
 
 
             //start logging
-            Logger.Self.StartLogging();
+            Logger.Self.StartLogging();*/
+            string[] arr = SlaveDB.Self.GetAllLogs().Select(t => t.ToString()).ToArray();
+            File.WriteAllLines("out.log", arr);
+
             //MessageBox.Show(hk.ActionsCount.ToString());
             //hk.Reset();
             //System.Threading.Thread.Sleep(5000);
             //MessageBox.Show(WindowsBoundary.GetForegroundWindowProcess().ProcessName);
+        }
+
+        private void Window_Loaded(object sender, RoutedEventArgs e)
+        {
+            Master.Self.OnStartup();
+        }
+
+        private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
+        {
+            Master.Self.OnExit();
         }
     }
 }
