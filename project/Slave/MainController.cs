@@ -10,33 +10,39 @@ namespace TimeMiner.Slave
     /// <summary>
     /// Main controller class
     /// </summary>
-    class Master
+    class MainController
     {
-        private static Master self;
+        private static MainController self;
 
-        public static Master Self
+        public static MainController Self
         {
             get
             {
                 if(self == null)
-                    self = new Master();
+                    self = new MainController();
                 return self;
             }
         }
 
         private SlaveDB db;
         private Logger logger;
-        private Master()
+        private MasterBoundary boundary;
+        private MainController()
         {
             db = SlaveDB.Self;
             logger = Logger.Self;
+            boundary = MasterBoundary.Self;
             logger.onLogRecord += delegate(LogRecord record)
             {
                 db.AddLogRecord(record);
             };
             db.onLogRecordAdded += delegate(LogRecord item, SlaveDB slaveDb)
             {
-                
+                boundary.SendOne(item);
+            };
+            boundary.onRecordSent += delegate(LogRecord record)
+            {
+                db.RemoveLogRecord(record);
             };
         }
 
@@ -46,6 +52,7 @@ namespace TimeMiner.Slave
         public void OnStartup()
         {
             logger.StartLogging();
+            //TODO: start sending old records from database to master
         }
 
         public void OnExit()

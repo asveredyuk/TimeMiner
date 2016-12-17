@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 using LiteDB;
 using TimeMiner.Core;
 
@@ -84,7 +85,15 @@ namespace TimeMiner.Slave
             col.Insert(rec);
             RaiseOnLogRecordAdded(rec);
         }
-        
+        /// <summary>
+        /// Remove log record from local storage
+        /// </summary>
+        /// <param name="rec"></param>
+        public void RemoveLogRecord(LogRecord rec)
+        {
+            col.Delete(rec.Id);
+            //var res = col.Delete(t=>t.Id == rec.Id);
+        }
         public void Dispose()
         {
             if (db != null)

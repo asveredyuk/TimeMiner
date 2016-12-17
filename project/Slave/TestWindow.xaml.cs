@@ -59,12 +59,12 @@ namespace TimeMiner.Slave
 
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
-            Master.Self.OnStartup();
+            MainController.Self.OnStartup();
         }
 
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)
         {
-            Master.Self.OnExit();
+            MainController.Self.OnExit();
         }
     }
 }
