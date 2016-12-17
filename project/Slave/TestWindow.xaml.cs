@@ -50,6 +50,7 @@ namespace TimeMiner.Slave
             Logger.Self.StartLogging();*/
             string[] arr = SlaveDB.Self.GetAllLogs().Select(t => t.ToString()).ToArray();
             File.WriteAllLines("out.log", arr);
+            btTest.Content = arr.Length.ToString();
 
             //MessageBox.Show(hk.ActionsCount.ToString());
             //hk.Reset();

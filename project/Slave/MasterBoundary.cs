@@ -42,7 +42,7 @@ namespace TimeMiner.Slave
                 onRecordSent(recrd);
             }
         }
-        public async void SendOne(LogRecord record)
+        public async Task SendOne(LogRecord record)
         {
             try
             {

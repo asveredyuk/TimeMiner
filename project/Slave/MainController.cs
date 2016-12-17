@@ -52,7 +52,25 @@ namespace TimeMiner.Slave
         public void OnStartup()
         {
             logger.StartLogging();
-            //TODO: start sending old records from database to master
+            SendCachedRecordsAsync();
+            //TODO: send some ping if server is not available, do not try to send all the things in cache
+        }
+
+        const int DELAY = 30*1000;
+        /// <summary>
+        /// Start sending records in database
+        /// </summary>
+        private async Task SendCachedRecordsAsync()
+        {
+            while (true)
+            {
+                var all = db.GetAllLogs();
+                foreach (var logRecord in all)
+                {
+                    await boundary.SendOne(logRecord);
+                }
+                await Task.Delay(DELAY);
+            }
         }
 
         public void OnExit()
