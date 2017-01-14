@@ -20,6 +20,10 @@ namespace TimeMiner.Core
         /// </summary>
         public DateTime Time { get; set; }
         /// <summary>
+        /// Id of user
+        /// </summary>
+        public int UserId { get; set; } 
+        /// <summary>
         /// Time of the previous record
         /// </summary>
         public Guid PreviusRecordId{ get; set; }

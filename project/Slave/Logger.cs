@@ -198,6 +198,7 @@ namespace TimeMiner.Slave
                 Keystrokes = keyboardHook.ActionsCount,
                 MouseButtonActions = mouseButtonsHook.ActionsCount,
                 MouseWheelActions = mouseWheelHook.ActionsCount
+                //user id is 0 for testing
             };
             return record;
         }
