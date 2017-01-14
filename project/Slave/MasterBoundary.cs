@@ -10,8 +10,12 @@ using TimeMiner.Core;
 
 namespace TimeMiner.Slave
 {
+    /// <summary>
+    /// Class for communication with master
+    /// </summary>
     class MasterBoundary
     {
+        #region singletone
         private static MasterBoundary self;
 
         public static MasterBoundary Self
@@ -25,16 +29,29 @@ namespace TimeMiner.Slave
                 return self;
             }
         }
-
+        #endregion
+        /// <summary>
+        /// Delegate for handling RecordSent event
+        /// </summary>
+        /// <param name="record">Record, that was sent</param>
         public delegate void OnRecordSentHandler(LogRecord record);
-
+        /// <summary>
+        /// Event, that happens when record was sent to master
+        /// </summary>
         public event OnRecordSentHandler onRecordSent;
+        /// <summary>
+        /// Url to master
+        /// </summary>
         const string URL = "http://localhost:13000";
+
         private MasterBoundary()
         {
             
         }
-
+        /// <summary>
+        /// Raise on record sent event
+        /// </summary>
+        /// <param name="recrd"></param>
         private void RaiseOnRecordSent(LogRecord recrd)
         {
             if (onRecordSent != null)
@@ -42,6 +59,11 @@ namespace TimeMiner.Slave
                 onRecordSent(recrd);
             }
         }
+        /// <summary>
+        /// Send one record immediately
+        /// </summary>
+        /// <param name="record">Record to send</param>
+        /// <returns></returns>
         public async Task SendOne(LogRecord record)
         {
             try

@@ -9,10 +9,14 @@ using TimeMiner.Core;
 
 namespace TimeMiner.Slave
 {
+    /// <summary>
+    /// Database boundary to store cached items
+    /// </summary>
     public class SlaveDB : IDisposable
     {
+        #region singletone
         private static SlaveDB self;
-
+        
         public static SlaveDB Self
         {
             get
@@ -22,6 +26,7 @@ namespace TimeMiner.Slave
                 return self;
             }
         }
+        #endregion
 
         /// <summary>
         /// Handler for onLogRecordAdded event

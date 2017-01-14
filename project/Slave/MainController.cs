@@ -12,36 +12,55 @@ namespace TimeMiner.Slave
     /// </summary>
     class MainController
     {
+        #region singletone
         private static MainController self;
-
         public static MainController Self
         {
             get
             {
-                if(self == null)
+                if (self == null)
                     self = new MainController();
                 return self;
             }
         }
+        #endregion
 
+        /// <summary>
+        /// Database for storing cache
+        /// </summary>
         private SlaveDB db;
+        /// <summary>
+        /// Logger that handles user activity
+        /// </summary>
         private Logger logger;
+        /// <summary>
+        /// Boundary to communicate with master
+        /// </summary>
         private MasterBoundary boundary;
         private MainController()
         {
+            //all them are singletones
+            //TODO: remove singletone
             db = SlaveDB.Self;
             logger = Logger.Self;
             boundary = MasterBoundary.Self;
-            logger.onLogRecord += delegate(LogRecord record)
+            logger.onLogRecord += delegate (LogRecord record)
             {
+                //when recort is captured
+                //it is added to database
                 db.AddLogRecord(record);
             };
-            db.onLogRecordAdded += delegate(LogRecord item, SlaveDB slaveDb)
+            db.onLogRecordAdded += delegate (LogRecord item, SlaveDB slaveDb)
             {
+                //when log is added to database
+                //we try to send it immediately
+                //(if it fails, we will try to send it in SendCachedRecords coroutine
                 boundary.SendOne(item);
             };
-            boundary.onRecordSent += delegate(LogRecord record)
+            boundary.onRecordSent += delegate (LogRecord record)
             {
+                //when record is successfully sent
+                //it can be removed from local database
                 db.RemoveLogRecord(record);
             };
         }
@@ -53,10 +72,9 @@ namespace TimeMiner.Slave
         {
             logger.StartLogging();
             SendCachedRecordsAsync();
-            //TODO: send some ping if server is not available, do not try to send all the things in cache
         }
 
-        const int DELAY = 30*1000;
+        const int DELAY = 30 * 1000;
         /// <summary>
         /// Start sending records in database
         /// </summary>
@@ -64,6 +82,7 @@ namespace TimeMiner.Slave
         {
             while (true)
             {
+                //TODO: send some ping if server is not available, do not try to send all the things in cache
                 var all = db.GetAllLogs();
                 foreach (var logRecord in all)
                 {
@@ -72,11 +91,13 @@ namespace TimeMiner.Slave
                 await Task.Delay(DELAY);
             }
         }
-
+        /// <summary>
+        /// Called when application is exiting
+        /// </summary>
         public void OnExit()
         {
             logger.StopLogging();
         }
-        
+
     }
 }

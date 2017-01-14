@@ -107,6 +107,8 @@ namespace TimeMiner.Slave
         /// </summary>
         private void Run()
         {
+            if(Thread.CurrentThread != runnerThread)
+                throw new Exception("This method can be called only from the runner thread");
             try
             {
                 while (true)
@@ -120,10 +122,12 @@ namespace TimeMiner.Slave
             }
             catch (ThreadAbortException e)
             {
+                //thread was aborted, do nothing
                 return;
             }
             
         }
+        #region hook support methods
         /// <summary>
         /// Enable all hooks
         /// </summary>
@@ -151,6 +155,7 @@ namespace TimeMiner.Slave
             mouseWheelHook.Reset();
             keyboardHook.Reset();
         }
+        #endregion
         /// <summary>
         /// Raise onLogRecord event if it exists
         /// </summary>
@@ -186,7 +191,7 @@ namespace TimeMiner.Slave
             LogRecord record = new LogRecord()
             {
                 Time = DateTime.Now,
-                PreviusRecordId = lastRecord == null?Guid.Empty:lastRecord.Id,
+                PreviusRecordId = lastRecord?.Id ?? Guid.Empty,
                 Process = proc,
                 Window = wind,
                 MousePosition = new IntPoint(curPos.X, curPos.Y),
