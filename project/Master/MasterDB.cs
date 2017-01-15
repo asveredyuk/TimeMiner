@@ -10,9 +10,9 @@ namespace TimeMiner.Master
 {
     class MasterDB : IDisposable
     {
-        private MasterDB self;
+        private static MasterDB self;
 
-        public MasterDB Self
+        public static MasterDB Self
         {
             get
             {
@@ -23,17 +23,25 @@ namespace TimeMiner.Master
                 return self;
             }
         }
+
+        const string LOGS_TABLES_PREFIX = "log_u";
+
+        /// <summary>
+        /// Database connection
+        /// </summary>
         LiteDatabase db;
 
         private MasterDB()
         {
             db = new LiteDatabase("logstorage.db");
-
         }
-
+        /// <summary>
+        /// Put new record to the database to the table of record user
+        /// </summary>
+        /// <param name="rec"></param>
         public void PutRecord(LogRecord rec)
         {
-            var col = db.GetCollection<LogRecord>("log_u" + rec.UserId);
+            var col = db.GetCollection<LogRecord>(LOGS_TABLES_PREFIX + rec.UserId);
             col.EnsureIndex(x => x.Id);
             if (col.Exists(x => x.Id == rec.Id))
             {
@@ -41,6 +49,18 @@ namespace TimeMiner.Master
             }
             col.Insert(rec);
         }
+
+        /// <summary>
+        /// Get all records for given user
+        /// </summary>
+        /// <param name="userid"></param>
+        /// <returns></returns>
+        public List<LogRecord> GetAllRecordsForUser(int userid)
+        {
+            var col = db.GetCollection<LogRecord>(LOGS_TABLES_PREFIX + userid);
+            return new List<LogRecord>(col.FindAll());
+        }
+
         ~MasterDB()
         {
             Dispose();
