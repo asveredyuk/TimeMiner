@@ -8,7 +8,10 @@ using TimeMiner.Core;
 
 namespace TimeMiner.Master
 {
-    class MasterDB : IDisposable
+    /// <summary>
+    /// Dabase for master
+    /// </summary>
+    public class MasterDB : IDisposable
     {
         private static MasterDB self;
 
@@ -25,6 +28,7 @@ namespace TimeMiner.Master
         }
 
         const string LOGS_TABLES_PREFIX = "log_u";
+        public static string DB_PATH = "logstorage.db";
 
         /// <summary>
         /// Database connection
@@ -33,7 +37,7 @@ namespace TimeMiner.Master
 
         private MasterDB()
         {
-            db = new LiteDatabase("logstorage.db");
+            db = new LiteDatabase(DB_PATH);
         }
         /// <summary>
         /// Put new record to the database to the table of record user
