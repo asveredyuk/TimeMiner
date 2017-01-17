@@ -62,8 +62,10 @@ namespace TimeMiner.Master
         public List<LogRecord> GetAllRecordsForUser(int userid)
         {
             var col = db.GetCollection<LogRecord>(LOGS_TABLES_PREFIX + userid);
-            return new List<LogRecord>(col.FindAll());
+            //TODO: think about this
+            return new List<LogRecord>(col.FindAll().OrderBy(t=>t.Time));
         }
+         
 
         ~MasterDB()
         {
