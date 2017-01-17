@@ -11,10 +11,7 @@ namespace TimeMiner.Core
     /// </summary>
     public class LogRecord
     {
-        /// <summary>
-        /// Identificator of log record
-        /// </summary>
-        public Guid Id { get; set; }
+        
         /// <summary>
         /// Time of the record
         /// </summary>
@@ -23,10 +20,6 @@ namespace TimeMiner.Core
         /// Id of user
         /// </summary>
         public int UserId { get; set; } 
-        /// <summary>
-        /// Time of the previous record
-        /// </summary>
-        public Guid PreviusRecordId{ get; set; }
         /// <summary>
         /// Name of current foreground process
         /// </summary>
@@ -51,13 +44,21 @@ namespace TimeMiner.Core
         /// Number of keys, pressed after the previous record
         /// </summary>
         public int Keystrokes { get; set; }
+        /// <summary>
+        /// Identificator of log record
+        /// </summary>
+        public Guid Id { get; set; }
+        /// <summary>
+        /// Time of the previous record
+        /// </summary>
+        public Guid PreviusRecordId { get; set; }
 
-//        public override string ToString()
-//        {
-//            return $"Time: {Time}, PreviousRecordId: {PreviusRecordId}, Process: {Process}," +
-//                   $" Window: {Window}, MousePosition: {MousePosition}, MouseButtonActions: {MouseButtonActions}, " +
-//                   $"MouseWheelActions: {MouseWheelActions}, Keystrokes: {Keystrokes}";
-//        }
+        //        public override string ToString()
+        //        {
+        //            return $"Time: {Time}, PreviousRecordId: {PreviusRecordId}, Process: {Process}," +
+        //                   $" Window: {Window}, MousePosition: {MousePosition}, MouseButtonActions: {MouseButtonActions}, " +
+        //                   $"MouseWheelActions: {MouseWheelActions}, Keystrokes: {Keystrokes}";
+        //        }
         public override string ToString()
         {
             return $"Id: {Id}, Keystrokes: {Keystrokes}, MouseButtonActions: {MouseButtonActions}, MousePosition: {MousePosition}, MouseWheelActions: {MouseWheelActions}, PreviusRecordId: {PreviusRecordId}, Process: {Process}, Time: {Time}, Window: {Window}";
