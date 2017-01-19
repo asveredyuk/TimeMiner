@@ -80,8 +80,7 @@ namespace MasterDatabaseExplorer
             Type t = typeof(LogRecord);
             foreach (var propertyInfo in t.GetProperties())
             {
-                if (propertyInfo.PropertyType == typeof(ProcessDescriptor) ||
-                    propertyInfo.PropertyType == typeof(WindowDescriptor))
+                if (propertyInfo.PropertyType.Namespace == "TimeMiner.Core")
                 {
                     var val = propertyInfo.GetValue(rec);
                     foreach (var pr2 in propertyInfo.PropertyType.GetProperties())
@@ -102,8 +101,7 @@ namespace MasterDatabaseExplorer
             Type t = typeof (LogRecord);
             foreach (var propertyInfo in t.GetProperties())
             {
-                if (propertyInfo.PropertyType == typeof (ProcessDescriptor) ||
-                    propertyInfo.PropertyType == typeof (WindowDescriptor))
+                if (propertyInfo.PropertyType.Namespace == "TimeMiner.Core")
                 {
                     foreach (var pr2 in propertyInfo.PropertyType.GetProperties())
                     {
