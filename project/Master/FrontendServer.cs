@@ -13,6 +13,7 @@ namespace TimeMiner.Master
     /// </summary>
     class FrontendServer
     {
+        
         #region singletone
         private static FrontendServer self;
         public static FrontendServer Self
@@ -35,6 +36,10 @@ namespace TimeMiner.Master
         /// Task handling incoming requests from listener
         /// </summary>
         private Task handlerTask;
+        /// <summary>
+        /// Container with files from www folder
+        /// </summary>
+        private ZipResourceContainer resources;
 
         public const string LISTENER_PORT = "8080";
         /// <summary>
@@ -46,6 +51,7 @@ namespace TimeMiner.Master
         {
             listener = new HttpListener();
             listener.Prefixes.Add(LISTENER_PREFIX);
+            resources = new ZipResourceContainer(Master.Properties.Resources.www);
         }
         /// <summary>
         /// Start local server
@@ -93,9 +99,47 @@ namespace TimeMiner.Master
         /// <param name="resp">Response</param>
         private void HandleRequest(HttpListenerRequest req, HttpListenerResponse resp)
         {
-            StreamWriter sw = new StreamWriter(resp.OutputStream);
-            sw.WriteLine("hello here");
-            sw.Close();
+            //always return file data
+            string path = req.Url.PathAndQuery;
+            if (path == "/")
+                path = "/index.html";
+            path = path.TrimStart('/');
+
+            byte[] fileData;
+            if (resources.TryGetValue(path, out fileData))
+            {
+                resp.OutputStream.Write(fileData,0,fileData.Length);
+                resp.OutputStream.Close();
+            }
+            else
+            {
+                resp.StatusCode = 404;
+                byte[] page404 = Page404;
+                if (page404 != null)
+                {
+                    resp.OutputStream.Write(page404,0,page404.Length);
+                }
+                resp.OutputStream.Close();
+            }
+            /*StreamWriter sw = new StreamWriter(resp.OutputStream);
+            sw.WriteLine(req.Url.PathAndQuery);
+            sw.Close();*/
+        }
+
+        /// <summary>
+        /// Get 404 page from resources if it exists
+        /// </summary>
+        private byte[] Page404
+        {
+            get
+            {
+                byte[] data;
+                if (resources.TryGetValue("404.html",out data))
+                {
+                    return data;
+                }
+                return null;
+            }
         }
     }
 }

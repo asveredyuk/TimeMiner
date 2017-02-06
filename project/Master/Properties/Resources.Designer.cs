@@ -59,5 +59,15 @@ namespace TimeMiner.Master.Properties {
                 resourceCulture = value;
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Byte[].
+        /// </summary>
+        internal static byte[] www {
+            get {
+                object obj = ResourceManager.GetObject("www", resourceCulture);
+                return ((byte[])(obj));
+            }
+        }
     }
 }
