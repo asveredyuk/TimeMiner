@@ -23,10 +23,12 @@ namespace TimeMiner.Master
             }
         }
 
+        private FrontendServer frontendServer;
         private SlaveServer slaveServer;
         private MasterDB db;
         private MainController()
         {
+            frontendServer = FrontendServer.Self;
             slaveServer = SlaveServer.Self;
             db = MasterDB.Self;
 
@@ -42,11 +44,13 @@ namespace TimeMiner.Master
         public void OnStartup()
         {
             slaveServer.Start();
+            frontendServer.Start();
         }
 
         public void OnExit()
         {
             slaveServer.Stop();
+            frontendServer.Stop();
         }
     }
 }

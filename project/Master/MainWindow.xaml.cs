@@ -38,12 +38,13 @@ namespace TimeMiner.Master
 
         private void button_Click(object sender, RoutedEventArgs e)
         {
-            MasterDB db = MasterDB.Self;
+            System.Diagnostics.Process.Start("http://localhost:" + FrontendServer.LISTENER_PORT);
+            /*MasterDB db = MasterDB.Self;
             var records = db.GetAllRecordsForUser(0);
             List<string> lines = new List<string>();
             lines.Add("Time;Process;MousePos;Keystrokes;");
             lines.AddRange(records.OrderBy(t=>t.Time).Select(t=>RecordToCsvString(t)));
-            File.WriteAllLines("out.csv",lines);
+            File.WriteAllLines("out.csv",lines);*/
         }
 
         private string RecordToCsvString(LogRecord rec)

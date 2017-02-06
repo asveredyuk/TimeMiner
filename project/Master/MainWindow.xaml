@@ -7,7 +7,7 @@
         mc:Ignorable="d"
         Title="MainWindow" Height="350" Width="525" Closing="Window_Closing" Loaded="Window_Loaded">
     <Grid>
-        <Button x:Name="button" Content="Button" HorizontalAlignment="Left" Margin="26,22,0,0" VerticalAlignment="Top" Width="75" Click="button_Click"/>
+        <Button x:Name="button" Content="Go to admin page" HorizontalAlignment="Left" Margin="26,22,0,0" VerticalAlignment="Top" Width="128" Click="button_Click" Height="34"/>
 
     </Grid>
 </Window>
