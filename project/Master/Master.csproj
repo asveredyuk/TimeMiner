@@ -64,7 +64,14 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="FrontendServer.cs" />
+    <Compile Include="Frontend\Authorization.cs" />
+    <Compile Include="Frontend\FrontendServer.cs" />
+    <Compile Include="Frontend\IFrontendServerHandler.cs" />
+    <Compile Include="Frontend\LoginHandler.cs" />
+    <Compile Include="Frontend\MainPageHandler.cs" />
+    <Compile Include="Frontend\PageBuilder.cs" />
+    <Compile Include="Frontend\ResponseMaker.cs" />
+    <Compile Include="Frontend\Util.cs" />
     <Compile Include="SlaveServer.cs" />
     <Compile Include="ZipResourceContainer.cs" />
     <Page Include="MainWindow.xaml">

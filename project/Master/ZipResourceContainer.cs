@@ -57,6 +57,33 @@ namespace TimeMiner.Master
                 return ms.ToArray();
             }
         }
+        /// <summary>
+        /// Get string resource
+        /// </summary>
+        /// <param name="key"></param>
+        /// <returns></returns>
+        public string GetString(string key)
+        {
+            byte[] arr = this[key];
+            return Encoding.UTF8.GetString(arr);
+        }
+        /// <summary>
+        /// Try get string resource
+        /// </summary>
+        /// <param name="key"></param>
+        /// <param name="res"></param>
+        /// <returns></returns>
+        public bool TryGetString(string key, out string res)
+        {
+            byte[] arr;
+            if (!TryGetValue(key, out arr))
+            {
+                res = null;
+                return false;
+            }
+            res = Encoding.UTF8.GetString(arr);
+            return true;
+        }
         #region IReadOnlyDictionary interface implementation
         public IEnumerator<KeyValuePair<string, byte[]>> GetEnumerator()
         {

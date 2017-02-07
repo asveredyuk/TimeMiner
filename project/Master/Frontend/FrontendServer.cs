@@ -6,14 +6,13 @@ using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace TimeMiner.Master
+namespace TimeMiner.Master.Frontend
 {
     /// <summary>
     /// Server for admin frontend page
     /// </summary>
     class FrontendServer
     {
-        
         #region singletone
         private static FrontendServer self;
         public static FrontendServer Self
@@ -41,6 +40,7 @@ namespace TimeMiner.Master
         /// </summary>
         private ZipResourceContainer resources;
 
+        private ResponseMaker responseMaker;
         public const string LISTENER_PORT = "8080";
         /// <summary>
         /// Local server prefix including port
@@ -52,6 +52,7 @@ namespace TimeMiner.Master
             listener = new HttpListener();
             listener.Prefixes.Add(LISTENER_PREFIX);
             resources = new ZipResourceContainer(Master.Properties.Resources.www);
+            responseMaker = new ResponseMaker(resources);
         }
         /// <summary>
         /// Start local server
@@ -101,25 +102,27 @@ namespace TimeMiner.Master
         {
             //always return file data
             string path = req.Url.PathAndQuery;
-            if (path == "/")
-                path = "/index.html";
+            /*if (path == "/")
+                path = "/index.html";*/
             path = path.TrimStart('/');
 
             byte[] fileData;
             if (resources.TryGetValue(path, out fileData))
             {
+                //this is resource query
                 resp.OutputStream.Write(fileData,0,fileData.Length);
                 resp.OutputStream.Close();
             }
             else
             {
-                resp.StatusCode = 404;
+                responseMaker.OnRequest(req,resp);
+                /*resp.StatusCode = 404;
                 byte[] page404 = Page404;
                 if (page404 != null)
                 {
                     resp.OutputStream.Write(page404,0,page404.Length);
                 }
-                resp.OutputStream.Close();
+                resp.OutputStream.Close();*/
             }
             /*StreamWriter sw = new StreamWriter(resp.OutputStream);
             sw.WriteLine(req.Url.PathAndQuery);

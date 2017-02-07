@@ -1,0 +1,49 @@
+.leftMenu
+{
+    width: 200px;
+    background-color: #24292F;
+    position: fixed;
+    height: 100%;
+    color: white;
+}
+.leftMenu .logo
+{
+    width: 100%;
+    text-align: left;
+    font-size: 32px;
+    margin-top: 5px;
+}
+
+
+.topMenu
+{
+    margin-left: 200px;
+    height: 35px;
+    background-color: #E3EAF3;
+}
+.mainContainer
+{
+    margin-left: 200px;
+    background: green;
+}
+
+    .sidebar-nav .navbar .navbar-collapse {
+        padding: 0;
+        max-height: none;
+    }
+    .sidebar-nav .navbar ul {
+        float: none;
+        display: block;
+    }
+    .sidebar-nav .navbar li {
+        float: none;
+        display: block;
+    }
+    .sidebar-nav .navbar li a {
+        padding-top: 12px;
+        padding-bottom: 12px;
+    }
+.nopadding {
+    padding: 0 !important;
+    margin: 0 !important;
+}
