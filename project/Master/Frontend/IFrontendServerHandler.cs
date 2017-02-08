@@ -10,10 +10,6 @@ namespace TimeMiner.Master.Frontend
     interface IFrontendServerHandler
     {
         /// <summary>
-        /// Returns list of queries handled by given class
-        /// </summary>
-        string[] HandledQueries { get; }
-        /// <summary>
         /// Handler request. Returns null if everything was done in handler
         /// </summary>
         /// <param name="req"></param>

@@ -10,13 +10,9 @@ namespace TimeMiner.Master.Frontend
 {
     class ResponseMaker
     {
-        private Dictionary<string, IFrontendServerHandler> handlers;
         private ZipResourceContainer res;
         public ResponseMaker(ZipResourceContainer res)
         {
-            handlers = new Dictionary<string, IFrontendServerHandler>();
-            handlers[""] = new MainPageHandler();
-            handlers["login"] = new LoginHandler();
             this.res = res;
         }
 
@@ -24,7 +20,7 @@ namespace TimeMiner.Master.Frontend
         {
             string q = req.Url.AbsolutePath.Trim('/');
             string template = res.GetString("template.html");
-            PageBuilder hbu = handlers[q].Handle(req, resp);
+            PageBuilder hbu = FrontendPluginLoader.Self.Handlers[q].Handle(req, resp);
             if (hbu == null)
             {
                 Console.Out.WriteLine("No page builder returned from handler");
