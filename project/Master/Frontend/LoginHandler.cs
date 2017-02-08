@@ -17,7 +17,7 @@ namespace TimeMiner.Master.Frontend
 
         public PageBuilder Handle(HttpListenerRequest req, HttpListenerResponse resp)
         {
-            throw new NotImplementedException();
+            return new PageBuilder("login!");
         }
     }
 }

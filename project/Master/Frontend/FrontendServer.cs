@@ -90,7 +90,15 @@ namespace TimeMiner.Master.Frontend
                 HttpListenerContext context = await listener.GetContextAsync();
                 HttpListenerRequest req = context.Request;
                 HttpListenerResponse resp = context.Response;
-                HandleRequest(req, resp);
+                try
+                {
+                    HandleRequest(req, resp);
+                }
+                catch (Exception e)
+                {
+                    Console.Out.WriteLine("Exception in handler thread, " + e.StackTrace);
+                    //throw;
+                }
             }
         }
         /// <summary>
