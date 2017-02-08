@@ -11,9 +11,9 @@ namespace TimeMiner.Master.Frontend
     [HandlerPath("")]
     class MainPageHandler:IFrontendServerHandler
     {
-        public PageBuilder Handle(HttpListenerRequest req, HttpListenerResponse resp)
+        public HandlerPageDescriptor Handle(HttpListenerRequest req, HttpListenerResponse resp)
         {
-            return new PageBuilder("ThisIsMainPage");
+            return new HandlerPageDescriptor("ThisIsMainPage");
         }
     }
 }

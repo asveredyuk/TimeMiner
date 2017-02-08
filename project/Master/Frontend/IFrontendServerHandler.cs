@@ -15,6 +15,6 @@ namespace TimeMiner.Master.Frontend
         /// <param name="req"></param>
         /// <param name="resp"></param>
         /// <returns>If returned, page must be embedded into main and returned</returns>
-        PageBuilder Handle(HttpListenerRequest req, HttpListenerResponse resp);
+        HandlerPageDescriptor Handle(HttpListenerRequest req, HttpListenerResponse resp);
     }
 }

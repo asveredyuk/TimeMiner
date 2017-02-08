@@ -11,9 +11,9 @@ namespace TimeMiner.Master.Frontend
     [HandlerPath("login")]
     class LoginHandler : IFrontendServerHandler
     {
-        public PageBuilder Handle(HttpListenerRequest req, HttpListenerResponse resp)
+        public HandlerPageDescriptor Handle(HttpListenerRequest req, HttpListenerResponse resp)
         {
-            return new PageBuilder("login!");
+            return new HandlerPageDescriptor("login!");
         }
     }
 }

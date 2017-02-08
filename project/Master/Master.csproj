@@ -39,6 +39,10 @@
       <HintPath>..\packages\LiteDB.2.0.4\lib\net35\LiteDB.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="mustache-sharp, Version=0.2.10.0, Culture=neutral, PublicKeyToken=40ca26c1e088cef4, processorArchitecture=MSIL">
+      <HintPath>..\packages\mustache-sharp.0.2.10\lib\net40\mustache-sharp.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="Newtonsoft.Json, Version=9.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.9.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
       <Private>True</Private>
@@ -65,12 +69,13 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Frontend\Authorization.cs" />
+    <Compile Include="Frontend\TemplatedPageDescriptor.cs" />
     <Compile Include="Frontend\Plugins\FrontendPluginLoader.cs" />
     <Compile Include="Frontend\FrontendServer.cs" />
     <Compile Include="Frontend\IFrontendServerHandler.cs" />
     <Compile Include="Frontend\LoginHandler.cs" />
     <Compile Include="Frontend\MainPageHandler.cs" />
-    <Compile Include="Frontend\PageBuilder.cs" />
+    <Compile Include="Frontend\HandlerPageDescriptor.cs" />
     <Compile Include="Frontend\Plugins\HandlerPathAttribute.cs" />
     <Compile Include="Frontend\ResponseMaker.cs" />
     <Compile Include="Frontend\Util.cs" />
