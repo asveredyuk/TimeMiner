@@ -24,6 +24,12 @@ namespace TimeMiner.Master.Frontend
         public void OnRequest(HttpListenerRequest req, HttpListenerResponse resp)
         {
             string q = req.Url.AbsolutePath.Trim('/');
+            //check if there is no only root
+            if (q.Contains("/"))
+            {
+                //take only root
+                q = q.Substring(0, q.IndexOf("/"));
+            }
             HandlerPageDescriptor hbu = FrontendPluginLoader.Self.Handlers[q].Handle(req, resp);
             if (hbu == null)
             {
