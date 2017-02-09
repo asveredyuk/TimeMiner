@@ -13,11 +13,14 @@
     font-size: 32px;
     margin-top: 5px;
 }
-
+.leftMenu .menu
+{
+    border-radius: 0;
+}
 
 .topMenu
 {
-    margin-left: 200px;
+    margin-left: 250px;
     height: 35px;
     background-color: #E3EAF3;
 }
@@ -25,25 +28,4 @@
 {
     margin-left: 200px;
     background: green;
-}
-
-    .sidebar-nav .navbar .navbar-collapse {
-        padding: 0;
-        max-height: none;
-    }
-    .sidebar-nav .navbar ul {
-        float: none;
-        display: block;
-    }
-    .sidebar-nav .navbar li {
-        float: none;
-        display: block;
-    }
-    .sidebar-nav .navbar li a {
-        padding-top: 12px;
-        padding-bottom: 12px;
-    }
-.nopadding {
-    padding: 0 !important;
-    margin: 0 !important;
 }

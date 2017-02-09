@@ -16,6 +16,8 @@ namespace TimeMiner.Master.Frontend
         {
             ite = new TemplatePageMenuItem("Main");
             ite.Path = "/";
+            ite.InnerItems.Add(new TemplatePageMenuItem("Google","http://google.ru"));
+            ite.InnerItems.Add(new TemplatePageMenuItem("Yandex", "http://yandex.ru"));
             MenuItems.Add(ite);
         }
         [HandlerPath("")]

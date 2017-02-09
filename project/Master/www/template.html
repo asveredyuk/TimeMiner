@@ -3,36 +3,91 @@
 <head>
     <meta charset="UTF-8">
     <title>Admin page</title>
-    <link rel="stylesheet" href="/css/bootstrap.css">
-    <script src="/js/bootstrap.js"></script>
+    <script src="/libs/jquery/jquery-3.1.1.js"></script>
+    <link rel="stylesheet" href="/libs/semantic/semantic.min.css">
+    <script src="/libs/semantic/semantic.min.js"></script>
+
     <link rel="stylesheet" href="/style.css">
-    <script src="/js/jquery-3.1.1.js"></script>
 </head>
 <body>
-<div class="leftMenu">
-    <div class="logo">TimeMiner</div>
-    <ul class="nav nav-pills nav-stacked">
-        {{#each Menu}}
-            <li>
-                {{#if Path}}
-                <a href="{{Path}}">{{Text}}</a>
-                {{#else}}
-                {{Text}}
-                {{/if}}
-                <b> {{#if Number}}NUM:{{Number}}{{/if}}</b>
-            </li>
-            {{/each}}
-        <li>jedan</li>
-        <li>dva</li>
-        <li>tri</li>
-        <li>cetriri</li>
-        <li>pet</li>
-    </ul>
+<!--<div class="leftMenu">-->
+    <!--<div class="logo">TimeMiner</div>-->
+    <!--<div class="ui inverted vertical menu" style="width: 100%">-->
+        <!--<div class="item">-->
+            <!--<div class="header">Products</div>-->
+            <!--<div class="menu">-->
+                <!--<a class="item">Enterprise</a>-->
+                <!--<a class="item">Consumer</a>-->
+            <!--</div>-->
+        <!--</div>-->
+        <!--<div class="item">-->
+            <!--<div class="header">CMS Solutions</div>-->
+            <!--<div class="menu">-->
+                <!--<a class="item">Rails</a>-->
+                <!--<a class="item">Python</a>-->
+                <!--<a class="item">PHP</a>-->
+            <!--</div>-->
+        <!--</div>-->
+        <!--<div class="item">-->
+            <!--<div class="header">Hosting</div>-->
+            <!--<div class="menu">-->
+                <!--<a class="item">Shared</a>-->
+                <!--<a class="item">Dedicated</a>-->
+            <!--</div>-->
+        <!--</div>-->
+        <!--<div class="item">-->
+            <!--<div class="header">Support</div>-->
+            <!--<div class="menu">-->
+                <!--<a class="item">E-mail Support</a>-->
+                <!--<a class="item">FAQs</a>-->
+            <!--</div>-->
+        <!--</div>-->
+    <!--</div>-->
+    <!--&lt;!&ndash;<ul class="">&ndash;&gt;-->
+
+        <!--&lt;!&ndash;<li>jedan</li>&ndash;&gt;-->
+        <!--&lt;!&ndash;<li>dva</li>&ndash;&gt;-->
+        <!--&lt;!&ndash;<li>tri</li>&ndash;&gt;-->
+        <!--&lt;!&ndash;<li>cetriri</li>&ndash;&gt;-->
+        <!--&lt;!&ndash;<li>pet</li>&ndash;&gt;-->
+    <!--&lt;!&ndash;</ul>&ndash;&gt;-->
+<!--</div>-->
+<div class="ui inverted left fixed vertical menu massive" style="width: 250px">
+    <div class="item">
+        <img class="ui mini image" src="http://semantic-ui.com/images/logo.png">
+    </div>
+    {{#each Menu}}
+    {{#if InnerItems}}
+    <div class="item">
+        <div class="header">{{Text}}</div>
+            <div class="menu">
+                {{#each InnerItems}}
+                <a class="item"{{#if Path}} href="{{Path}}" {{/if}}>{{Text}}</a>
+                {{/each}}
+            <a class="item">Enterprise</a>
+            </div>
+    </div>
+    {{#else}}
+        <a class="item"{{#if Path}} href="{{Path}}"{{/if}}>{{Text}}</a>
+    {{/if}}
+
+
+    {{/each}}
+    <!--<div class="item">-->
+        <!--<div class="header">Products</div>-->
+        <!--<div class="menu">-->
+        <!--<a class="item">Enterprise</a>-->
+        <!--<a class="item">Consumer</a>-->
+        <!--</div>-->
+    <!--</div>-->
+    <!--<a class="item">Testimonials</a>-->
+    <!--<a class="item">Sign-in</a>-->
+
 </div>
-<div class="topMenu">
+<div class="topMenu" style="margin-left: 250px">
     This is top menu
 </div>
-<div class="mainContainer">{{Page}}</div>
+<div class="mainContainer" style="margin-left: 250px">{{Page}}</div>
 <!--<div class="container-fluid" >-->
     <!--<div class="row" >-->
         <!--<div class="col-sm-3" >-->
