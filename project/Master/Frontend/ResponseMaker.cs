@@ -5,6 +5,7 @@ using System.Linq;
 using System.Net;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Controls;
 using Mustache;
 
 namespace TimeMiner.Master.Frontend
@@ -30,7 +31,7 @@ namespace TimeMiner.Master.Frontend
                 //take only root
                 q = q.Substring(0, q.IndexOf("/"));
             }
-            HandlerPageDescriptor hbu = FrontendPluginLoader.Self.Handlers[q].Handle(req, resp);
+            HandlerPageDescriptor hbu = FrontendExtensionLoader.Self.RequestHandlers[q](req, resp);
             if (hbu == null)
             {
                 Console.Out.WriteLine("No page builder returned from handler");
@@ -47,7 +48,8 @@ namespace TimeMiner.Master.Frontend
 
         private string CompilePage(HandlerPageDescriptor hdesc)
         {
-            TemplatedPageDescriptor de = new TemplatedPageDescriptor(hdesc);
+            TemplatePageDescriptor de = new TemplatePageDescriptor(hdesc);
+            de.Menu.AddRange(FrontendExtensionLoader.Self.MenuItems);
             return mustacheGenerator.Render(de);
         }
     }

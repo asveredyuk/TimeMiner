@@ -69,15 +69,16 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Frontend\Authorization.cs" />
-    <Compile Include="Frontend\TemplatedPageDescriptor.cs" />
-    <Compile Include="Frontend\Plugins\FrontendPluginLoader.cs" />
+    <Compile Include="Frontend\TemplatePageDescriptor.cs" />
+    <Compile Include="Frontend\Plugins\FrontendExtensionLoader.cs" />
     <Compile Include="Frontend\FrontendServer.cs" />
-    <Compile Include="Frontend\IFrontendServerHandler.cs" />
-    <Compile Include="Frontend\LoginHandler.cs" />
-    <Compile Include="Frontend\MainPageHandler.cs" />
+    <Compile Include="Frontend\FrontendServerExtensionBase.cs" />
+    <Compile Include="Frontend\BuiltInExtensions\LoginExtension.cs" />
+    <Compile Include="Frontend\BuiltInExtensions\MainPageExtension.cs" />
     <Compile Include="Frontend\HandlerPageDescriptor.cs" />
     <Compile Include="Frontend\Plugins\HandlerPathAttribute.cs" />
     <Compile Include="Frontend\ResponseMaker.cs" />
+    <Compile Include="Frontend\TemplatePageMenuItem.cs" />
     <Compile Include="Frontend\Util.cs" />
     <Compile Include="SlaveServer.cs" />
     <Compile Include="ZipResourceContainer.cs" />

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace TimeMiner.Master.Frontend.Plugins
 {
-    [AttributeUsage(AttributeTargets.Class)]
+    [AttributeUsage(AttributeTargets.Method)]
     class HandlerPathAttribute : Attribute
     {
         public readonly string path;

@@ -12,6 +12,16 @@
 <div class="leftMenu">
     <div class="logo">TimeMiner</div>
     <ul class="nav nav-pills nav-stacked">
+        {{#each Menu}}
+            <li>
+                {{#if Path}}
+                <a href="{{Path}}">{{Text}}</a>
+                {{#else}}
+                {{Text}}
+                {{/if}}
+                <b> {{#if Number}}NUM:{{Number}}{{/if}}</b>
+            </li>
+            {{/each}}
         <li>jedan</li>
         <li>dva</li>
         <li>tri</li>
