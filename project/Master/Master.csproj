@@ -69,6 +69,7 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Frontend\Authorization.cs" />
+    <Compile Include="Frontend\BuiltInExtensions\ProgramStatisticsExtension.cs" />
     <Compile Include="Frontend\TemplatePageDescriptor.cs" />
     <Compile Include="Frontend\Plugins\FrontendExtensionLoader.cs" />
     <Compile Include="Frontend\FrontendServer.cs" />

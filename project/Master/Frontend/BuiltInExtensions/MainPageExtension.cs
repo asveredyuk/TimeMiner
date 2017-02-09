@@ -6,7 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using TimeMiner.Master.Frontend.Plugins;
 
-namespace TimeMiner.Master.Frontend
+namespace TimeMiner.Master.Frontend.BuiltInExtensions
 {
     
     class MainPageExtension:FrontendServerExtensionBase
