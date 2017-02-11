@@ -30,6 +30,11 @@ namespace TimeMiner.Master
         const string LOGS_TABLES_PREFIX = "log_u";
         public static string DB_PATH = "logstorage.db";
 
+        [Obsolete("never work with database directly")]
+        public LiteDatabase Database
+        {
+            get { return db; }
+        }
         /// <summary>
         /// Database connection
         /// </summary>

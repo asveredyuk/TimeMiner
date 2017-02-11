@@ -1,22 +1,3 @@
-.leftMenu
-{
-    width: 200px;
-    background-color: #24292F;
-    position: fixed;
-    height: 100%;
-    color: white;
-}
-.leftMenu .logo
-{
-    width: 100%;
-    text-align: left;
-    font-size: 32px;
-    margin-top: 5px;
-}
-.leftMenu .menu
-{
-    border-radius: 0;
-}
 
 .topMenu
 {
@@ -26,6 +7,6 @@
 }
 .mainContainer
 {
-    margin-left: 200px;
+    margin-left: 250px;
     background: green;
 }
