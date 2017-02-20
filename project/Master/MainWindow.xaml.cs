@@ -157,11 +157,12 @@ namespace TimeMiner.Master
 
         private void btClearData_Click(object sender, RoutedEventArgs e)
         {
-            LiteDatabase db = MasterDB.Logs.Database;
+
+            /*LiteDatabase db = MasterDB.Logs.Database;
             foreach (var collectionName in db.GetCollectionNames())
             {
                 db.DropCollection(collectionName);
-            }
+            }*/
         }
     }
 }

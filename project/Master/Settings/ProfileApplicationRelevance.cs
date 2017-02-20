@@ -18,6 +18,8 @@ namespace TimeMiner.Master.Settings
             Neutral,
             Bad
         }
+
+        public Guid Id { get; set; }
         public Relevance Rel { get; set; }
         [BsonRef(SettingsProvider.APPS_LIST_COL_NAME)]
         public ApplicationDescriptor App { get; set; }
