@@ -70,7 +70,7 @@ namespace TimeMiner.Master
 
             LiteDatabase db = MasterDB.Logs.Database;
 
-            const int NUM_USERS = 3;
+            const int NUM_USERS = 1;
 
             const int NUM_RECORDS_PER_USER = 60*60*5;
 
