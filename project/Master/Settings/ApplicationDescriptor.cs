@@ -11,6 +11,7 @@ namespace TimeMiner.Master.Settings
     /// </summary>
     class ApplicationDescriptor
     { 
+        public Guid Id { get; set; }
         public string Name { get; set; }
         public string ProcName { get; set; }
     }

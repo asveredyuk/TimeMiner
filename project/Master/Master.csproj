@@ -84,6 +84,7 @@
     <Compile Include="Frontend\TemplatePageMenuItem.cs" />
     <Compile Include="Frontend\Util.cs" />
     <Compile Include="Settings\ApplicationDescriptor.cs" />
+    <Compile Include="Settings\Profile.cs" />
     <Compile Include="Settings\ProfileApplicationRelevance.cs" />
     <Compile Include="Settings\SettingsProvider.cs" />
     <Compile Include="SlaveServer.cs" />

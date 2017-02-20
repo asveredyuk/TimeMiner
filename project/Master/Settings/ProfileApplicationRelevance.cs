@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using LiteDB;
 
 namespace TimeMiner.Master.Settings
 {
@@ -17,5 +18,8 @@ namespace TimeMiner.Master.Settings
             Neutral,
             Bad
         }
+        public Relevance Rel { get; set; }
+        [BsonRef(SettingsProvider.APPS_LIST_COL_NAME)]
+        public ApplicationDescriptor App { get; set; }
     }
 }
