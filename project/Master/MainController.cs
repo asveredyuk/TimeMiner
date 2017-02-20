@@ -26,17 +26,17 @@ namespace TimeMiner.Master
 
         private FrontendServer frontendServer;
         private SlaveServer slaveServer;
-        private MasterDB db;
+        private LogsDB logsDb;
         private MainController()
         {
             frontendServer = FrontendServer.Self;
             slaveServer = SlaveServer.Self;
-            db = MasterDB.Self;
+            logsDb = MasterDB.Logs;
 
             //bind connections
             slaveServer.onLogRecordCame += delegate(LogRecord rec)
             {
-                db.PutRecord(rec);
+                logsDb.PutRecord(rec);
             };
         }
         /// <summary>

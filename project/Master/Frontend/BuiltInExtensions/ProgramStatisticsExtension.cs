@@ -18,7 +18,7 @@ namespace TimeMiner.Master.Frontend.BuiltInExtensions
         [HandlerPath("stat")]
         public HandlerPageDescriptor Handle(HttpListenerRequest req, HttpListenerResponse resp)
         {
-            List<LogRecord> records = MasterDB.Self.GetAllRecordsForUser(0);
+            List<LogRecord> records = MasterDB.Logs.GetAllRecordsForUser(0);
             Dictionary<string,int> programs = new Dictionary<string, int>();
             foreach (var rec in records)
             {

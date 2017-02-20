@@ -8,27 +8,10 @@ using TimeMiner.Core;
 
 namespace TimeMiner.Master
 {
-    /// <summary>
-    /// Dabase for master
-    /// </summary>
-    public class MasterDB : IDisposable
+    public class LogsDB
     {
-        private static MasterDB self;
-
-        public static MasterDB Self
-        {
-            get
-            {
-                if (self == null)
-                {
-                    self = new MasterDB();
-                }
-                return self;
-            }
-        }
-
         const string LOGS_TABLES_PREFIX = "log_u";
-        public static string DB_PATH = "logstorage.db";
+        public static string LOG_DB_PATH = "logstorage.db";
 
         [Obsolete("never work with database directly")]
         public LiteDatabase Database
@@ -40,9 +23,9 @@ namespace TimeMiner.Master
         /// </summary>
         LiteDatabase db;
 
-        private MasterDB()
+        internal LogsDB()
         {
-            db = new LiteDatabase(DB_PATH);
+            db = new LiteDatabase(LOG_DB_PATH);
         }
         /// <summary>
         /// Put new record to the database to the table of record user
@@ -68,22 +51,17 @@ namespace TimeMiner.Master
         {
             var col = db.GetCollection<LogRecord>(LOGS_TABLES_PREFIX + userid);
             //TODO: think about this
-            return new List<LogRecord>(col.FindAll().OrderBy(t=>t.Time));
-        }
-         
-
-        ~MasterDB()
-        {
-            Dispose();
+            return new List<LogRecord>(col.FindAll().OrderBy(t => t.Time));
         }
 
-        public void Dispose()
+
+        /*public void Dispose()
         {
             if (db != null)
             {
                 db.Dispose();
                 db = null;
             }
-        }
+        }*/
     }
 }

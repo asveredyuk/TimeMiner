@@ -68,7 +68,7 @@ namespace TimeMiner.Master
         private void btMakeFakeData_Click(object sender, RoutedEventArgs e)
         {
 
-            LiteDatabase db = MasterDB.Self.Database;
+            LiteDatabase db = MasterDB.Logs.Database;
 
             const int NUM_USERS = 3;
 
@@ -157,7 +157,7 @@ namespace TimeMiner.Master
 
         private void btClearData_Click(object sender, RoutedEventArgs e)
         {
-            LiteDatabase db = MasterDB.Self.Database;
+            LiteDatabase db = MasterDB.Logs.Database;
             foreach (var collectionName in db.GetCollectionNames())
             {
                 db.DropCollection(collectionName);
