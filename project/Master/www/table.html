@@ -6,7 +6,8 @@
     <script src="libs/jquery/jquery-3.1.1.js"></script>
     <link rel="stylesheet" href="libs/semantic/semantic.min.css">
     <script src="libs/semantic/semantic.min.js"></script>
-
+    <link rel="stylesheet" href="tablestyle.css">
+    <script src="tablescript.js"></script>
     <!--<link rel="stylesheet" href="style.css">-->
 </head>
 <body>
@@ -14,50 +15,18 @@
     <table class="ui celled striped table">
         <thead>
         <tr>
-            <th>Name</th>
-            <th>Identification info</th>
-            <th class="three wide center aligned">Relevance</th>
+            <th class="six wide">Name</th>
+            <th class="six wide">Identification info</th>
+            <th class="four wide">Relevance</th>
         </tr>
         </thead>
         <tbody>
         <tr>
-            <td>Microsoft word</td>
-            <td>winword.exe</td>
-            <td>
-                <div class="ui small buttons">
-                    <button class="ui green button">Good</button>
-                    <div class="or"></div>
-                    <button class="ui button">Neutral</button>
-                    <div class="or"></div>
-                    <button class="ui  button">Bad</button>
+            <th colspan="5">
+                <div class="ui segment" style="height: 200px">
+                        <div class="ui massive active loader"></div>
                 </div>
-            </td>
-        </tr>
-        <tr>
-            <td>Telegram</td>
-            <td>telegram.exe</td>
-            <td>
-                <div class="ui small buttons">
-                    <button class="ui button">Good</button>
-                    <div class="or"></div>
-                    <button class="ui button">Neutral</button>
-                    <div class="or"></div>
-                    <button class="ui red button">Bad</button>
-                </div>
-            </td>
-        </tr>
-        <tr>
-            <td>Explorer</td>
-            <td>explorer.exe</td>
-            <td>
-                <div class="ui small buttons">
-                    <button class="ui button">Good</button>
-                    <div class="or"></div>
-                    <button class="ui yellow button">Neutral</button>
-                    <div class="or"></div>
-                    <button class="ui  button">Bad</button>
-                </div>
-            </td>
+            </th>
         </tr>
         </tbody>
     </table>

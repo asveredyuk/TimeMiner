@@ -71,6 +71,7 @@
     <Compile Include="Database\LogsDB.cs" />
     <Compile Include="Database\SettingsDB.cs" />
     <Compile Include="Frontend\Authorization.cs" />
+    <Compile Include="Frontend\BuiltInExtensions\ApplicationListExtension.cs" />
     <Compile Include="Frontend\BuiltInExtensions\ProgramStatisticsExtension.cs" />
     <Compile Include="Frontend\TemplatePageDescriptor.cs" />
     <Compile Include="Frontend\Plugins\FrontendExtensionLoader.cs" />
