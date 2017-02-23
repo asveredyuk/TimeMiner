@@ -10,14 +10,11 @@ using System.Windows.Input;
 
 namespace TimeMiner.Master
 {
-    /*public interface IResourceContainer : IReadOnlyDictionary<string, byte[]>
-    {
-        
-    }*/
+    
     /// <summary>
     /// Contains files from zip archive as dictionary in memory
     /// </summary>
-    class ZipResourceContainer : IReadOnlyDictionary<string,byte[]>
+    public class ZipResourceContainer : IResourceContainer //: IReadOnlyDictionary<string,byte[]>
     {
         /// <summary>
         /// Dictionary with file names and their data
@@ -64,20 +61,30 @@ namespace TimeMiner.Master
         /// <summary>
         /// Get string resource
         /// </summary>
-        /// <param name="key"></param>
-        /// <returns></returns>
+        /// <param name="key">Resource path</param>
+        /// <returns>String with contents of resource if it exists, null els</returns>
         public string GetString(string key)
         {
-            byte[] arr = this[key];
+            byte[] arr = GetResource(key);
+            if (arr == null)
+                return null;
             return Encoding.UTF8.GetString(arr);
         }
         /// <summary>
-        /// Try get string resource
+        /// Get resource from resource container
         /// </summary>
-        /// <param name="key"></param>
-        /// <param name="res"></param>
-        /// <returns></returns>
-        public bool TryGetString(string key, out string res)
+        /// <param name="key">Resource path</param>
+        /// <returns>Byte array with contents of resource if it exists, null else</returns>
+        public byte[] GetResource(string key)
+        {
+            byte[] res;
+            if (!dict.TryGetValue(key, out res))
+            {
+                return null;
+            }
+            return res;
+        }
+     /*   public bool TryGetString(string key, out string res)
         {
             byte[] arr;
             if (!TryGetValue(key, out arr))
@@ -87,47 +94,47 @@ namespace TimeMiner.Master
             }
             res = Encoding.UTF8.GetString(arr);
             return true;
-        }
+        }*/
         #region IReadOnlyDictionary interface implementation
-        public IEnumerator<KeyValuePair<string, byte[]>> GetEnumerator()
+      /*  public IEnumerator<KeyValuePair<string, byte[]>> GetEnumerator()
         {
             return dict.GetEnumerator();
-        }
+        }*/
 
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return ((IEnumerable) dict).GetEnumerator();
-        }
-
-        public int Count
-        {
-            get { return dict.Count; }
-        }
-
-        public bool ContainsKey(string key)
+//        IEnumerator IEnumerable.GetEnumerator()
+//        {
+//            return ((IEnumerable) dict).GetEnumerator();
+//        }
+//
+//        public int Count
+//        {
+//            get { return dict.Count; }
+//        }
+//
+        /*public bool ContainsKey(string key)
         {
             return dict.ContainsKey(key);
-        }
+        }*/
 
-        public bool TryGetValue(string key, out byte[] value)
+        /*public bool TryGetValue(string key, out byte[] value)
         {
             return dict.TryGetValue(key, out value);
-        }
-
-        public byte[] this[string key]
-        {
-            get { return dict[key]; }
-        }
-
-        public IEnumerable<string> Keys
-        {
-            get { return dict.Keys; }
-        }
-
-        public IEnumerable<byte[]> Values
-        {
-            get { return dict.Values; }
-        }
+        }*/
+//
+//        public byte[] this[string key]
+//        {
+//            get { return dict[key]; }
+//        }
+//
+//        public IEnumerable<string> Keys
+//        {
+//            get { return dict.Keys; }
+//        }
+//
+//        public IEnumerable<byte[]> Values
+//        {
+//            get { return dict.Values; }
+//        }
         #endregion
     }
 }

@@ -16,7 +16,7 @@ namespace TimeMiner.Master.Frontend
             MenuItems = new List<TemplatePageMenuItem>();
         }
 
-        protected ZipResourceContainer WWWRes
+        protected IResourceContainer WWWRes
         {
             get { return FrontendServer.Self.WWWResources; }
         }

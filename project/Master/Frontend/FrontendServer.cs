@@ -38,7 +38,7 @@ namespace TimeMiner.Master.Frontend
         /// <summary>
         /// Container with files from www folder
         /// </summary>
-        private ZipResourceContainer resources;
+        private IResourceContainer resources;
 
         private ResponseMaker responseMaker;
         public const string LISTENER_PORT = "8080";
@@ -50,7 +50,7 @@ namespace TimeMiner.Master.Frontend
         /// <summary>
         /// Container with files from www folder
         /// </summary>
-        public ZipResourceContainer WWWResources
+        public IResourceContainer WWWResources
         {
             get { return resources; }
         }
@@ -59,7 +59,7 @@ namespace TimeMiner.Master.Frontend
         {
             listener = new HttpListener();
             listener.Prefixes.Add(LISTENER_PREFIX);
-            resources = new ZipResourceContainer(Master.Properties.Resources.www);
+            resources = new DirResourceContainer("../../www");//new ZipResourceContainer(Master.Properties.Resources.www);
             responseMaker = new ResponseMaker(resources);
         }
         /// <summary>
@@ -122,8 +122,8 @@ namespace TimeMiner.Master.Frontend
                 path = "/index.html";*/
             path = path.TrimStart('/');
 
-            byte[] fileData;
-            if (resources.TryGetValue(path, out fileData))
+            byte[] fileData = resources.GetResource(path);
+            if (fileData != null)
             {
                 //this is resource query
                 resp.OutputStream.Write(fileData,0,fileData.Length);
@@ -152,12 +152,13 @@ namespace TimeMiner.Master.Frontend
         {
             get
             {
-                byte[] data;
-                if (resources.TryGetValue("404.html",out data))
+                byte[] data = resources.GetResource("404.html");
+                /*if (resources.TryGetValue("404.html",out data))
                 {
                     return data;
                 }
-                return null;
+                return null;*/
+                return data;
             }
         }
 

@@ -13,11 +13,11 @@ namespace TimeMiner.Master.Frontend
     class ResponseMaker
     {
         const string TEMPLATE_FILE_NAME = "template.html";
-        private ZipResourceContainer res;
+        private IResourceContainer res;
         private Generator mustacheGenerator;
-        public ResponseMaker(ZipResourceContainer res)
+        public ResponseMaker(IResourceContainer resources)
         {
-            this.res = res;
+            this.res = resources;
             var mustacheCompiler = new FormatCompiler();
             mustacheGenerator = mustacheCompiler.Compile(res.GetString(TEMPLATE_FILE_NAME));
         }

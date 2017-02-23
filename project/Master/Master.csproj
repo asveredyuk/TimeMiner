@@ -70,6 +70,7 @@
     </ApplicationDefinition>
     <Compile Include="Database\LogsDB.cs" />
     <Compile Include="Database\SettingsDB.cs" />
+    <Compile Include="DirResourceContainer.cs" />
     <Compile Include="Frontend\Authorization.cs" />
     <Compile Include="Frontend\BuiltInExtensions\ApplicationListExtension.cs" />
     <Compile Include="Frontend\BuiltInExtensions\ProgramStatisticsExtension.cs" />
@@ -84,6 +85,7 @@
     <Compile Include="Frontend\ResponseMaker.cs" />
     <Compile Include="Frontend\TemplatePageMenuItem.cs" />
     <Compile Include="Frontend\Util.cs" />
+    <Compile Include="IResourceContainer.cs" />
     <Compile Include="Settings\ApplicationDescriptor.cs" />
     <Compile Include="Settings\Profile.cs" />
     <Compile Include="Settings\ProfileApplicationRelevance.cs" />
