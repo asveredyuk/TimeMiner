@@ -15,6 +15,11 @@ namespace TimeMiner.Master.Frontend
         {
             MenuItems = new List<TemplatePageMenuItem>();
         }
+
+        protected ZipResourceContainer WWWRes
+        {
+            get { return FrontendServer.Self.WWWResources; }
+        }
         /// <summary>
         /// Get the root of given path
         /// </summary>

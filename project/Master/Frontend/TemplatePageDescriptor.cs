@@ -19,6 +19,11 @@ namespace TimeMiner.Master.Frontend
             get { return desc.Page; }
         }
 
+        public string IncludeInHead
+        {
+            get { return desc.Head; }
+        }
+
         public List<TemplatePageMenuItem> Menu { get; private set; }
         #endregion
         private HandlerPageDescriptor desc;

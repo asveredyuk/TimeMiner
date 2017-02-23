@@ -47,6 +47,14 @@ namespace TimeMiner.Master.Frontend
         /// </summary>
         public const string LISTENER_PREFIX = "http://+:" + LISTENER_PORT + "/";//"http://localhost:80/";
 
+        /// <summary>
+        /// Container with files from www folder
+        /// </summary>
+        public ZipResourceContainer WWWResources
+        {
+            get { return resources; }
+        }
+
         private FrontendServer()
         {
             listener = new HttpListener();
@@ -152,5 +160,7 @@ namespace TimeMiner.Master.Frontend
                 return null;
             }
         }
+
+        
     }
 }

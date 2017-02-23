@@ -67,7 +67,8 @@ function ButtonsWrapper(ctxt)
 }
 $(document).ready(function () {
     setTimeout(function () {
-        $.ajax("http://localhost:1132/www/txt.html")
+        //$.ajax("http://localhost:1132/www/txt.html")
+        $.ajax("http://localhost:8080/apps/ajax")
             .done(function (msg) {
                 //set the content
                 $("tbody").html(msg);

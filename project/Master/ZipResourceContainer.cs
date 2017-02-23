@@ -10,10 +10,14 @@ using System.Windows.Input;
 
 namespace TimeMiner.Master
 {
+    /*public interface IResourceContainer : IReadOnlyDictionary<string, byte[]>
+    {
+        
+    }*/
     /// <summary>
     /// Contains files from zip archive as dictionary in memory
     /// </summary>
-    class ZipResourceContainer : IReadOnlyDictionary<string,Byte[]>
+    class ZipResourceContainer : IReadOnlyDictionary<string,byte[]>
     {
         /// <summary>
         /// Dictionary with file names and their data
