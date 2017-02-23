@@ -10,18 +10,29 @@ namespace TimeMiner.Master.Settings
     /// <summary>
     /// Describes relevance of application to profile
     /// </summary>
-    class ProfileApplicationRelevance
+    public class ProfileApplicationRelevance
     {
         public enum Relevance
         {
-            Good,
-            Neutral,
-            Bad
+            good,
+            neutral,
+            bad
         }
 
         public Guid Id { get; set; }
         public Relevance Rel { get; set; }
-        [BsonRef(SettingsProvider.APPS_LIST_COL_NAME)]
+        [BsonRef(SettingsContainer.APPS_LIST_COL_NAME)]
         public ApplicationDescriptor App { get; set; }
+
+        public ProfileApplicationRelevance()
+        {
+        }
+
+        public ProfileApplicationRelevance(Relevance rel, ApplicationDescriptor app)
+        {
+            Id = Guid.NewGuid();
+            Rel = rel;
+            App = app;
+        }
     }
 }

@@ -5,15 +5,22 @@ using System.Linq;
 using System.Net;
 using System.Text;
 using System.Threading.Tasks;
+using Mustache;
 using TimeMiner.Master.Frontend.Plugins;
+using TimeMiner.Master.Settings;
 
 namespace TimeMiner.Master.Frontend.BuiltInExtensions
 {
     class ApplicationListExtension: FrontendServerExtensionBase
     {
+        private Generator mustacheGenerator;
+        private const string TABLE_ROW_TEMPLATE_PATH = "table/tablerow.html";
+        
         public ApplicationListExtension()
         {
             MenuItems.Add(new TemplatePageMenuItem("Apps","/apps"));
+            var mustacheCompiler = new FormatCompiler();
+            mustacheGenerator = mustacheCompiler.Compile(WWWRes.GetString(TABLE_ROW_TEMPLATE_PATH));
         }
 
         [HandlerPath("apps")]
@@ -25,6 +32,13 @@ namespace TimeMiner.Master.Frontend.BuiltInExtensions
             //here implement main page with table
             //and ajax responses at subpath /ajax
             //return new HandlerPageDescriptor($"subpath:{subpath}<br>root:{root}");*/
+            if (root == "add")
+            {
+                SettingsContainer container = SettingsContainer.Self;
+                container.PutNewApp(new ProfileApplicationRelevance(ProfileApplicationRelevance.Relevance.good, new ApplicationDescriptor("Microsoft word","winword.exe")));
+                container.PutNewApp(new ProfileApplicationRelevance(ProfileApplicationRelevance.Relevance.bad, new ApplicationDescriptor("Telegram messenger", "telegram.exe")));
+                container.PutNewApp(new ProfileApplicationRelevance(ProfileApplicationRelevance.Relevance.neutral, new ApplicationDescriptor("Windows explorer", "rexplorer.exe")));
+            }
             if (root == "ajax")
             {
                 HandleAjax(req,resp);
@@ -51,7 +65,15 @@ namespace TimeMiner.Master.Frontend.BuiltInExtensions
 
         private string GetTableString()
         {
-            return WWWRes.GetString("txt.html");
+            string res = "";
+            foreach (var rel in SettingsContainer.Self.GetBaseProfile().Relevances)
+            {
+                res += mustacheGenerator.Render(rel);
+            }
+            return res;
+            //return JsonConvert.SerializeObject(SettingsContainer.Self.GetBaseProfile().Relevances)
+
+            //return WWWRes.GetString("txt.html");
         }
     }
 }

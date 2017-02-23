@@ -9,17 +9,17 @@ using TimeMiner.Master.Database;
 
 namespace TimeMiner.Master.Settings
 {
-    class SettingsProvider
+    class SettingsContainer
     {
-        private static SettingsProvider self;
+        private static SettingsContainer self;
 
-        public static SettingsProvider Self
+        public static SettingsContainer Self
         {
             get
             {
                 if (self == null)
                 {
-                    self = new SettingsProvider();
+                    self = new SettingsContainer();
                 }
                 return self;
             }
@@ -31,7 +31,7 @@ namespace TimeMiner.Master.Settings
         private LiteDatabase db;
         private LiteCollection<ApplicationDescriptor> appsCollection;
         private LiteCollection<ProfileApplicationRelevance> baseProfileReferences;
-        private SettingsProvider()
+        private SettingsContainer()
         {
             
             db = MasterDB.Settings.Database;

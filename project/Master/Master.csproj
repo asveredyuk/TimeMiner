@@ -89,7 +89,7 @@
     <Compile Include="Settings\ApplicationDescriptor.cs" />
     <Compile Include="Settings\Profile.cs" />
     <Compile Include="Settings\ProfileApplicationRelevance.cs" />
-    <Compile Include="Settings\SettingsProvider.cs" />
+    <Compile Include="Settings\SettingsContainer.cs" />
     <Compile Include="SlaveServer.cs" />
     <Compile Include="ZipResourceContainer.cs" />
     <Page Include="MainWindow.xaml">
