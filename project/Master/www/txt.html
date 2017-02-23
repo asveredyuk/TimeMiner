@@ -1,51 +1,29 @@
-<tr>
-    <td>Microsoft word</td>
-    <td>winword.exe</td>
-    <td>
-        <div class="ui grid">
-            <div class="center aligned column">
-                <div class="ui small buttons mybuttons" data-value="good">
-                    <button class="ui button" data-active-class="green" name="good">Good</button>
-                    <div class="or"></div>
-                    <button class="ui button" data-active-class="yellow" name="neutral">Neutral</button>
-                    <div class="or"></div>
-                    <button class="ui  button" data-active-class="red" name="bad">Bad</button>
-                </div>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Admin page</title>
+    <script src="libs/jquery/jquery-3.1.1.js"></script>
+    <link rel="stylesheet" href="libs/semantic/semantic.min.css">
+    <script src="libs/semantic/semantic.min.js"></script>
+    <script src="libs/mustache/mustache.js"></script>
+    <link rel="stylesheet" href="/style.css">
+</head>
+<body>
+<div class="ui container">
+    <form class="ui form">
+        <div class="fields">
+            <div class="field">
+                <label>App name</label>
+                <input name="first-name" placeholder="App Name" type="text">
+            </div>
+            <div class="field">
+                <label>Process name</label>
+                <input name="last-name" placeholder="Process name" type="text">
             </div>
         </div>
-    </td>
-</tr>
-<tr>
-    <td>Telegram</td>
-    <td>telegram.exe</td>
-    <td>
-        <div class="ui grid">
-            <div class="center aligned column">
-                <div class="ui small buttons mybuttons" data-value="bad">
-                    <button class="ui button" data-active-class="green" name="good">Good</button>
-                    <div class="or"></div>
-                    <button class="ui button" data-active-class="yellow" name="neutral">Neutral</button>
-                    <div class="or"></div>
-                    <button class="ui  button" data-active-class="red" name="bad">Bad</button>
-                </div>
-            </div>
-        </div>
-    </td>
-</tr>
-<tr>
-    <td>Explorer</td>
-    <td>explorer.exe</td>
-    <td>
-        <div class="ui grid">
-            <div class="center aligned column">
-                <div class="ui small buttons mybuttons" data-value="neutral">
-                    <button class="ui button" data-active-class="green" name="good">Good</button>
-                    <div class="or"></div>
-                    <button class="ui button" data-active-class="yellow" name="neutral">Neutral</button>
-                    <div class="or"></div>
-                    <button class="ui  button" data-active-class="red" name="bad">Bad</button>
-                </div>
-            </div>
-        </div>
-    </td>
-</tr>
+        <button class="ui blue button" type="submit">Add</button>
+
+    </form>
+</div>
+</body>
+</html>

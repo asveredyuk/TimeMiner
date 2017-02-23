@@ -131,7 +131,16 @@ namespace TimeMiner.Master.Frontend
             }
             else
             {
-                responseMaker.OnRequest(req,resp);
+                if (path == "api" || path.StartsWith("api/"))
+                {
+                    //this is api request
+                    responseMaker.OnApiRequest(req,resp);
+                }
+                else
+                {
+                    //this is web interface request
+                    responseMaker.OnRequest(req,resp);
+                }
                 /*resp.StatusCode = 404;
                 byte[] page404 = Page404;
                 if (page404 != null)

@@ -29,6 +29,8 @@ namespace TimeMiner.Master.Frontend
 
         public delegate HandlerPageDescriptor OnRequestHandler(HttpListenerRequest req, HttpListenerResponse resp);
 
+        public delegate void OnApiRequestHandler(HttpListenerRequest req, HttpListenerResponse resp);
+
         public IReadOnlyList<FrontendServerExtensionBase> Extensions
         {
             get { return _extensions; }
@@ -38,6 +40,11 @@ namespace TimeMiner.Master.Frontend
             get { return _requestHandlers; }
         }
 
+        public IReadOnlyDictionary<string, OnApiRequestHandler> ApiHanlders
+        {
+            get { return _apiHandlers; }
+        }
+
         public IEnumerable<TemplatePageMenuItem> MenuItems
         {
             get { return _extensions.Select(t => t.MenuItems).Where(t => t != null).SelectMany(t => t); }
@@ -45,12 +52,14 @@ namespace TimeMiner.Master.Frontend
 
         private List<FrontendServerExtensionBase> _extensions;
         private Dictionary<string, OnRequestHandler> _requestHandlers;
+        private Dictionary<string, OnApiRequestHandler> _apiHandlers;
         private List<Assembly> loadedAssemblies;
         private FrontendExtensionLoader()
         {
             _extensions = new List<FrontendServerExtensionBase>();
             loadedAssemblies = new List<Assembly>();
             _requestHandlers = new Dictionary<string, OnRequestHandler>();
+            _apiHandlers = new Dictionary<string, OnApiRequestHandler>();
             Init();
         }
 
@@ -110,6 +119,23 @@ namespace TimeMiner.Master.Frontend
                             Console.Out.WriteLine("{0}.{1} does not fit delegate",t.Name,methodInfo.Name);
                         }
                     }
+                    ApiPathAttribute[] apiAttrs = methodInfo.GetCustomAttributes<ApiPathAttribute>().ToArray();
+                    if (apiAttrs.Length > 0)
+                    {
+                        //cast method to delegate
+                        OnApiRequestHandler h = Delegate.CreateDelegate(typeof(OnApiRequestHandler), ex, methodInfo) as OnApiRequestHandler;
+                        if (h != null)
+                        {
+                            foreach (var attr in apiAttrs)
+                            {
+                                AddApiHandler(attr.path, h);
+                            }
+                        }
+                        else
+                        {
+                            Console.Out.WriteLine("{0}.{1} does not fit delegate", t.Name, methodInfo.Name);
+                        }
+                    }
                 }
 
             }
@@ -121,12 +147,31 @@ namespace TimeMiner.Master.Frontend
         /// <param name="h"></param>
         private void AddHandler(string key, OnRequestHandler h)
         {
+            if (key == "api")
+            {
+                Console.Out.WriteLine("api key cannot be occupied");
+                return;
+            }
             if (_requestHandlers.ContainsKey(key))
             {
                 Console.Out.WriteLine("{0} is already occupied",key);
                 return;
             }
             _requestHandlers[key] = h;
+        }
+        /// <summary>
+        /// Add api handler to api handlers dictionary, if key is not already occupied
+        /// </summary>
+        /// <param name="key"></param>
+        /// <param name="h"></param>
+        private void AddApiHandler(string key, OnApiRequestHandler h)
+        {
+            if (_apiHandlers.ContainsKey(key))
+            {
+                Console.Out.WriteLine("{0} is already occupied", key);
+                return;
+            }
+            _apiHandlers[key] = h;
         }
 
         /// <summary>

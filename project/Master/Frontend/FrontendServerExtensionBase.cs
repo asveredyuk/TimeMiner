@@ -46,7 +46,42 @@ namespace TimeMiner.Master.Frontend
             string root = GetPathRoot(path);
             if (root == path)
                 return "";
-            return path.Substring(root.Length, path.Length - root.Length);
+            return path.Substring(root.Length, path.Length - root.Length).Trim('/');
+        }
+        /// <summary>
+        /// Remove "api/root/" from the path
+        /// </summary>
+        /// <param name="path"></param>
+        /// <returns></returns>
+        protected string SkipApiAndRoot(string path)
+        {
+            return GetSubPath(GetSubPath(path));
+        }
+        /// <summary>
+        /// Write bytes to the output stream and close it
+        /// </summary>
+        /// <param name="resp"></param>
+        /// <param name="data"></param>
+        /// <param name="code"></param>
+        protected void WriteBytesAndClose(HttpListenerResponse resp, byte[] data, int code = 200)
+        {
+            if (code != 200)
+            {
+                resp.StatusCode = code;
+            }
+            resp.OutputStream.Write(data,0,data.Length);
+            resp.OutputStream.Close();
+        }
+        /// <summary>
+        /// Write string to the output stream and close it
+        /// </summary>
+        /// <param name="resp"></param>
+        /// <param name="str"></param>
+        /// <param name="code"></param>
+        protected void WriteStringAndClose(HttpListenerResponse resp, string str, int code = 200)
+        {
+            byte[] data = Encoding.UTF8.GetBytes(str);
+            WriteBytesAndClose(resp,data,code);
         }
     }
 }

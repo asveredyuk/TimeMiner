@@ -46,6 +46,33 @@ namespace TimeMiner.Master.Frontend
 
         }
 
+        public void OnApiRequest(HttpListenerRequest req, HttpListenerResponse resp)
+        {
+            string q = req.Url.AbsolutePath.Trim('/');
+            if (q == "api")
+            {
+                using (StreamWriter sw = new StreamWriter(resp.OutputStream))
+                {
+                    sw.Write("this is api page");
+                    sw.Close();
+                }
+                return;
+            }
+            if (!q.StartsWith("api/"))
+            {
+                throw new Exception($"{q} is not api path, but api request handler was called");
+            }
+            //remove api part
+            q = q.Substring(q.IndexOf("/")+1,q.Length - q.IndexOf("/")-1);
+            //check if there is no only root
+            if (q.Contains("/"))
+            {
+                //take only root
+                q = q.Substring(0, q.IndexOf("/"));
+            }
+            FrontendExtensionLoader.Self.ApiHanlders[q](req, resp);
+        }
+
         private string CompilePage(HandlerPageDescriptor hdesc)
         {
             TemplatePageDescriptor de = new TemplatePageDescriptor(hdesc);

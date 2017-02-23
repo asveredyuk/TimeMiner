@@ -4,8 +4,10 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using Mustache;
+using Newtonsoft.Json;
 using TimeMiner.Master.Frontend.Plugins;
 using TimeMiner.Master.Settings;
 
@@ -37,18 +39,45 @@ namespace TimeMiner.Master.Frontend.BuiltInExtensions
                 SettingsContainer container = SettingsContainer.Self;
                 container.PutNewApp(new ProfileApplicationRelevance(ProfileApplicationRelevance.Relevance.good, new ApplicationDescriptor("Microsoft word","winword.exe")));
                 container.PutNewApp(new ProfileApplicationRelevance(ProfileApplicationRelevance.Relevance.bad, new ApplicationDescriptor("Telegram messenger", "telegram.exe")));
-                container.PutNewApp(new ProfileApplicationRelevance(ProfileApplicationRelevance.Relevance.neutral, new ApplicationDescriptor("Windows explorer", "rexplorer.exe")));
-            }
-            if (root == "ajax")
-            {
-                HandleAjax(req,resp);
-                return null;
+                container.PutNewApp(new ProfileApplicationRelevance(ProfileApplicationRelevance.Relevance.neutral,
+                    new ApplicationDescriptor("Windows explorer", "rexplorer.exe")));
             }
             var res = new HandlerPageDescriptor(WWWRes.GetString("table/tablepage.html"),WWWRes.GetString("table/tablehead.html"));
             return res;
         }
+        [ApiPath("apps")]
+        public void ApiHandler(HttpListenerRequest req, HttpListenerResponse resp)
+        {
+            string path = SkipApiAndRoot(req.Url.AbsolutePath);
 
-        /// <summary>
+            switch (path)
+            {
+                case "gettable":
+                    WriteStringAndClose(resp, GetTableString());
+                    break;
+                case "updateitem":
+                    UpdateItem(req,resp);
+                    break;
+
+            }
+            
+        }
+
+        private void UpdateItem(HttpListenerRequest req, HttpListenerResponse resp)
+        {
+            
+            string str = "";
+            using (StreamReader sr = new StreamReader(req.InputStream))
+            {
+                str = sr.ReadToEnd();
+            }
+            ProfileApplicationRelevance rel = JsonConvert.DeserializeObject<ProfileApplicationRelevance>(str);
+            SettingsContainer.Self.UpdateApp(rel.App);
+            SettingsContainer.Self.UpdateRelevance(rel);
+            Console.WriteLine($"changed to {rel.Rel}");
+            resp.Close();
+        }
+      /*  /// <summary>
         /// Is called when /ajax path is handled
         /// </summary>
         /// <param name="req"></param>
@@ -56,22 +85,19 @@ namespace TimeMiner.Master.Frontend.BuiltInExtensions
         private void HandleAjax(HttpListenerRequest req, HttpListenerResponse resp)
         {
             //now we have only one ajax request
-            using (StreamWriter sw = new StreamWriter(resp.OutputStream))
-            {
-                sw.Write(GetTableString());
-                sw.Close();
-            }
-        }
+            
+        }*/
 
         private string GetTableString()
         {
-            string res = "";
+            /*string res = "";
             foreach (var rel in SettingsContainer.Self.GetBaseProfile().Relevances)
             {
                 res += mustacheGenerator.Render(rel);
             }
-            return res;
-            //return JsonConvert.SerializeObject(SettingsContainer.Self.GetBaseProfile().Relevances)
+            return res;*/
+            
+            return JsonConvert.SerializeObject(SettingsContainer.Self.GetBaseProfile().Relevances);
 
             //return WWWRes.GetString("txt.html");
         }

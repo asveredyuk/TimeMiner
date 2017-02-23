@@ -74,6 +74,7 @@
     <Compile Include="Frontend\Authorization.cs" />
     <Compile Include="Frontend\BuiltInExtensions\ApplicationListExtension.cs" />
     <Compile Include="Frontend\BuiltInExtensions\ProgramStatisticsExtension.cs" />
+    <Compile Include="Frontend\Plugins\ApiPathAttribute.cs" />
     <Compile Include="Frontend\TemplatePageDescriptor.cs" />
     <Compile Include="Frontend\Plugins\FrontendExtensionLoader.cs" />
     <Compile Include="Frontend\FrontendServer.cs" />
