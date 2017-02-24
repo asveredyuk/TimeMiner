@@ -93,8 +93,8 @@ function RowWrapper(tBody, data, template) {
     };
 
 }
-$(document).ready(function () {
-
+function ReloadTable()
+{
     $.ajax("/api/apps/gettable")
         .done(function (msg) {
             $.ajax("/table/tablerow.html")
@@ -123,6 +123,55 @@ $(document).ready(function () {
             //set message that failed to load
             console.log("failed to load data");
         });
-
-
+}
+function OnLoad()
+{
+    var addAppBtn = $("#addAppBtn");
+    var addAppModal = $("#addAppModal");
+    addAppModal.appNameInput = addAppModal.find('input[name="app-name"]');
+    addAppModal.procNameInput = addAppModal.find('input[name="proc-name"]');
+    addAppModal.reset = function () {
+        addAppModal.appNameInput.val('');
+        addAppModal.appNameInput.parent().removeClass('error');
+        addAppModal.procNameInput.val('');
+        addAppModal.procNameInput.parent().removeClass('error');
+    };
+    addAppModal.modal('setting',{
+        onApprove : function () {
+            var appName = addAppModal.appNameInput.val();
+            if(appName.length == 0)
+            {
+                addAppModal.appNameInput.parent().addClass('error');
+                return false;
+            }
+            var procName = addAppModal.procNameInput.val();
+            if(procName.length == 0)
+            {
+                addAppModal.procNameInput.parent().addClass('error');
+                return false;
+            }
+            //todo: extract this!
+            var json = JSON.stringify({
+                AppName:appName,
+                ProcName:procName
+            });
+            $.post("/api/apps/additem", json, function () {
+                addAppModal.modal('hide');
+                //todo:reshow hiding icon
+                ReloadTable();
+            });
+            return false;
+        }
+        // onDeny : function () {
+        //   //  alert("deny");
+        // }
+    });
+    addAppBtn.click(function () {
+        addAppModal.reset();
+        addAppModal.modal("show");
+    });
+}
+$(document).ready(function () {
+    OnLoad();
+    ReloadTable();
 });

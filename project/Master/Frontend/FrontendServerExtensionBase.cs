@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Text;
@@ -56,6 +57,22 @@ namespace TimeMiner.Master.Frontend
         protected string SkipApiAndRoot(string path)
         {
             return GetSubPath(GetSubPath(path));
+        }
+
+        /// <summary>
+        /// Read string of post request
+        /// </summary>
+        /// <param name="req"></param>
+        /// <returns></returns>
+        protected string ReadPostString(HttpListenerRequest req)
+        {
+            //TODO: large string may make app fail!
+            string str = "";
+            using (StreamReader sr = new StreamReader(req.InputStream))
+            {
+                str = sr.ReadToEnd();
+            }
+            return str;
         }
         /// <summary>
         /// Write bytes to the output stream and close it

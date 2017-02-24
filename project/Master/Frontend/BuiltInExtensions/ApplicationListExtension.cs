@@ -8,6 +8,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Mustache;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using TimeMiner.Master.Frontend.Plugins;
 using TimeMiner.Master.Settings;
 
@@ -58,19 +59,34 @@ namespace TimeMiner.Master.Frontend.BuiltInExtensions
                 case "updateitem":
                     UpdateItem(req,resp);
                     break;
+                case "additem":
+                    AddItem(req,resp);
+                    break;
 
             }
             
         }
 
+        private void AddItem(HttpListenerRequest req, HttpListenerResponse resp)
+        {
+            string str = ReadPostString(req);
+            JObject obj = JObject.Parse(str);
+            if (obj["AppName"] == null || obj["ProcName"] == null)
+            {
+                WriteStringAndClose(resp,"", 400);
+                return;
+            }
+            string appName = obj["AppName"].Value<string>();
+            string procName = obj["ProcName"].Value<string>();
+            ApplicationDescriptor desc = new ApplicationDescriptor(appName,procName);
+            ProfileApplicationRelevance rel = new ProfileApplicationRelevance(ProfileApplicationRelevance.Relevance.neutral, desc);
+            SettingsContainer.Self.PutNewApp(rel);
+            resp.Close();
+
+        }
         private void UpdateItem(HttpListenerRequest req, HttpListenerResponse resp)
         {
-            
-            string str = "";
-            using (StreamReader sr = new StreamReader(req.InputStream))
-            {
-                str = sr.ReadToEnd();
-            }
+            string str = ReadPostString(req);
             ProfileApplicationRelevance rel = JsonConvert.DeserializeObject<ProfileApplicationRelevance>(str);
             SettingsContainer.Self.UpdateApp(rel.App);
             SettingsContainer.Self.UpdateRelevance(rel);

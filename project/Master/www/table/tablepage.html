@@ -17,5 +17,36 @@
             </th>
         </tr>
         </tbody>
+        <tfoot class="full-width">
+        <tr>
+            <th colspan="4">
+                <div class="ui right floated small primary labeled icon button" id="addAppBtn">
+                    <i class="plus icon"></i> Add program
+                </div>
+            </th>
+        </tr>
+        </tfoot>
     </table>
+    <div class="ui small modal" id="addAppModal">
+        <div class="header">Add application</div>
+        <div class="content">
+            <div class="ui form">
+                    <div class="field">
+                        <label>App name</label>
+                        <input name="app-name" placeholder="Example app" type="text">
+                    </div>
+                    <div class="field">
+                        <label>Process name</label>
+                        <input name="proc-name" placeholder="example.exe" type="text">
+                    </div>
+            </div>
+        </div>
+        <div class="actions">
+            <div class="ui negative deny button">Cancel</div>
+            <div class="ui positive approve right labeled icon button">
+                <i class="plus icon"></i>Add
+            </div>
+        </div>
+    </div>
+
 </div>

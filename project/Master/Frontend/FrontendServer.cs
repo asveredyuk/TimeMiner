@@ -104,6 +104,21 @@ namespace TimeMiner.Master.Frontend
                 }
                 catch (Exception e)
                 {
+                    try
+                    {
+                        if (resp.OutputStream.CanWrite)
+                        {
+                            //responce was not closed
+                            //set 500 - internal server error
+                            resp.StatusCode = (int)HttpStatusCode.InternalServerError;
+                            resp.Close();
+                        }
+                    }
+                    catch (Exception)
+                    {
+                        //do nothing
+                        //throw;
+                    }
                     Console.Out.WriteLine("Exception in handler thread, " + e.StackTrace);
                     //throw;
                 }
