@@ -83,6 +83,22 @@ namespace TimeMiner.Master.Settings
             }
         }
 
+        /// <summary>
+        /// Remove aplication and all references to it
+        /// </summary>
+        /// <param name="id"></param>
+        public void RemoveAppAnRelevances(Guid id)
+        {
+            //remove all references
+            baseProfileReferences.Delete(t => t.App.Id == id);
+            //remove app
+            if (!appsCollection.Delete(id))
+            {
+                throw new ArgumentException("App not found");
+            }
+
+        }
+
         /*public List<Profile> GetProfileSkeletons()
         {
             List<Profile> p = new List<Profile>(db.GetCollection<Profile>(PROFILES_COL_NAME).FindAll());

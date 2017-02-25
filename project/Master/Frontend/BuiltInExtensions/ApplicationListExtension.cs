@@ -50,7 +50,7 @@ namespace TimeMiner.Master.Frontend.BuiltInExtensions
         public void ApiHandler(HttpListenerRequest req, HttpListenerResponse resp)
         {
             string path = SkipApiAndRoot(req.Url.AbsolutePath);
-
+            Thread.Sleep(1000);
             switch (path)
             {
                 case "gettable":
@@ -62,11 +62,35 @@ namespace TimeMiner.Master.Frontend.BuiltInExtensions
                 case "additem":
                     AddItem(req,resp);
                     break;
-
+                case "rmapp":
+                    RemoveApp(req,resp);
+                    break;
+                default:
+                    CloseWithCode(resp, 404);
+                    break;
             }
-            
         }
 
+        private void RemoveApp(HttpListenerRequest req, HttpListenerResponse resp)
+        {
+            string str = ReadPostString(req);
+            JObject obj = JObject.Parse(str);
+            if (obj["Id"] == null)
+            {
+                CloseWithCode(resp, 400);
+                return;
+            }
+            Guid id;
+            if (!Guid.TryParse(obj["Id"].Value<string>(), out id))
+            {
+                CloseWithCode(resp, 400);
+                return;
+            }
+            SettingsContainer.Self.RemoveAppAnRelevances(id);
+            resp.Close();
+
+        }
+        
         private void AddItem(HttpListenerRequest req, HttpListenerResponse resp)
         {
             string str = ReadPostString(req);

@@ -2,6 +2,9 @@
  * Created by ALEX on 21.02.2017.
  */
 
+var tableWrapper;
+
+
 //jctxt is jQuery object!
 function ButtonsWrapper(ctxt, rowWrapper)
 {
@@ -77,6 +80,7 @@ function RowWrapper(tBody, data, template) {
     this.row = $(Mustache.render(template,data));
     tBody.append(this.row);
     //row.css("background-color","red");
+    //relevance change buttons
     this.buttonWrapper = new ButtonsWrapper(this.row.find(".mybuttons"), this);
     this.buttonWrapper.onValueChanged = function (val, callback) {
         that.sending = true;
@@ -91,40 +95,59 @@ function RowWrapper(tBody, data, template) {
             callback(/*Math.random() < 0.8*/true);
         });
     };
+    var rmbutton = this.row.find('.rmbutton');
+    rmbutton.click(function () {
+        rmbutton.addClass('loading');
+        $.post('/api/apps/rmapp',JSON.stringify({Id:that.data.App.Id}),function (res) {
+            tableWrapper.reloadTable();
+        })
+    });
 
 }
-function ReloadTable()
+function TableWrapper(ctxt)
 {
-    $.ajax("/api/apps/gettable")
-        .done(function (msg) {
-            $.ajax("/table/tablerow.html")
-                .done(function (template) {
-                    var arr = JSON.parse(msg);
-                    var tbody = $("tbody");
-                    tbody.html("");
-                    Mustache.parse(template);
-                    $.each(arr, function (key, value) {
-                        //var res = Mustache.render(template,value);
-                        //var row = tbody.append(res);
-                        var r = new RowWrapper(tbody,value,template);
+    var that = this;
+    this.tbody = ctxt.find('tbody');
+    this.loader = this.tbody.find('tr');
+    this.reloadTable = function () {
+        this.tbody.empty();
+        this.tbody.append(this.loader);
+        $.ajax("/api/apps/gettable")
+            .done(function (msg) {
+                $.ajax("/table/tablerow.html")
+                    .done(function (template) {
+                        var arr = JSON.parse(msg);
+                        that.loader.detach();
+                        Mustache.parse(template);
+                        $.each(arr, function (key, value) {
+                            //var res = Mustache.render(template,value);
+                            //var row = tbody.append(res);
+                            var r = new RowWrapper(that.tbody,value,template);
 
+                        });
                     });
 
-                    /*                        $(".mybuttons").each(function (i, el) {
-                     var wrapper = new ButtonsWrapper($(el));
-                     //var val = $(el).attr("data-value")*1;
-                     //console.log(val);
-                     });*/
-                });
-            //set the content
-
-        })
-        .fail(function () {
-            //set message that failed to load
-            console.log("failed to load data");
-        });
+            })
+            .fail(function () {
+                //set message that failed to load
+                console.log("failed to load data");
+            });
+    }
 }
-function OnLoad()
+// function ReloadTable()
+// {
+//     var tbody = $("tbody");
+//     if(!tbody.loader)
+//     {
+//         tbody.loader = tbody.find('tr');
+//         tbody.loader.detach();
+//     }
+//     tbody.empty();
+//     tbody.append(tbody.loader);
+//
+//
+// }
+function MakeAddApp()
 {
     var addAppBtn = $("#addAppBtn");
     var addAppModal = $("#addAppModal");
@@ -138,6 +161,7 @@ function OnLoad()
     };
     addAppModal.modal('setting',{
         onApprove : function () {
+            //TODO: indicate that it is loading!
             var appName = addAppModal.appNameInput.val();
             if(appName.length == 0)
             {
@@ -158,13 +182,10 @@ function OnLoad()
             $.post("/api/apps/additem", json, function () {
                 addAppModal.modal('hide');
                 //todo:reshow hiding icon
-                ReloadTable();
+                tableWrapper.reloadTable();
             });
             return false;
         }
-        // onDeny : function () {
-        //   //  alert("deny");
-        // }
     });
     addAppBtn.click(function () {
         addAppModal.reset();
@@ -172,6 +193,8 @@ function OnLoad()
     });
 }
 $(document).ready(function () {
-    OnLoad();
-    ReloadTable();
+    MakeAddApp();
+    tableWrapper = new TableWrapper($('table'));
+    tableWrapper.reloadTable();
+    //ReloadTable();
 });

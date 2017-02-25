@@ -89,6 +89,17 @@ namespace TimeMiner.Master.Frontend
             resp.OutputStream.Write(data,0,data.Length);
             resp.OutputStream.Close();
         }
+
+        /// <summary>
+        /// Close request with code
+        /// </summary>
+        /// <param name="resp"></param>
+        /// <param name="code"></param>
+        protected void CloseWithCode(HttpListenerResponse resp, int code)
+        {
+            resp.StatusCode = code;
+            resp.OutputStream.Close();
+        }
         /// <summary>
         /// Write string to the output stream and close it
         /// </summary>
