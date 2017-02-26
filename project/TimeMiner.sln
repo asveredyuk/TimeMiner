@@ -11,6 +11,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Slave", "Slave\Slave.csproj
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Master", "Master\Master.csproj", "{140A80E6-555D-467E-956C-450BF9B65C18}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MasterDatabaseExplorer", "MasterDatabaseExplorer\MasterDatabaseExplorer.csproj", "{44CAE744-4A30-4813-A41B-A6A4EF639025}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -33,6 +35,10 @@ Global
 		{140A80E6-555D-467E-956C-450BF9B65C18}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{140A80E6-555D-467E-956C-450BF9B65C18}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{140A80E6-555D-467E-956C-450BF9B65C18}.Release|Any CPU.Build.0 = Release|Any CPU
+		{44CAE744-4A30-4813-A41B-A6A4EF639025}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{44CAE744-4A30-4813-A41B-A6A4EF639025}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{44CAE744-4A30-4813-A41B-A6A4EF639025}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{44CAE744-4A30-4813-A41B-A6A4EF639025}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
