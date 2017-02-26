@@ -8,6 +8,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using CorutinesWorker;
+using CorutinesWorker.Corutines;
 using TimeMiner.Core;
 using TimeMiner.Master;
 using Excel = Microsoft.Office.Interop.Excel;
@@ -38,32 +40,13 @@ namespace MasterDatabaseExplorer
 
         private void btExcelExport_Click(object sender, EventArgs e)
         {
-            int userId = (int) numExcelExportUserId.Value;
-            var records = db.GetAllRecordsForUser(userId);
-
-            Excel.Application app = new Excel.Application();
-            try
+            int userId = (int)numExcelExportUserId.Value;
+            Corutine corut = new Corutine(this, ExportToExcelCorut(userId));
+            SimpleProgressForm form = new SimpleProgressForm(corut)
             {
-                app.DisplayAlerts = false;
-                var book = app.Workbooks.Add(Type.Missing);
-
-                Excel.Worksheet sheet = book.ActiveSheet;
-                PutValuesToRow(sheet, 1, ParsTitles().Cast<object>().ToArray());
-                //PutValuesToRow(sheet,1,"Time","Process","MousePos","KeyStrokes");
-                for (int i = 0; i < records.Count; i++)
-                {
-                    var rec = records[i];
-                    PutValuesToRow(sheet, i + 2, ParsValues(rec).ToArray());
-                }
-
-                app.Columns.AutoFit();
-                app.Visible = true;
-            }
-            catch (Exception ex)
-            {
-                app.Quit();//close app and only then fall
-                throw;
-            }
+                showCompletedDialog = false
+            };
+            form.Start();
             //book.SaveAs(@"C:\Users\alex\Documents\Visual Studio 2015\Projects\ExcelTest\ExcelTest\bin\Debug\out.xlsx");
             //book.Close();
 
@@ -73,6 +56,43 @@ namespace MasterDatabaseExplorer
             //lines.Add("Time;Process;MousePos;Keystrokes;");
             //lines.AddRange(records.OrderBy(t => t.Time).Select(t => RecordToCsvString(t)));
             //File.WriteAllLines("out.csv", lines);s
+        }
+
+        private IEnumerable<CorutineReport> ExportToExcelCorut(int userId)
+        {
+            const int REPORT_EACH = 100;
+
+            var records = db.GetAllRecordsForUser(userId);
+
+            Excel.Application app = new Excel.Application();
+            //            try
+            //            {
+            app.DisplayAlerts = false;
+            var book = app.Workbooks.Add(Type.Missing);
+
+            Excel.Worksheet sheet = book.ActiveSheet;
+            PutValuesToRow(sheet, 1, ParsTitles().Cast<object>().ToArray());
+            //PutValuesToRow(sheet,1,"Time","Process","MousePos","KeyStrokes");
+            for (int i = 0; i < records.Count; i++)
+            {
+                if(i > 1000)
+                    break;
+                var rec = records[i];
+                if (i % REPORT_EACH == 0)
+                    yield return new CorutineReportPercentage(i + 1, records.Count);
+                PutValuesToRow(sheet, i + 2, ParsValues(rec).ToArray());
+            }
+
+            app.Columns.AutoFit();
+            app.Visible = true;
+            //            }
+            //            catch (Exception ex)
+            //            {
+            //                app.Quit();//close app and only then fall
+            //                throw;
+            //            }
+            yield return new CorutineReportPercentage(100);
+            yield return new CorutineReportResult(0);
         }
 
         private IEnumerable<object> ParsValues(LogRecord rec)
@@ -95,10 +115,10 @@ namespace MasterDatabaseExplorer
                     //yield return propertyInfo.Name;
                 }
             }
-        } 
+        }
         private IEnumerable<string> ParsTitles()
         {
-            Type t = typeof (LogRecord);
+            Type t = typeof(LogRecord);
             foreach (var propertyInfo in t.GetProperties())
             {
                 if (propertyInfo.PropertyType.Namespace == "TimeMiner.Core")
@@ -118,10 +138,10 @@ namespace MasterDatabaseExplorer
         {
             for (int i = 0; i < values.Length; i++)
             {
-                sheet.Cells[row, i + 1] = values[i]?.ToString()??"null";
+                sheet.Cells[row, i + 1] = values[i]?.ToString() ?? "null";
             }
         }
-        
+
         private string RecordToCsvString(LogRecord rec)
         {
             return $"{rec.Time};{rec.Process.ProcessName};{rec.MousePosition.ToString()};{rec.Keystrokes};";
@@ -141,17 +161,22 @@ namespace MasterDatabaseExplorer
             var res = d.ShowDialog();
             if (res == DialogResult.OK)
             {
-                ImportOldLog(d.FileName);
+                var corut = new Corutine(this, ImportOldLog(d.FileName));
+                SimpleProgressForm f = new SimpleProgressForm(corut);
+                f.Start();
+                //ImportOldLog(d.FileName);
             }
         }
 
-        private void ImportOldLog(string fname)
+        private IEnumerable<CorutineReport> ImportOldLog(string fname)
         {
-            string[] lines = File.ReadAllLines(fname);
+            const int REPORT_EACH = 100;
+            string[] lines = File.ReadAllLines(fname, Encoding.Default);
             int failedCount = 0;
             LogRecord prev = null;
-            foreach (var line in lines)
+            for (int i = 0; i < lines.Length; i++)
             {
+                var line = lines[i];
                 try
                 {
                     OldLogItem ite = OldLogItem.FromCSVRow(line);
@@ -165,11 +190,13 @@ namespace MasterDatabaseExplorer
                 {
                     failedCount++;
                 }
+                if (i % REPORT_EACH == 0)
+                {
+                    yield return new CorutineReportPercentage(i + 1, lines.Length);
+                }
             }
-            if (failedCount > 0)
-            {
-                MessageBox.Show($"{failedCount} items failed");
-            }
+            yield return new CorutineReportPercentage(100);
+            yield return new CorutineReportResult($"Failed : {failedCount}");
         }
 
         private LogRecord ToNewLogRecord(OldLogItem ite)
@@ -184,11 +211,11 @@ namespace MasterDatabaseExplorer
             };
             DateTime time = ConvertToDatetime(ite.time);
             LogRecord rec = new LogRecord()
-            { 
+            {
                 Id = Guid.NewGuid(),
                 Keystrokes = ite.keypressCount,
                 MouseButtonActions = ite.mouseActionsCount, //now we suppose all mouse actions are button
-                MousePosition = new IntPoint(ite.cursorPos.X,ite.cursorPos.Y),
+                MousePosition = new IntPoint(ite.cursorPos.X, ite.cursorPos.Y),
                 Process = pdesc,
                 Window = wdesc,
                 Time = time

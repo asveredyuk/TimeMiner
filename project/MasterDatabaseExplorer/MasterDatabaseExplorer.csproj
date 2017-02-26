@@ -33,6 +33,9 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="CorutinesWorker">
+      <HintPath>lib\CorutinesWorker.dll</HintPath>
+    </Reference>
     <Reference Include="LiteDB, Version=3.0.1.0, Culture=neutral, PublicKeyToken=4ee40123013c9f27, processorArchitecture=MSIL">
       <HintPath>..\packages\LiteDB.3.0.1\lib\net35\LiteDB.dll</HintPath>
       <Private>True</Private>
