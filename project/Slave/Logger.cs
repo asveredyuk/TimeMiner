@@ -190,6 +190,7 @@ namespace TimeMiner.Slave
             //make log record
             LogRecord record = new LogRecord()
             {
+                Id = Guid.NewGuid(),
                 Time = DateTime.Now,
                 PreviusRecordId = lastRecord?.Id ?? Guid.Empty,
                 Process = proc,
