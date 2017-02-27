@@ -38,6 +38,7 @@
             this.label1 = new System.Windows.Forms.Label();
             this.btExcelExport = new System.Windows.Forms.Button();
             this.btImportAppsList = new System.Windows.Forms.Button();
+            this.btClearApps = new System.Windows.Forms.Button();
             this.tabControl1.SuspendLayout();
             this.tabPage2.SuspendLayout();
             this.tabPage1.SuspendLayout();
@@ -69,7 +70,9 @@
             // 
             // tabPage2
             // 
-            this.tabPage2.Controls.Add(this.btImportAppsList);
+            this.tabPage2.Controls.Add(this.numExcelExportUserId);
+            this.tabPage2.Controls.Add(this.label1);
+            this.tabPage2.Controls.Add(this.btExcelExport);
             this.tabPage2.Controls.Add(this.btImportOldLog);
             this.tabPage2.Controls.Add(this.btClearDb);
             this.tabPage2.Location = new System.Drawing.Point(4, 22);
@@ -77,12 +80,12 @@
             this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
             this.tabPage2.Size = new System.Drawing.Size(685, 214);
             this.tabPage2.TabIndex = 1;
-            this.tabPage2.Text = "Log admin";
+            this.tabPage2.Text = "Logs";
             this.tabPage2.UseVisualStyleBackColor = true;
             // 
             // btImportOldLog
             // 
-            this.btImportOldLog.Location = new System.Drawing.Point(126, 7);
+            this.btImportOldLog.Location = new System.Drawing.Point(125, 44);
             this.btImportOldLog.Name = "btImportOldLog";
             this.btImportOldLog.Size = new System.Drawing.Size(113, 30);
             this.btImportOldLog.TabIndex = 0;
@@ -96,26 +99,25 @@
             this.btClearDb.Name = "btClearDb";
             this.btClearDb.Size = new System.Drawing.Size(113, 30);
             this.btClearDb.TabIndex = 0;
-            this.btClearDb.Text = "Clear database";
+            this.btClearDb.Text = "Clear Logs";
             this.btClearDb.UseVisualStyleBackColor = true;
             this.btClearDb.Click += new System.EventHandler(this.btClearDb_Click);
             // 
             // tabPage1
             // 
-            this.tabPage1.Controls.Add(this.numExcelExportUserId);
-            this.tabPage1.Controls.Add(this.label1);
-            this.tabPage1.Controls.Add(this.btExcelExport);
+            this.tabPage1.Controls.Add(this.btImportAppsList);
+            this.tabPage1.Controls.Add(this.btClearApps);
             this.tabPage1.Location = new System.Drawing.Point(4, 22);
             this.tabPage1.Name = "tabPage1";
             this.tabPage1.Padding = new System.Windows.Forms.Padding(3);
             this.tabPage1.Size = new System.Drawing.Size(685, 214);
             this.tabPage1.TabIndex = 0;
-            this.tabPage1.Text = "Excel export";
+            this.tabPage1.Text = "Settings";
             this.tabPage1.UseVisualStyleBackColor = true;
             // 
             // numExcelExportUserId
             // 
-            this.numExcelExportUserId.Location = new System.Drawing.Point(51, 5);
+            this.numExcelExportUserId.Location = new System.Drawing.Point(182, 14);
             this.numExcelExportUserId.Maximum = new decimal(new int[] {
             10000,
             0,
@@ -123,36 +125,46 @@
             0});
             this.numExcelExportUserId.Name = "numExcelExportUserId";
             this.numExcelExportUserId.Size = new System.Drawing.Size(120, 20);
-            this.numExcelExportUserId.TabIndex = 2;
+            this.numExcelExportUserId.TabIndex = 5;
             // 
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(7, 7);
+            this.label1.Location = new System.Drawing.Point(138, 16);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(38, 13);
-            this.label1.TabIndex = 1;
+            this.label1.TabIndex = 4;
             this.label1.Text = "UserId";
             // 
             // btExcelExport
             // 
-            this.btExcelExport.Location = new System.Drawing.Point(10, 73);
+            this.btExcelExport.Location = new System.Drawing.Point(244, 44);
             this.btExcelExport.Name = "btExcelExport";
-            this.btExcelExport.Size = new System.Drawing.Size(75, 23);
-            this.btExcelExport.TabIndex = 0;
+            this.btExcelExport.Size = new System.Drawing.Size(101, 30);
+            this.btExcelExport.TabIndex = 3;
             this.btExcelExport.Text = "Export";
             this.btExcelExport.UseVisualStyleBackColor = true;
             this.btExcelExport.Click += new System.EventHandler(this.btExcelExport_Click);
             // 
             // btImportAppsList
             // 
-            this.btImportAppsList.Location = new System.Drawing.Point(126, 43);
+            this.btImportAppsList.Location = new System.Drawing.Point(125, 6);
             this.btImportAppsList.Name = "btImportAppsList";
             this.btImportAppsList.Size = new System.Drawing.Size(113, 30);
-            this.btImportAppsList.TabIndex = 0;
+            this.btImportAppsList.TabIndex = 1;
             this.btImportAppsList.Text = "Import apps list";
             this.btImportAppsList.UseVisualStyleBackColor = true;
             this.btImportAppsList.Click += new System.EventHandler(this.btImportAppsList_Click);
+            // 
+            // btClearApps
+            // 
+            this.btClearApps.Location = new System.Drawing.Point(6, 6);
+            this.btClearApps.Name = "btClearApps";
+            this.btClearApps.Size = new System.Drawing.Size(113, 30);
+            this.btClearApps.TabIndex = 2;
+            this.btClearApps.Text = "Clear settings database";
+            this.btClearApps.UseVisualStyleBackColor = true;
+            this.btClearApps.Click += new System.EventHandler(this.btClearApps_Click);
             // 
             // Form1
             // 
@@ -166,8 +178,8 @@
             this.Load += new System.EventHandler(this.Form1_Load);
             this.tabControl1.ResumeLayout(false);
             this.tabPage2.ResumeLayout(false);
+            this.tabPage2.PerformLayout();
             this.tabPage1.ResumeLayout(false);
-            this.tabPage1.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numExcelExportUserId)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
@@ -178,13 +190,14 @@
         private System.Windows.Forms.Label lbStatus;
         private System.Windows.Forms.TabControl tabControl1;
         private System.Windows.Forms.TabPage tabPage1;
-        private System.Windows.Forms.NumericUpDown numExcelExportUserId;
-        private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.Button btExcelExport;
         private System.Windows.Forms.TabPage tabPage2;
         private System.Windows.Forms.Button btClearDb;
         private System.Windows.Forms.Button btImportOldLog;
+        private System.Windows.Forms.Button btClearApps;
         private System.Windows.Forms.Button btImportAppsList;
+        private System.Windows.Forms.Button btExcelExport;
+        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.NumericUpDown numExcelExportUserId;
     }
 }
 

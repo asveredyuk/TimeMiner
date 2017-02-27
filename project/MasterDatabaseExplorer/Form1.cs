@@ -10,6 +10,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using CorutinesWorker;
 using CorutinesWorker.Corutines;
+using LiteDB;
 using TimeMiner.Core;
 using TimeMiner.Master;
 using TimeMiner.Master.Database;
@@ -162,18 +163,19 @@ namespace MasterDatabaseExplorer
 
         private void btImportOldLog_Click(object sender, EventArgs e)
         {
+            int userId = (int) numExcelExportUserId.Value;
             OpenFileDialog d = new OpenFileDialog();
             var res = d.ShowDialog();
             if (res == DialogResult.OK)
             {
-                var corut = new Corutine(this, ImportOldLog(d.FileName));
+                var corut = new Corutine(this, ImportOldLog(d.FileName,userId));
                 SimpleProgressForm f = new SimpleProgressForm(corut);
                 f.Start();
                 //ImportOldLog(d.FileName);
             }
         }
 
-        private IEnumerable<CorutineReport> ImportOldLog(string fname)
+        private IEnumerable<CorutineReport> ImportOldLog(string fname, int userId)
         {
             const int REPORT_EACH = 100;
             string[] lines = File.ReadAllLines(fname, Encoding.Default);
@@ -186,6 +188,7 @@ namespace MasterDatabaseExplorer
                 {
                     OldLogItem ite = OldLogItem.FromCSVRow(line);
                     LogRecord rec = ToNewLogRecord(ite);
+                    rec.UserId = userId;
                     if (prev != null)
                         rec.PreviusRecordId = prev.Id;
                     db.PutRecord(rec);
@@ -299,6 +302,15 @@ namespace MasterDatabaseExplorer
                     return 0;
                 default:
                     throw new ArgumentOutOfRangeException(nameof(rel), rel, null);
+            }
+        }
+
+        private void btClearApps_Click(object sender, EventArgs e)
+        {
+            LiteDatabase db = MasterDB.Settings.Database;
+            foreach (var collectionName in db.GetCollectionNames())
+            {
+                db.DropCollection(collectionName);
             }
         }
     }
