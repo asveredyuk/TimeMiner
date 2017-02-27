@@ -44,7 +44,7 @@ namespace TimeMiner.Master.Analysis
             foreach (var logRecord in records)
             {
                 Relevance rel;
-                if (!rels.TryGetValue(logRecord.Process.ProcessName.ToLower() + ".exe", out rel))
+                if (!rels.TryGetValue(logRecord.Process.ProcessName.ToLower(), out rel))
                 {
                     yield return ARelevance.unknown;
                 }

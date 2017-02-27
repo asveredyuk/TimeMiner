@@ -30,17 +30,18 @@
         {
             this.lbStatus = new System.Windows.Forms.Label();
             this.tabControl1 = new System.Windows.Forms.TabControl();
+            this.tabPage2 = new System.Windows.Forms.TabPage();
+            this.btImportOldLog = new System.Windows.Forms.Button();
+            this.btClearDb = new System.Windows.Forms.Button();
             this.tabPage1 = new System.Windows.Forms.TabPage();
             this.numExcelExportUserId = new System.Windows.Forms.NumericUpDown();
             this.label1 = new System.Windows.Forms.Label();
             this.btExcelExport = new System.Windows.Forms.Button();
-            this.tabPage2 = new System.Windows.Forms.TabPage();
-            this.btClearDb = new System.Windows.Forms.Button();
-            this.btImportOldLog = new System.Windows.Forms.Button();
+            this.btImportAppsList = new System.Windows.Forms.Button();
             this.tabControl1.SuspendLayout();
+            this.tabPage2.SuspendLayout();
             this.tabPage1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numExcelExportUserId)).BeginInit();
-            this.tabPage2.SuspendLayout();
             this.SuspendLayout();
             // 
             // lbStatus
@@ -65,6 +66,39 @@
             this.tabControl1.SelectedIndex = 0;
             this.tabControl1.Size = new System.Drawing.Size(693, 240);
             this.tabControl1.TabIndex = 2;
+            // 
+            // tabPage2
+            // 
+            this.tabPage2.Controls.Add(this.btImportAppsList);
+            this.tabPage2.Controls.Add(this.btImportOldLog);
+            this.tabPage2.Controls.Add(this.btClearDb);
+            this.tabPage2.Location = new System.Drawing.Point(4, 22);
+            this.tabPage2.Name = "tabPage2";
+            this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPage2.Size = new System.Drawing.Size(685, 214);
+            this.tabPage2.TabIndex = 1;
+            this.tabPage2.Text = "Log admin";
+            this.tabPage2.UseVisualStyleBackColor = true;
+            // 
+            // btImportOldLog
+            // 
+            this.btImportOldLog.Location = new System.Drawing.Point(126, 7);
+            this.btImportOldLog.Name = "btImportOldLog";
+            this.btImportOldLog.Size = new System.Drawing.Size(113, 30);
+            this.btImportOldLog.TabIndex = 0;
+            this.btImportOldLog.Text = "Import old log";
+            this.btImportOldLog.UseVisualStyleBackColor = true;
+            this.btImportOldLog.Click += new System.EventHandler(this.btImportOldLog_Click);
+            // 
+            // btClearDb
+            // 
+            this.btClearDb.Location = new System.Drawing.Point(7, 7);
+            this.btClearDb.Name = "btClearDb";
+            this.btClearDb.Size = new System.Drawing.Size(113, 30);
+            this.btClearDb.TabIndex = 0;
+            this.btClearDb.Text = "Clear database";
+            this.btClearDb.UseVisualStyleBackColor = true;
+            this.btClearDb.Click += new System.EventHandler(this.btClearDb_Click);
             // 
             // tabPage1
             // 
@@ -110,37 +144,15 @@
             this.btExcelExport.UseVisualStyleBackColor = true;
             this.btExcelExport.Click += new System.EventHandler(this.btExcelExport_Click);
             // 
-            // tabPage2
+            // btImportAppsList
             // 
-            this.tabPage2.Controls.Add(this.btImportOldLog);
-            this.tabPage2.Controls.Add(this.btClearDb);
-            this.tabPage2.Location = new System.Drawing.Point(4, 22);
-            this.tabPage2.Name = "tabPage2";
-            this.tabPage2.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPage2.Size = new System.Drawing.Size(685, 214);
-            this.tabPage2.TabIndex = 1;
-            this.tabPage2.Text = "Log admin";
-            this.tabPage2.UseVisualStyleBackColor = true;
-            // 
-            // btClearDb
-            // 
-            this.btClearDb.Location = new System.Drawing.Point(7, 7);
-            this.btClearDb.Name = "btClearDb";
-            this.btClearDb.Size = new System.Drawing.Size(113, 30);
-            this.btClearDb.TabIndex = 0;
-            this.btClearDb.Text = "Clear database";
-            this.btClearDb.UseVisualStyleBackColor = true;
-            this.btClearDb.Click += new System.EventHandler(this.btClearDb_Click);
-            // 
-            // btImportOldLog
-            // 
-            this.btImportOldLog.Location = new System.Drawing.Point(126, 7);
-            this.btImportOldLog.Name = "btImportOldLog";
-            this.btImportOldLog.Size = new System.Drawing.Size(113, 30);
-            this.btImportOldLog.TabIndex = 0;
-            this.btImportOldLog.Text = "Import old log";
-            this.btImportOldLog.UseVisualStyleBackColor = true;
-            this.btImportOldLog.Click += new System.EventHandler(this.btImportOldLog_Click);
+            this.btImportAppsList.Location = new System.Drawing.Point(126, 43);
+            this.btImportAppsList.Name = "btImportAppsList";
+            this.btImportAppsList.Size = new System.Drawing.Size(113, 30);
+            this.btImportAppsList.TabIndex = 0;
+            this.btImportAppsList.Text = "Import apps list";
+            this.btImportAppsList.UseVisualStyleBackColor = true;
+            this.btImportAppsList.Click += new System.EventHandler(this.btImportAppsList_Click);
             // 
             // Form1
             // 
@@ -153,10 +165,10 @@
             this.Text = "Form1";
             this.Load += new System.EventHandler(this.Form1_Load);
             this.tabControl1.ResumeLayout(false);
+            this.tabPage2.ResumeLayout(false);
             this.tabPage1.ResumeLayout(false);
             this.tabPage1.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numExcelExportUserId)).EndInit();
-            this.tabPage2.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -172,6 +184,7 @@
         private System.Windows.Forms.TabPage tabPage2;
         private System.Windows.Forms.Button btClearDb;
         private System.Windows.Forms.Button btImportOldLog;
+        private System.Windows.Forms.Button btImportAppsList;
     }
 }
 

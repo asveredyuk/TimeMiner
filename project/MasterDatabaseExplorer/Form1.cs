@@ -12,6 +12,8 @@ using CorutinesWorker;
 using CorutinesWorker.Corutines;
 using TimeMiner.Core;
 using TimeMiner.Master;
+using TimeMiner.Master.Database;
+using TimeMiner.Master.Settings;
 using Excel = Microsoft.Office.Interop.Excel;
 
 namespace MasterDatabaseExplorer
@@ -19,6 +21,7 @@ namespace MasterDatabaseExplorer
     public partial class Form1 : Form
     {
         LogsDB db;
+        SettingsContainer settings;
         public Form1()
         {
             InitializeComponent();
@@ -27,9 +30,11 @@ namespace MasterDatabaseExplorer
         private void Form1_Load(object sender, EventArgs e)
         {
             LogsDB.LOG_DB_PATH = @"C:\dev\TimeMiner\project\Master\bin\Debug\logstorage.db";
+            SettingsDB.DB_PATH = @"C:\dev\TimeMiner\project\Master\bin\Debug\settings.db";
             try
             {
                 db = MasterDB.Logs;
+                settings = SettingsContainer.Self;
                 lbStatus.Text = "LogDatabase successfully loaded";
             }
             catch (Exception ex)
@@ -226,6 +231,75 @@ namespace MasterDatabaseExplorer
         public static DateTime ConvertToDatetime(int time)
         {
             return new DateTime(1970, 1, 1).AddSeconds(time);
+        }
+
+        private void btImportAppsList_Click(object sender, EventArgs e)
+        {
+            OpenFileDialog d = new OpenFileDialog();
+            var res = d.ShowDialog();
+            if (res == DialogResult.OK)
+            {
+                Corutine corut = new Corutine(this,ImportApps(d.FileName));
+                SimpleProgressForm form = new SimpleProgressForm(corut);
+                form.Start();
+            }
+        }
+
+        private IEnumerable<CorutineReport> ImportApps(string fname)
+        {
+            string[] lines = File.ReadAllLines(fname);
+            int failedCount = 0;
+            for (int i = 0; i < lines.Length; i++)
+            {
+                string line = lines[i];
+                try
+                {
+                    string[] split = line.Split(';');
+                    string name = split[0];
+                    int type = int.Parse(split[1]);
+                    ApplicationDescriptor desc = new ApplicationDescriptor(name,name);
+                    
+                    ProfileApplicationRelevance rel = new ProfileApplicationRelevance(IntToRel(type),desc);
+                    settings.PutNewApp(rel);
+                }
+                catch (Exception)
+                {
+                    failedCount++;
+                }
+                yield return new CorutineReportPercentage(i+1,lines.Length);
+            }
+            yield return new CorutineReportPercentage(100);
+            yield return new CorutineReportResult($"{lines.Length} apps added");
+        }
+
+        private Relevance IntToRel(int val)
+        {
+            switch (val)
+            {
+                case 0:
+                    return Relevance.bad;
+                case 1:
+                    return Relevance.neutral;
+                case 2:
+                    return Relevance.good;
+                default:
+                    throw new ArgumentException("val is not appropriate for relevance");
+            }
+        }
+
+        private int RelToInt(Relevance rel)
+        {
+            switch (rel)
+            {
+                case Relevance.good:
+                    return 2;
+                case Relevance.neutral:
+                    return 1;
+                case Relevance.bad:
+                    return 0;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(rel), rel, null);
+            }
         }
     }
 }

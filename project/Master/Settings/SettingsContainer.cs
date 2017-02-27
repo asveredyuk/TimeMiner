@@ -9,7 +9,7 @@ using TimeMiner.Master.Database;
 
 namespace TimeMiner.Master.Settings
 {
-    class SettingsContainer
+    public class SettingsContainer
     {
         private static SettingsContainer self;
 
