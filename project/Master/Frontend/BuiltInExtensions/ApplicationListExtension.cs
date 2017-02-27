@@ -16,14 +16,10 @@ namespace TimeMiner.Master.Frontend.BuiltInExtensions
 {
     class ApplicationListExtension: FrontendServerExtensionBase
     {
-        private Generator mustacheGenerator;
-        private const string TABLE_ROW_TEMPLATE_PATH = "table/tablerow.html";
         
         public ApplicationListExtension()
         {
             MenuItems.Add(new TemplatePageMenuItem("Apps","/apps"));
-            var mustacheCompiler = new FormatCompiler();
-            mustacheGenerator = mustacheCompiler.Compile(WWWRes.GetString(TABLE_ROW_TEMPLATE_PATH));
         }
 
         [HandlerPath("apps")]
@@ -43,7 +39,7 @@ namespace TimeMiner.Master.Frontend.BuiltInExtensions
                 container.PutNewApp(new ProfileApplicationRelevance(Relevance.neutral,
                     new ApplicationDescriptor("Windows explorer", "rexplorer.exe")));
             }
-            var res = new HandlerPageDescriptor(WWWRes.GetString("table/tablepage.html"),WWWRes.GetString("table/tablehead.html"));
+            var res = new HandlerPageDescriptor(WWWRes.GetString("apps/table/tablepage.html"),WWWRes.GetString("apps/table/tablehead.html"));
             return res;
         }
         [ApiPath("apps")]
@@ -56,11 +52,11 @@ namespace TimeMiner.Master.Frontend.BuiltInExtensions
                 case "gettable":
                     WriteStringAndClose(resp, GetTableString());
                     break;
-                case "updateitem":
-                    UpdateItem(req,resp);
+                case "updateapp":
+                    UpdateApp(req,resp);
                     break;
-                case "additem":
-                    AddItem(req,resp);
+                case "addapp":
+                    AddApp(req,resp);
                     break;
                 case "rmapp":
                     RemoveApp(req,resp);
@@ -91,7 +87,7 @@ namespace TimeMiner.Master.Frontend.BuiltInExtensions
 
         }
         
-        private void AddItem(HttpListenerRequest req, HttpListenerResponse resp)
+        private void AddApp(HttpListenerRequest req, HttpListenerResponse resp)
         {
             string str = ReadPostString(req);
             JObject obj = JObject.Parse(str);
@@ -108,7 +104,7 @@ namespace TimeMiner.Master.Frontend.BuiltInExtensions
             resp.Close();
 
         }
-        private void UpdateItem(HttpListenerRequest req, HttpListenerResponse resp)
+        private void UpdateApp(HttpListenerRequest req, HttpListenerResponse resp)
         {
             string str = ReadPostString(req);
             ProfileApplicationRelevance rel = JsonConvert.DeserializeObject<ProfileApplicationRelevance>(str);

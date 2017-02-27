@@ -89,7 +89,7 @@ function RowWrapper(tBody, data, template) {
 
 
         },(Math.random() + 0.5)*1000);*/
-        $.post("/api/apps/updateitem",JSON.stringify(that.data),function () {
+        $.post("/api/apps/updateapp",JSON.stringify(that.data),function () {
             console.log("Value changed to " + val);
             that.sending = false;
             callback(/*Math.random() < 0.8*/true);
@@ -114,7 +114,7 @@ function TableWrapper(ctxt)
         this.tbody.append(this.loader);
         $.ajax("/api/apps/gettable")
             .done(function (msg) {
-                $.ajax("/table/tablerow.html")
+                $.ajax("/apps/table/tablerow.html")
                     .done(function (template) {
                         var arr = JSON.parse(msg);
                         that.loader.detach();
@@ -179,7 +179,7 @@ function MakeAddApp()
                 AppName:appName,
                 ProcName:procName
             });
-            $.post("/api/apps/additem", json, function () {
+            $.post("/api/apps/addapp", json, function () {
                 addAppModal.modal('hide');
                 //todo:reshow hiding icon
                 tableWrapper.reloadTable();
