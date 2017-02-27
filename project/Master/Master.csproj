@@ -68,6 +68,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Analysis\Log.cs" />
     <Compile Include="Database\LogsDB.cs" />
     <Compile Include="Database\SettingsDB.cs" />
     <Compile Include="DirResourceContainer.cs" />

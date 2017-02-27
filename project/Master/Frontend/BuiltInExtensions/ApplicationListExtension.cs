@@ -38,9 +38,9 @@ namespace TimeMiner.Master.Frontend.BuiltInExtensions
             if (root == "add")
             {
                 SettingsContainer container = SettingsContainer.Self;
-                container.PutNewApp(new ProfileApplicationRelevance(ProfileApplicationRelevance.Relevance.good, new ApplicationDescriptor("Microsoft word","winword.exe")));
-                container.PutNewApp(new ProfileApplicationRelevance(ProfileApplicationRelevance.Relevance.bad, new ApplicationDescriptor("Telegram messenger", "telegram.exe")));
-                container.PutNewApp(new ProfileApplicationRelevance(ProfileApplicationRelevance.Relevance.neutral,
+                container.PutNewApp(new ProfileApplicationRelevance(Relevance.good, new ApplicationDescriptor("Microsoft word","winword.exe")));
+                container.PutNewApp(new ProfileApplicationRelevance(Relevance.bad, new ApplicationDescriptor("Telegram messenger", "telegram.exe")));
+                container.PutNewApp(new ProfileApplicationRelevance(Relevance.neutral,
                     new ApplicationDescriptor("Windows explorer", "rexplorer.exe")));
             }
             var res = new HandlerPageDescriptor(WWWRes.GetString("table/tablepage.html"),WWWRes.GetString("table/tablehead.html"));
@@ -103,7 +103,7 @@ namespace TimeMiner.Master.Frontend.BuiltInExtensions
             string appName = obj["AppName"].Value<string>();
             string procName = obj["ProcName"].Value<string>();
             ApplicationDescriptor desc = new ApplicationDescriptor(appName,procName);
-            ProfileApplicationRelevance rel = new ProfileApplicationRelevance(ProfileApplicationRelevance.Relevance.neutral, desc);
+            ProfileApplicationRelevance rel = new ProfileApplicationRelevance(Relevance.neutral, desc);
             SettingsContainer.Self.PutNewApp(rel);
             resp.Close();
 

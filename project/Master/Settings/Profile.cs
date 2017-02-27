@@ -7,7 +7,7 @@ using LiteDB;
 
 namespace TimeMiner.Master.Settings
 {
-    class Profile
+    public class Profile
     {
         public Guid Id { get; set; }
         public string Name { get; set; }

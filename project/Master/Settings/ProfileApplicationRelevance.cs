@@ -7,17 +7,18 @@ using LiteDB;
 
 namespace TimeMiner.Master.Settings
 {
+    public enum Relevance
+    {
+        good,
+        neutral,
+        bad
+    }
     /// <summary>
     /// Describes relevance of application to profile
     /// </summary>
     public class ProfileApplicationRelevance
     {
-        public enum Relevance
-        {
-            good,
-            neutral,
-            bad
-        }
+        
 
         public Guid Id { get; set; }
         public Relevance Rel { get; set; }

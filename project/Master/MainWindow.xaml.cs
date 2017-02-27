@@ -15,7 +15,9 @@ using System.Windows.Navigation;
 using System.Windows.Shapes;
 using LiteDB;
 using TimeMiner.Core;
+using TimeMiner.Master.Analysis;
 using TimeMiner.Master.Frontend;
+using TimeMiner.Master.Settings;
 
 namespace TimeMiner.Master
 {
@@ -157,7 +159,11 @@ namespace TimeMiner.Master
 
         private void btClearData_Click(object sender, RoutedEventArgs e)
         {
-
+            Log log = new Log(MasterDB.Logs.GetAllRecordsForUser(0).ToArray());
+            log.Prof = SettingsContainer.Self.GetBaseProfile();
+            var res = log.GetRelevanceTimes();
+            string str = res.Aggregate("", (q, t) => q += $"{t.Key}:{t.Value}\r\n");
+            MessageBox.Show(str);
             /*LiteDatabase db = MasterDB.Logs.Database;
             foreach (var collectionName in db.GetCollectionNames())
             {
