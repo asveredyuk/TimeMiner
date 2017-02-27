@@ -10,22 +10,60 @@
 </head>
 <body>
 <div class="ui container">
-    <form class="ui form">
-        <div class="fields">
-            <div class="field">
-                <label>App name</label>
-                <input name="first-name" placeholder="App Name" type="text">
-            </div>
-            <div class="field">
-                <label>Process name</label>
-                <input name="last-name" placeholder="Process name" type="text">
-            </div>
-            <div class="field">
-                <button class="ui blue button" type="submit">Add</button>
-            </div>
+    <table class="ui celled striped table">
+        <thead>
+        <tr>
+            <th class="six wide">Program</th>
+            <th class="ten wide">TimeSpet</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td>Microsoft word</td>
+            <td>
+                <div class="ui grid">
+                    <div class="four wide column">Data</div>
+                    <div class="twelve wide column">
+                        <div class="ui progress">
+                            <div class="bar">
+                                <div class="progress"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </td>
+            <!--<th colspan="5">-->
+                <!--<div class="ui segment" style="height: 200px">-->
+                    <!--<div class="ui massive active loader"></div>-->
+                <!--</div>-->
+            <!--</th>-->
+        </tr>
+        </tbody>
+        <!--<tfoot class="full-width">-->
+        <!--<tr>-->
+            <!--<th colspan="4">-->
+                <!--<div class="ui right floated small primary labeled icon button" id="addAppBtn">-->
+                    <!--<i class="plus icon"></i> Add program-->
+                <!--</div>-->
+            <!--</th>-->
+        <!--</tr>-->
+        <!--</tfoot>-->
+    </table>
+    <div class="ui grid">
+        <div class="four wide column">
+            <p>data!</p>
         </div>
 
-    </form>
+        <div class="ui column">
+            <div class="ui progress">
+                <div class="bar">
+                    <div class="progress"></div>
+                </div>
+                <div class="label">Uploading Files</div>
+            </div>
+        </div>
+    </div>
 </div>
 </body>
 </html>
