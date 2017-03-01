@@ -7,6 +7,12 @@
     <script src="libs/semantic/semantic.min.js"></script>
     <script src="libs/mustache/mustache.js"></script>
     <link rel="stylesheet" href="/style.css">
+    <script>
+        var progress = $('.ui.progress');
+        progress.progress({
+            percent:32
+        })
+    </script>
 </head>
 <body>
 <div class="ui container">
@@ -22,11 +28,11 @@
             <td>Microsoft word</td>
             <td>
                 <div class="ui grid">
-                    <div class="four wide column">Data</div>
-                    <div class="twelve wide column">
-                        <div class="ui progress">
-                            <div class="bar">
-                                <div class="progress"></div>
+                    <div class="two wide column middle aligned right aligned" style="padding-right: 0">Data</div>
+                    <div class="fourteen wide column" style="padding-left:10px">
+                        <div class="ui progress" style="border-radius: 0; margin-bottom: 0">
+                            <div class="bar" style="border-radius: 0">
+                                <div class="progress">32</div>
                             </div>
                         </div>
                     </div>
