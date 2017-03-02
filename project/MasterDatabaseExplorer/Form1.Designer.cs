@@ -31,18 +31,19 @@
             this.lbStatus = new System.Windows.Forms.Label();
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabPage2 = new System.Windows.Forms.TabPage();
-            this.btImportOldLog = new System.Windows.Forms.Button();
-            this.btClearDb = new System.Windows.Forms.Button();
-            this.tabPage1 = new System.Windows.Forms.TabPage();
             this.numExcelExportUserId = new System.Windows.Forms.NumericUpDown();
             this.label1 = new System.Windows.Forms.Label();
             this.btExcelExport = new System.Windows.Forms.Button();
+            this.btImportOldLog = new System.Windows.Forms.Button();
+            this.btClearDb = new System.Windows.Forms.Button();
+            this.tabPage1 = new System.Windows.Forms.TabPage();
             this.btImportAppsList = new System.Windows.Forms.Button();
             this.btClearApps = new System.Windows.Forms.Button();
+            this.btLogStat = new System.Windows.Forms.Button();
             this.tabControl1.SuspendLayout();
             this.tabPage2.SuspendLayout();
-            this.tabPage1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numExcelExportUserId)).BeginInit();
+            this.tabPage1.SuspendLayout();
             this.SuspendLayout();
             // 
             // lbStatus
@@ -74,6 +75,7 @@
             this.tabPage2.Controls.Add(this.label1);
             this.tabPage2.Controls.Add(this.btExcelExport);
             this.tabPage2.Controls.Add(this.btImportOldLog);
+            this.tabPage2.Controls.Add(this.btLogStat);
             this.tabPage2.Controls.Add(this.btClearDb);
             this.tabPage2.Location = new System.Drawing.Point(4, 22);
             this.tabPage2.Name = "tabPage2";
@@ -82,6 +84,37 @@
             this.tabPage2.TabIndex = 1;
             this.tabPage2.Text = "Logs";
             this.tabPage2.UseVisualStyleBackColor = true;
+            // 
+            // numExcelExportUserId
+            // 
+            this.numExcelExportUserId.Location = new System.Drawing.Point(182, 14);
+            this.numExcelExportUserId.Maximum = new decimal(new int[] {
+            10000,
+            0,
+            0,
+            0});
+            this.numExcelExportUserId.Name = "numExcelExportUserId";
+            this.numExcelExportUserId.Size = new System.Drawing.Size(120, 20);
+            this.numExcelExportUserId.TabIndex = 5;
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Location = new System.Drawing.Point(138, 16);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(38, 13);
+            this.label1.TabIndex = 4;
+            this.label1.Text = "UserId";
+            // 
+            // btExcelExport
+            // 
+            this.btExcelExport.Location = new System.Drawing.Point(244, 44);
+            this.btExcelExport.Name = "btExcelExport";
+            this.btExcelExport.Size = new System.Drawing.Size(101, 30);
+            this.btExcelExport.TabIndex = 3;
+            this.btExcelExport.Text = "Export";
+            this.btExcelExport.UseVisualStyleBackColor = true;
+            this.btExcelExport.Click += new System.EventHandler(this.btExcelExport_Click);
             // 
             // btImportOldLog
             // 
@@ -115,37 +148,6 @@
             this.tabPage1.Text = "Settings";
             this.tabPage1.UseVisualStyleBackColor = true;
             // 
-            // numExcelExportUserId
-            // 
-            this.numExcelExportUserId.Location = new System.Drawing.Point(182, 14);
-            this.numExcelExportUserId.Maximum = new decimal(new int[] {
-            10000,
-            0,
-            0,
-            0});
-            this.numExcelExportUserId.Name = "numExcelExportUserId";
-            this.numExcelExportUserId.Size = new System.Drawing.Size(120, 20);
-            this.numExcelExportUserId.TabIndex = 5;
-            // 
-            // label1
-            // 
-            this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(138, 16);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(38, 13);
-            this.label1.TabIndex = 4;
-            this.label1.Text = "UserId";
-            // 
-            // btExcelExport
-            // 
-            this.btExcelExport.Location = new System.Drawing.Point(244, 44);
-            this.btExcelExport.Name = "btExcelExport";
-            this.btExcelExport.Size = new System.Drawing.Size(101, 30);
-            this.btExcelExport.TabIndex = 3;
-            this.btExcelExport.Text = "Export";
-            this.btExcelExport.UseVisualStyleBackColor = true;
-            this.btExcelExport.Click += new System.EventHandler(this.btExcelExport_Click);
-            // 
             // btImportAppsList
             // 
             this.btImportAppsList.Location = new System.Drawing.Point(125, 6);
@@ -166,6 +168,16 @@
             this.btClearApps.UseVisualStyleBackColor = true;
             this.btClearApps.Click += new System.EventHandler(this.btClearApps_Click);
             // 
+            // btLogStat
+            // 
+            this.btLogStat.Location = new System.Drawing.Point(7, 44);
+            this.btLogStat.Name = "btLogStat";
+            this.btLogStat.Size = new System.Drawing.Size(113, 30);
+            this.btLogStat.TabIndex = 0;
+            this.btLogStat.Text = "Statistics";
+            this.btLogStat.UseVisualStyleBackColor = true;
+            this.btLogStat.Click += new System.EventHandler(this.btLogStat_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -179,8 +191,8 @@
             this.tabControl1.ResumeLayout(false);
             this.tabPage2.ResumeLayout(false);
             this.tabPage2.PerformLayout();
-            this.tabPage1.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.numExcelExportUserId)).EndInit();
+            this.tabPage1.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -198,6 +210,7 @@
         private System.Windows.Forms.Button btExcelExport;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.NumericUpDown numExcelExportUserId;
+        private System.Windows.Forms.Button btLogStat;
     }
 }
 

@@ -5,9 +5,15 @@ Number.prototype.pad = function(size) {
     var s = String(this);
     while (s.length < (size || 2)) {s = "0" + s;}
     return s;
-}
+};
 function RowWrapper(tBody, data, template) {
     var that = this;
+    var EnumToColor = {
+        0:'green',
+        1:'yellow',
+        2:'red',
+        3:'grey'
+    };
     //this indicates that no changes can be applyed
     this.data = data;
     this.row = $(Mustache.render(template,data));
@@ -29,11 +35,12 @@ function RowWrapper(tBody, data, template) {
         {
             res = hours + 'h' + minutes.pad() + 'm';
         }
-        else
+        else if(minutes > 0)
         {
-            if(minutes > 0)
-                res = minutes + 'm';
-            res += seconds.pad() + 's';
+            res = minutes + 'm' + seconds.pad() + 's';
+        }
+        else {
+            res = seconds + 's';
         }
         this.row.find('.timeLabel').html(res);
         var progressBar = this.row.find('.ui .progress');
@@ -42,7 +49,8 @@ function RowWrapper(tBody, data, template) {
         });
         progressBar.progress('set percent', this.data.Percent);
         if(this.data.Percent < 5)
-            progressBar.find('.progress').hide();
+            progressBar.find('.progress').remove();
+        progressBar.addClass(EnumToColor[this.data.Rel.Rel]);
     };
     this.postRowUpdate();
 

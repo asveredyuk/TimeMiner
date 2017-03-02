@@ -165,16 +165,47 @@ namespace MasterDatabaseExplorer
         {
             int userId = (int) numExcelExportUserId.Value;
             OpenFileDialog d = new OpenFileDialog();
+            d.Multiselect = true;
             var res = d.ShowDialog();
             if (res == DialogResult.OK)
             {
-                var corut = new Corutine(this, ImportOldLog(d.FileName,userId));
-                SimpleProgressForm f = new SimpleProgressForm(corut);
-                f.Start();
+                if (d.FileNames.Length > 1)
+                {
+                    var corut = new Corutine(this, ImportManyLogs(d.FileNames, userId));
+                    SimpleProgressForm f = new SimpleProgressForm(corut);
+                    f.labelBindRole = SimpleProgressForm.TextBindRole.Text;
+                    f.Start();
+                }
+                else
+                {
+                    var corut = new Corutine(this, ImportOldLog(d.FileName, userId));
+                    SimpleProgressForm f = new SimpleProgressForm(corut);
+                    f.Start();
+                }
+                
                 //ImportOldLog(d.FileName);
             }
         }
 
+        private IEnumerable<CorutineReport> ImportManyLogs(string[] fnames, int userId)
+        {
+            for (int i = 0; i < fnames.Length; i++)
+            {
+                yield return new CorutineReportText($"Importing {i+1} file of {fnames.Length}");
+                foreach (var report in ImportOldLog(fnames[i],userId))
+                {
+                    if (report is CorutineReportResult)
+                    {
+                        //MessageBox.Show((report as CorutineReportResult).result.ToString());
+                    }
+                    else
+                    {
+                        yield return report;
+                    }
+                }
+            }
+            yield return new CorutineReportResult(0);
+        }
         private IEnumerable<CorutineReport> ImportOldLog(string fname, int userId)
         {
             const int REPORT_EACH = 100;
@@ -312,6 +343,20 @@ namespace MasterDatabaseExplorer
             {
                 db.DropCollection(collectionName);
             }
+        }
+
+        private void btLogStat_Click(object sender, EventArgs e)
+        {
+            int count = 0;
+            List<LogRecord> list = new List<LogRecord>(db.Database.GetCollection<LogRecord>("log_u0").FindAll());
+            foreach (var rec in list)
+            {
+                count++;
+            }
+
+            //int total = db.Database.GetCollection<LogRecord>("log_u0").Count();
+            //MessageBox.Show($"{total} total records");
+            MessageBox.Show($"{count} total records");
         }
     }
 }
