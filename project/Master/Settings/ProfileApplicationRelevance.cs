@@ -11,7 +11,8 @@ namespace TimeMiner.Master.Settings
     {
         good,
         neutral,
-        bad
+        bad,
+        unknown
     }
     /// <summary>
     /// Describes relevance of application to profile

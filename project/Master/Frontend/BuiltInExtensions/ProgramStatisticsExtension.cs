@@ -4,7 +4,9 @@ using System.Linq;
 using System.Net;
 using System.Text;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
 using TimeMiner.Core;
+using TimeMiner.Master.Analysis;
 using TimeMiner.Master.Frontend.Plugins;
 
 namespace TimeMiner.Master.Frontend.BuiltInExtensions
@@ -18,7 +20,7 @@ namespace TimeMiner.Master.Frontend.BuiltInExtensions
         [HandlerPath("stat")]
         public HandlerPageDescriptor Handle(HttpListenerRequest req, HttpListenerResponse resp)
         {
-            List<LogRecord> records = MasterDB.Logs.GetAllRecordsForUser(0);
+            /*List<LogRecord> records = MasterDB.Logs.GetAllRecordsForUser(0);
             Dictionary<string,int> programs = new Dictionary<string, int>();
             foreach (var rec in records)
             {
@@ -33,7 +35,24 @@ namespace TimeMiner.Master.Frontend.BuiltInExtensions
             {
                 pg += p.Key + ":" + p.Value + "s<br>";
             }
-            return new HandlerPageDescriptor(pg);
+            return new HandlerPageDescriptor(pg);*/
+            var res = new HandlerPageDescriptor(WWWRes.GetString("stat/appusage/tablepage.html"), WWWRes.GetString("stat/appusage/tablehead.html"));
+            return res;
+        }
+
+        [ApiPath("stat")]
+        public void HandleApi(HttpListenerRequest req, HttpListenerResponse resp)
+        {
+            string path = SkipApiAndRoot(req.Url.AbsolutePath);
+            /*switch (path)
+            {
+                    case ""
+            }*/
+            Log log = Log.GetLog();
+            ProgramUsageReport report = new ProgramUsageReport(log);
+            string res = JsonConvert.SerializeObject(report.GetReport(), Formatting.Indented);
+            WriteStringAndClose(resp,res);
+
         }
 
         

@@ -69,6 +69,7 @@
       <SubType>Designer</SubType>
     </ApplicationDefinition>
     <Compile Include="Analysis\Log.cs" />
+    <Compile Include="Analysis\ProgramUsageReport.cs" />
     <Compile Include="Database\LogsDB.cs" />
     <Compile Include="Database\SettingsDB.cs" />
     <Compile Include="DirResourceContainer.cs" />
@@ -89,6 +90,7 @@
     <Compile Include="Frontend\Util.cs" />
     <Compile Include="IResourceContainer.cs" />
     <Compile Include="Settings\ApplicationDescriptor.cs" />
+    <Compile Include="Analysis\IndexedProfile.cs" />
     <Compile Include="Settings\Profile.cs" />
     <Compile Include="Settings\ProfileApplicationRelevance.cs" />
     <Compile Include="Settings\SettingsContainer.cs" />

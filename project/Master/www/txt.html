@@ -8,10 +8,23 @@
     <script src="libs/mustache/mustache.js"></script>
     <link rel="stylesheet" href="/style.css">
     <script>
-        var progress = $('.ui.progress');
-        progress.progress({
-            percent:32
-        })
+        $(document).ready(function () {
+            var rest = 100;
+            $('.ui.progress').each(function () {
+                $(this).progress({
+                    showActivity:false
+                });
+
+                //progress.progress('remove active');
+                var curPerc = Math.floor((Math.random() * rest));
+                rest -= curPerc;
+                $(this).progress('set percent', curPerc);
+                if(curPerc < 5)
+                        $(this).find('.progress').hide();
+            });
+
+
+        });
     </script>
 </head>
 <body>
@@ -20,7 +33,7 @@
         <thead>
         <tr>
             <th class="six wide">Program</th>
-            <th class="ten wide">TimeSpet</th>
+            <th class="ten wide">TimeSpent</th>
         </tr>
         </thead>
         <tbody>
@@ -30,20 +43,15 @@
                 <div class="ui grid">
                     <div class="two wide column middle aligned right aligned" style="padding-right: 0">Data</div>
                     <div class="fourteen wide column" style="padding-left:10px">
-                        <div class="ui progress" style="border-radius: 0; margin-bottom: 0">
-                            <div class="bar" style="border-radius: 0">
-                                <div class="progress">32</div>
+                        <div class="ui green progress" style="border-radius: 0; margin-bottom: 0">
+                            <div class="bar" style="border-radius: 0; min-width: 0">
+                                <div class="progress"></div>
                             </div>
                         </div>
                     </div>
                 </div>
 
             </td>
-            <!--<th colspan="5">-->
-                <!--<div class="ui segment" style="height: 200px">-->
-                    <!--<div class="ui massive active loader"></div>-->
-                <!--</div>-->
-            <!--</th>-->
         </tr>
         </tbody>
         <!--<tfoot class="full-width">-->
@@ -56,20 +64,7 @@
         <!--</tr>-->
         <!--</tfoot>-->
     </table>
-    <div class="ui grid">
-        <div class="four wide column">
-            <p>data!</p>
-        </div>
 
-        <div class="ui column">
-            <div class="ui progress">
-                <div class="bar">
-                    <div class="progress"></div>
-                </div>
-                <div class="label">Uploading Files</div>
-            </div>
-        </div>
-    </div>
 </div>
 </body>
 </html>

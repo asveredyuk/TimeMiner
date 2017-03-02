@@ -159,8 +159,9 @@ namespace TimeMiner.Master
 
         private void btClearData_Click(object sender, RoutedEventArgs e)
         {
-            Log log = new Log(MasterDB.Logs.GetAllRecordsForUser(0).ToArray());
-            log.Prof = SettingsContainer.Self.GetBaseProfile();
+            Profile prof = SettingsContainer.Self.GetBaseProfile();
+            IndexedProfile iprof = IndexedProfile.FromProfile(prof);
+            Log log = new Log(MasterDB.Logs.GetAllRecordsForUser(0).ToArray(), iprof);
             var res = log.GetRelevanceTimes();
             string str = res.Aggregate("", (q, t) => q += $"{t.Key}:{t.Value}\r\n");
             MessageBox.Show(str);

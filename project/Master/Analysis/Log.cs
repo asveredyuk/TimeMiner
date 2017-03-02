@@ -10,60 +10,46 @@ namespace TimeMiner.Master.Analysis
 {
     public class Log
     {
-        public enum ARelevance
-        {
-            good,
-            neutral,
-            bad,
-            unknown
-        }
-        public Profile Prof { get; set; }
-        private LogRecord[] records;
 
-        public Log(LogRecord[] records)
+        public IndexedProfile Prof { get; }
+        public LogRecord[] Records { get; }
+
+        public Log(LogRecord[] records, IndexedProfile prof)
         {
-            this.records = records;
+            this.Records = records;
+            this.Prof = prof;
         }
 
-        public Dictionary<ARelevance, int> GetRelevanceTimes()
+        public Dictionary<Relevance, int> GetRelevanceTimes()
         {
-            if(Prof == null)
-                throw new Exception("Profile is not set");
-            Dictionary<ARelevance,int> dict = new Dictionary<ARelevance, int>();
-            dict[ARelevance.bad] = dict[ARelevance.good] = dict[ARelevance.neutral] = dict[ARelevance.unknown] = 0;
-            var rels = IndexRels(Prof.Relevances);
-            foreach (var aRelevance in GetRelevances(rels))
+            Dictionary<Relevance,int> dict = new Dictionary<Relevance, int>();
+            dict[Relevance.bad] = dict[Relevance.good] = dict[Relevance.neutral] = dict[Relevance.unknown] = 0;
+            foreach (var aRelevance in GetRelevances())
             {
                 dict[aRelevance]++;
             }
             return dict;
-
+            
         }
-        public IEnumerable<ARelevance> GetRelevances(Dictionary<string, Relevance> rels)
+        
+        public IEnumerable<Relevance> GetRelevances()
         {
-            foreach (var logRecord in records)
+            foreach (var logRecord in Records)
             {
-                Relevance rel;
-                if (!rels.TryGetValue(logRecord.Process.ProcessName.ToLower(), out rel))
-                {
-                    yield return ARelevance.unknown;
-                }
-                else
-                {
-                    yield return (ARelevance)rel;
-                }
+                yield return Prof.GetExtendedRelevance(logRecord.Process.ProcessName);
             }
         }
 
-        public Dictionary<string, Relevance> IndexRels(IEnumerable<ProfileApplicationRelevance> rels)
+        private ProfileApplicationRelevance GetRel(LogRecord rec)
         {
-            Dictionary<string, Relevance> dict = new Dictionary<string, Relevance>();
-            foreach (var profileApplicationRelevance in rels)
-            {
-                dict[profileApplicationRelevance.App.ProcName] = profileApplicationRelevance.Rel;
-            }
-            return dict;
+            return Prof[rec.Process.ProcessName];
         }
-
+        //TODO: make better make log with user id and dates
+        public static Log GetLog()
+        {
+            IndexedProfile prof = IndexedProfile.FromProfile(SettingsContainer.Self.GetBaseProfile());
+            LogRecord[] recs = MasterDB.Logs.GetAllRecordsForUser(0).ToArray();
+            return new Log(recs,prof);
+        }
     }
 }

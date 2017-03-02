@@ -25,20 +25,9 @@ namespace TimeMiner.Master.Frontend.BuiltInExtensions
         [HandlerPath("apps")]
         public HandlerPageDescriptor Handle(HttpListenerRequest req, HttpListenerResponse resp)
         {
-            string path = req.Url.AbsolutePath;
-            string subpath = GetSubPath(path);
-            string root = GetPathRoot(subpath);
-            //here implement main page with table
-            //and ajax responses at subpath /ajax
-            //return new HandlerPageDescriptor($"subpath:{subpath}<br>root:{root}");*/
-            if (root == "add")
-            {
-                SettingsContainer container = SettingsContainer.Self;
-                container.PutNewApp(new ProfileApplicationRelevance(Relevance.good, new ApplicationDescriptor("Microsoft word","winword.exe")));
-                container.PutNewApp(new ProfileApplicationRelevance(Relevance.bad, new ApplicationDescriptor("Telegram messenger", "telegram.exe")));
-                container.PutNewApp(new ProfileApplicationRelevance(Relevance.neutral,
-                    new ApplicationDescriptor("Windows explorer", "rexplorer.exe")));
-            }
+//            string path = req.Url.AbsolutePath;
+//            string subpath = GetSubPath(path);
+//            string root = GetPathRoot(subpath);
             var res = new HandlerPageDescriptor(WWWRes.GetString("apps/table/tablepage.html"),WWWRes.GetString("apps/table/tablehead.html"));
             return res;
         }
