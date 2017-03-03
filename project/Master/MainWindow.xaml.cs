@@ -70,7 +70,7 @@ namespace TimeMiner.Master
         private void btMakeFakeData_Click(object sender, RoutedEventArgs e)
         {
 
-            LiteDatabase db = MasterDB.Logs.Database;
+            /*LiteDatabase db = MasterDB.Logs.Database;
 
             const int NUM_USERS = 1;
 
@@ -154,7 +154,7 @@ namespace TimeMiner.Master
                     dt.AddSeconds(1);
                 }
                 col.EnsureIndex(x => x.Id);
-            }
+            }*/
         }
 
         private void btClearData_Click(object sender, RoutedEventArgs e)

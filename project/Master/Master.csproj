@@ -39,6 +39,9 @@
       <HintPath>..\packages\LiteDB.3.0.1\lib\net35\LiteDB.dll</HintPath>
       <Private>True</Private>
     </Reference>
+    <Reference Include="MsgPack">
+      <HintPath>lib\MsgPack.dll</HintPath>
+    </Reference>
     <Reference Include="mustache-sharp, Version=0.2.10.0, Culture=neutral, PublicKeyToken=40ca26c1e088cef4, processorArchitecture=MSIL">
       <HintPath>..\packages\mustache-sharp.0.2.10\lib\net40\mustache-sharp.dll</HintPath>
       <Private>True</Private>
@@ -71,6 +74,7 @@
     <Compile Include="Analysis\Log.cs" />
     <Compile Include="Analysis\ProgramUsageReport.cs" />
     <Compile Include="Database\LogsDB.cs" />
+    <Compile Include="Database\LogsDBLiteDB.cs" />
     <Compile Include="Database\SettingsDB.cs" />
     <Compile Include="DirResourceContainer.cs" />
     <Compile Include="Frontend\Authorization.cs" />

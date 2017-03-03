@@ -30,7 +30,8 @@ namespace MasterDatabaseExplorer
 
         private void Form1_Load(object sender, EventArgs e)
         {
-            LogsDB.LOG_DB_PATH = @"C:\dev\TimeMiner\project\Master\bin\Debug\logstorage.db";
+            LogsDB.LOGS_DIR = @"C:\dev\TimeMiner\project\Master\bin\Debug\Logs";
+            //LogsDB.LOG_DB_PATH = @"C:\dev\TimeMiner\project\Master\bin\Debug\logstorage.db";
             SettingsDB.DB_PATH = @"C:\dev\TimeMiner\project\Master\bin\Debug\settings.db";
             try
             {
@@ -155,9 +156,10 @@ namespace MasterDatabaseExplorer
 
         private void btClearDb_Click(object sender, EventArgs e)
         {
-            foreach (var collectionName in db.Database.GetCollectionNames().ToList())
+            //TEMP SOLUTION
+            foreach (var file in Directory.GetFiles(LogsDB.LOGS_DIR))
             {
-                db.Database.DropCollection(collectionName);
+                File.Delete(file);
             }
         }
 
@@ -347,16 +349,12 @@ namespace MasterDatabaseExplorer
 
         private void btLogStat_Click(object sender, EventArgs e)
         {
-            int count = 0;
-            List<LogRecord> list = new List<LogRecord>(db.Database.GetCollection<LogRecord>("log_u0").FindAll());
-            foreach (var rec in list)
-            {
-                count++;
-            }
+            List<LogRecord> list = db.GetAllRecordsForUser(0);
+            
 
             //int total = db.Database.GetCollection<LogRecord>("log_u0").Count();
             //MessageBox.Show($"{total} total records");
-            MessageBox.Show($"{count} total records");
+            MessageBox.Show($"{list.Count} total records");
         }
     }
 }
