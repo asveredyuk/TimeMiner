@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -14,6 +15,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using LiteDB;
+using Newtonsoft.Json;
 using TimeMiner.Core;
 using TimeMiner.Master.Analysis;
 using TimeMiner.Master.Frontend;
@@ -159,12 +161,26 @@ namespace TimeMiner.Master
 
         private void btClearData_Click(object sender, RoutedEventArgs e)
         {
-            Profile prof = SettingsContainer.Self.GetBaseProfile();
+            /*Profile prof = SettingsContainer.Self.GetBaseProfile();
             IndexedProfile iprof = IndexedProfile.FromProfile(prof);
             Log log = new Log(MasterDB.Logs.GetAllRecordsForUser(0).ToArray(), iprof);
             var res = log.GetRelevanceTimes();
             string str = res.Aggregate("", (q, t) => q += $"{t.Key}:{t.Value}\r\n");
-            MessageBox.Show(str);
+            MessageBox.Show(str);*/
+            Log log = Log.GetLog();
+            Stopwatch w = Stopwatch.StartNew();
+
+            /*ProgramUsageReport report = new ProgramUsageReport(log);
+            report.Calculate();*/
+            ActiveReport report = new ActiveReport(log);
+            int total = report.GetActivities().Select(t => t.Value ? 1 : 0).Sum();
+            w.Stop();
+            MessageBox.Show($"Total active seconds = {total}");
+            MessageBox.Show($"{w.ElapsedMilliseconds}ms");
+            
+            //string res = JsonConvert.SerializeObject(report.GetItems(), Formatting.Indented);
+            //WriteStringAndClose(resp, res);
+            //Console.Out.WriteLine($"Elapsed {w.ElapsedMilliseconds} ms");
             /*LiteDatabase db = MasterDB.Logs.Database;
             foreach (var collectionName in db.GetCollectionNames())
             {

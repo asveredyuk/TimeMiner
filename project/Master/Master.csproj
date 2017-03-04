@@ -71,6 +71,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Analysis\ActiveReport.cs" />
     <Compile Include="Analysis\Log.cs" />
     <Compile Include="Analysis\ProgramUsageReport.cs" />
     <Compile Include="Database\LogsDB.cs" />

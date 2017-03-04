@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Net;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows;
 using Newtonsoft.Json;
 using TimeMiner.Core;
 using TimeMiner.Master.Analysis;
@@ -44,15 +46,19 @@ namespace TimeMiner.Master.Frontend.BuiltInExtensions
         public void HandleApi(HttpListenerRequest req, HttpListenerResponse resp)
         {
             string path = SkipApiAndRoot(req.Url.AbsolutePath);
-            /*switch (path)
-            {
-                    case ""
-            }*/
             Log log = Log.GetLog();
+            Stopwatch w = Stopwatch.StartNew();
+            ActiveReport active = new ActiveReport(log);
+            bool[] actives = active.GetActivities().Select(t => t.Value).ToArray();
             ProgramUsageReport report = new ProgramUsageReport(log);
-            string res = JsonConvert.SerializeObject(report.GetReport(), Formatting.Indented);
-            WriteStringAndClose(resp,res);
+            //report.Calculate();
+            report.CalculateWithActives(actives);
+            w.Stop();
 
+            string res = JsonConvert.SerializeObject(report.GetItems(), Formatting.Indented);
+            WriteStringAndClose(resp,res);
+            Console.Out.WriteLine($"Elapsed {w.ElapsedMilliseconds} ms"); 
+            
         }
 
         
