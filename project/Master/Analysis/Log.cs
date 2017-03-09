@@ -36,13 +36,13 @@ namespace TimeMiner.Master.Analysis
         {
             foreach (var logRecord in Records)
             {
-                yield return Prof.GetExtendedRelevance(logRecord.Process.ProcessName);
+                yield return Prof.GetExtendedRelevance(Prof.FindIdentifier(logRecord));
             }
         }
 
         private ProfileApplicationRelevance GetRel(LogRecord rec)
         {
-            return Prof[rec.Process.ProcessName];
+            return Prof[Prof.FindIdentifier(rec)];
         }
         //TODO: make better make log with user id and dates
         public static Log GetLog()

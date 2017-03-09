@@ -3,6 +3,8 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Net;
+using System.Reflection;
+using System.Runtime.Serialization;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -11,14 +13,50 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using TimeMiner.Master.Frontend.Plugins;
 using TimeMiner.Master.Settings;
+using TimeMiner.Master.Settings.ApplicationIdentifiers;
 
 namespace TimeMiner.Master.Frontend.BuiltInExtensions
 {
     class ApplicationListExtension: FrontendServerExtensionBase
     {
-        
+        private class ApplicationIdentifierTypesBinder : SerializationBinder
+        {
+            private List<Type> knownTypes;
+
+            public override Type BindToType(string assemblyName, string typeName)
+            {
+                return knownTypes.SingleOrDefault(t => t.Name == typeName);
+            }
+
+            public override void BindToName(Type serializedType, out string assemblyName, out string typeName)
+            {
+                assemblyName = null;
+                if (knownTypes.Contains(serializedType))
+                    typeName = serializedType.Name;
+                else
+                    typeName = null;
+            }
+
+            private ApplicationIdentifierTypesBinder(List<Type> types)
+            {
+                knownTypes = types;
+            }
+
+            public static ApplicationIdentifierTypesBinder MakeFromCurrentAssembly()
+            {
+                List<Type> types = new List<Type>(
+                    Assembly.GetAssembly(typeof(ApplicationIdentifierTypesBinder))
+                    .GetTypes()
+                    .Where(t=>t.IsSubclassOf(typeof(ApplicationIdentifierBase)))
+                    );
+                return new ApplicationIdentifierTypesBinder(types);
+            }
+        }
+
+        private ApplicationIdentifierTypesBinder binder;
         public ApplicationListExtension()
         {
+            binder = ApplicationIdentifierTypesBinder.MakeFromCurrentAssembly();
             MenuItems.Add(new TemplatePageMenuItem("Apps","/apps"));
         }
 
@@ -87,7 +125,7 @@ namespace TimeMiner.Master.Frontend.BuiltInExtensions
             }
             string appName = obj["AppName"].Value<string>();
             string procName = obj["ProcName"].Value<string>();
-            ApplicationDescriptor desc = new ApplicationDescriptor(appName,procName);
+            ApplicationDescriptor desc = new ApplicationDescriptor(appName,new ProcessNameIdetifier(procName));
             ProfileApplicationRelevance rel = new ProfileApplicationRelevance(Relevance.neutral, desc);
             SettingsContainer.Self.PutNewApp(rel);
             resp.Close();
@@ -95,8 +133,14 @@ namespace TimeMiner.Master.Frontend.BuiltInExtensions
         }
         private void UpdateApp(HttpListenerRequest req, HttpListenerResponse resp)
         {
+            //TODO:MAKE NORMAL REL PARSE
+
             string str = ReadPostString(req);
-            ProfileApplicationRelevance rel = JsonConvert.DeserializeObject<ProfileApplicationRelevance>(str);
+            ProfileApplicationRelevance rel = JsonConvert.DeserializeObject<ProfileApplicationRelevance>(str, new JsonSerializerSettings()
+            {
+                TypeNameHandling = TypeNameHandling.Auto,
+                Binder = binder
+            });
             SettingsContainer.Self.UpdateApp(rel.App);
             SettingsContainer.Self.UpdateRelevance(rel);
             Console.WriteLine($"changed to {rel.Rel}");
@@ -122,7 +166,11 @@ namespace TimeMiner.Master.Frontend.BuiltInExtensions
             }
             return res;*/
             
-            return JsonConvert.SerializeObject(SettingsContainer.Self.GetBaseProfile().Relevances);
+            return JsonConvert.SerializeObject(SettingsContainer.Self.GetBaseProfile().Relevances, Formatting.Indented, new JsonSerializerSettings()
+                {
+                    TypeNameHandling = TypeNameHandling.Auto,
+                    Binder = binder
+                });
 
             //return WWWRes.GetString("txt.html");
         }

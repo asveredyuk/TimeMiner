@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using TimeMiner.Core;
 using TimeMiner.Master.Settings;
+using TimeMiner.Master.Settings.ApplicationIdentifiers;
 
 namespace TimeMiner.Master.Analysis
 {
@@ -13,12 +14,52 @@ namespace TimeMiner.Master.Analysis
     /// </summary>
     public class ProgramUsageReport
     {
+        public struct AppDesc
+        {
+            public Guid RelevanceId { get; set; }
+            public Guid AppId { get; set; }
+            public Relevance Rel { get; set; }
+            public string Name { get; set; }
+
+            public bool Equals(AppDesc other)
+            {
+                return RelevanceId.Equals(other.RelevanceId) && AppId.Equals(other.AppId) && Rel == other.Rel && string.Equals(Name, other.Name);
+            }
+
+            public override bool Equals(object obj)
+            {
+                if (ReferenceEquals(null, obj)) return false;
+                return obj is AppDesc && Equals((AppDesc) obj);
+            }
+
+            public override int GetHashCode()
+            {
+                unchecked
+                {
+                    var hashCode = RelevanceId.GetHashCode();
+                    hashCode = (hashCode*397) ^ AppId.GetHashCode();
+                    hashCode = (hashCode*397) ^ (int) Rel;
+                    hashCode = (hashCode*397) ^ (Name != null ? Name.GetHashCode() : 0);
+                    return hashCode;
+                }
+            }
+
+            public static bool operator ==(AppDesc left, AppDesc right)
+            {
+                return left.Equals(right);
+            }
+
+            public static bool operator !=(AppDesc left, AppDesc right)
+            {
+                return !left.Equals(right);
+            }
+        }
         public class ProgramUsageReportItem
         {
             /// <summary>
             /// Reference to the profile relevance to the current application
             /// </summary>
-            public ProfileApplicationRelevance Rel { get; set; }
+            public AppDesc Desc { get; set; }
             /// <summary>
             /// Number of seconds, spent in a given application
             /// </summary>
@@ -28,9 +69,9 @@ namespace TimeMiner.Master.Analysis
             /// </summary>
             public int Percent { get; set; }
 
-            public ProgramUsageReportItem(ProfileApplicationRelevance rel, int secondsSpent, int percent)
+            public ProgramUsageReportItem(AppDesc desc, int secondsSpent, int percent)
             {
-                Rel = rel;
+                Desc = desc;
                 SecondsSpent = secondsSpent;
                 Percent = percent;
             }
@@ -39,103 +80,94 @@ namespace TimeMiner.Master.Analysis
             {
             }
         }
-        /// <summary>
-        /// Log to analyze
-        /// </summary>
-        private Log log;
-        /// <summary>
-        /// Results of report
-        /// </summary>
-        private Dictionary<string, int> results;
-        /// <summary>
-        /// Results of report
-        /// </summary>
-        public Dictionary<string, int> Results
-        {
-            get
-            {
-                if (results == null)
-                {
-                    throw new Exception("This report was not calculated");
-                }
-                return results;
-            }
-        }
-        /// <summary>
-        /// Are results calculated or not
-        /// </summary>
-        public bool IsCalculated
-        {
-            get { return results != null; }
-        }
 
+        public class Params
+        {
+            /// <summary>
+            /// If set, only active records are analyzed
+            /// </summary>
+            public ActiveReport ActiveReport { get; set; }
+        }
+       
+        private Log log;
+
+        private Dictionary<AppDesc, int> spentTimes;
+        public Params Parameters { get; }
         public ProgramUsageReport(Log log)
         {
             this.log = log;
+            Parameters = new Params();
         }
-        /// <summary>
-        /// Make calculations
-        /// </summary>
+
         public void Calculate()
         {
-            results = CalculateSpentTimesPerApp(log.Records);
+            if(spentTimes != null)
+                throw new Exception("Already calculated");
+            LogRecord[] records = log.Records;
+            if (Parameters.ActiveReport != null)
+            {
+                bool[] actives = Parameters.ActiveReport.GetActivities().Select(t=>t.Value).ToArray();
+                if(actives.Length != records.Length)
+                    throw new Exception("Wrong active report assigned");
+                records = records.Where((t, index) => actives[index]).ToArray();
+            }
+            //logic here
+            spentTimes = CalculateSpentTimes(records);
         }
-        /// <summary>
-        /// Make calculatios only for active elements
-        /// </summary>
-        /// <param name="actives"></param>
-        public void CalculateWithActives(bool[] actives)
-        {
-            if(actives.Length != log.Records.Length)
-                throw new ArgumentException("Length of activities does not match length of log");
-            IEnumerable<LogRecord> records = log.Records.Where((t, index) => actives[index]);
-            results = CalculateSpentTimesPerApp(records);
-        }
-        /// <summary>
-        /// Get item of resulting report (for api)
-        /// </summary>
-        /// <returns></returns>
         public IEnumerable<ProgramUsageReportItem> GetItems()
         {
-            if (!IsCalculated)
+            if(spentTimes == null)
+                Calculate();
+            //logic here
+            int totalTime = spentTimes.Select(t => t.Value).Sum();
+            foreach (var pair in spentTimes.OrderByDescending(t => t.Value))
             {
-                throw new Exception("Report was not calculated");
-            }
-
-            
-            int totalTime = results.Select(t => t.Value).Sum();
-            foreach (var pair in results.OrderByDescending(t=>t.Value))
-            {
-                ProfileApplicationRelevance rel = log.Prof[pair.Key];
-                if (rel == null)
-                {
-                    ApplicationDescriptor desc = new ApplicationDescriptor("Unknown app " + pair.Key + ".exe",pair.Key);
-                    rel = new ProfileApplicationRelevance(Relevance.unknown, desc);
-                }
-                int percentage = pair.Value*100/totalTime;
-                yield return new ProgramUsageReportItem(rel,pair.Value,percentage);
+                int percentage = pair.Value * 100 / totalTime;
+                yield return new ProgramUsageReportItem(pair.Key, pair.Value,percentage);
             }
         }
-        /// <summary>
-        /// Calculate times spent per application
-        /// </summary>
-        /// <param name="records"></param>
-        /// <returns></returns>
-        private Dictionary<string, int> CalculateSpentTimesPerApp(IEnumerable<LogRecord> records)
+        private Dictionary<AppDesc, int> CalculateSpentTimes(IEnumerable<LogRecord> records)
         {
-            Dictionary<string,int> dict = new Dictionary<string, int>();
+            Dictionary<AppDesc,int> dict = new Dictionary<AppDesc, int>();
             foreach (var logRecord in records)
             {
-                string id = logRecord.Process.ProcessName;
-                if (!dict.ContainsKey(id))
+                ApplicationIdentifierBase identifier = log.Prof.FindIdentifier(logRecord);
+                AppDesc desc;
+                if (identifier == null)
                 {
-                    dict[id] = 0;
+                    //was not found
+                    desc = new AppDesc()
+                    {
+                        Rel = Relevance.unknown,
+                        Name = $"Unknown app {logRecord.Process.ProcessName}"
+                    };
+                    /*desc.AppId = Guid.Empty;
+                    desc.RelevanceId = Guid.Empty;
+                    desc.Rel = Relevance.unknown;
+                    desc.Name = $"Unknown app {logRecord.Process.ProcessName}";*/
                 }
-                //now suppose it is second, TODO:redo this
-                dict[id]++;
+                else
+                {
+                    ProfileApplicationRelevance rel = log.Prof[identifier];
+                    desc = new AppDesc()
+                    {
+                        RelevanceId = rel.Id,
+                        AppId = rel.App.Id,
+                        Name = rel.App.Name,
+                        Rel = rel.Rel
+                    };
+                    /*desc.RelevanceId = rel.Id;
+                    desc.AppId = rel.App.Id;
+                    desc.Name = rel.App.Name;
+                    desc.Rel = rel.Rel;*/
+                }
+                if (!dict.ContainsKey(desc))
+                {
+                    dict[desc] = 0;
+                }
+                dict[desc]++;
             }
             return dict;
         }
-
     }
 }

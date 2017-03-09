@@ -50,7 +50,7 @@ function RowWrapper(tBody, data, template) {
         progressBar.progress('set percent', this.data.Percent);
         if(this.data.Percent < 5)
             progressBar.find('.progress').remove();
-        progressBar.addClass(EnumToColor[this.data.Rel.Rel]);
+        progressBar.addClass(EnumToColor[this.data.Desc.Rel]);
     };
     this.postRowUpdate();
 

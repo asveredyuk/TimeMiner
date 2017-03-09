@@ -15,6 +15,7 @@ using TimeMiner.Core;
 using TimeMiner.Master;
 using TimeMiner.Master.Database;
 using TimeMiner.Master.Settings;
+using TimeMiner.Master.Settings.ApplicationIdentifiers;
 using Excel = Microsoft.Office.Interop.Excel;
 
 namespace MasterDatabaseExplorer
@@ -293,7 +294,7 @@ namespace MasterDatabaseExplorer
                     string[] split = line.Split(';');
                     string name = split[0];
                     int type = int.Parse(split[1]);
-                    ApplicationDescriptor desc = new ApplicationDescriptor(name,name);
+                    ApplicationDescriptor desc = new ApplicationDescriptor(name,new ProcessNameIdetifier(name));
                     
                     ProfileApplicationRelevance rel = new ProfileApplicationRelevance(IntToRel(type),desc);
                     settings.PutNewApp(rel);
@@ -341,7 +342,7 @@ namespace MasterDatabaseExplorer
         private void btClearApps_Click(object sender, EventArgs e)
         {
             LiteDatabase db = MasterDB.Settings.Database;
-            foreach (var collectionName in db.GetCollectionNames())
+            foreach (var collectionName in db.GetCollectionNames().ToList())
             {
                 db.DropCollection(collectionName);
             }

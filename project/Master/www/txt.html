@@ -8,63 +8,37 @@
     <script src="libs/mustache/mustache.js"></script>
     <link rel="stylesheet" href="/style.css">
     <script>
+        var content = [
+            {
+                title: 'USA',
+                description:'',
+                id :2
+            },
+            { title: 'Russia',
+                description:"bear",
+            id:4}
+            // etc
+        ];
         $(document).ready(function () {
-            var rest = 100;
-            $('.ui.progress').each(function () {
-                $(this).progress({
-                    showActivity:false
-                });
-
-                //progress.progress('remove active');
-                var curPerc = Math.floor((Math.random() * rest));
-                rest -= curPerc;
-                $(this).progress('set percent', curPerc);
-                if(curPerc < 5)
-                        $(this).find('.progress').hide();
-            });
-
-
+            $('.ui.search')
+                    .search({
+                        source: content,
+                        onSelect: function (result, response) {
+                            alert(result.id);
+                        }
+                    });
         });
     </script>
 </head>
 <body>
 <div class="ui container">
-    <table class="ui celled striped table">
-        <thead>
-        <tr>
-            <th class="six wide">Program</th>
-            <th class="ten wide">TimeSpent</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr>
-            <td>Microsoft word</td>
-            <td>
-                <div class="ui grid">
-                    <div class="two wide column middle aligned right aligned" style="padding-right: 0">Data</div>
-                    <div class="fourteen wide column" style="padding-left:10px">
-                        <div class="ui green progress" style="border-radius: 0; margin-bottom: 0">
-                            <div class="bar" style="border-radius: 0; min-width: 0">
-                                <div class="progress"></div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-            </td>
-        </tr>
-        </tbody>
-        <!--<tfoot class="full-width">-->
-        <!--<tr>-->
-            <!--<th colspan="4">-->
-                <!--<div class="ui right floated small primary labeled icon button" id="addAppBtn">-->
-                    <!--<i class="plus icon"></i> Add program-->
-                <!--</div>-->
-            <!--</th>-->
-        <!--</tr>-->
-        <!--</tfoot>-->
-    </table>
-
+    <div class="ui search">
+    <div class="ui icon input">
+        <input class="prompt" placeholder="Search countries..." type="text">
+        <i class="search icon"></i>
+    </div>
+    <div class="results"></div>
+</div>
 </div>
 </body>
 </html>

@@ -119,7 +119,8 @@ namespace TimeMiner.Master.Frontend
                         //do nothing
                         //throw;
                     }
-                    Console.Out.WriteLine("Exception in handler thread, " + e.StackTrace);
+                    Console.Out.WriteLine("Exception in handler thread, " + e.Message);
+                    Console.Out.WriteLine(e.StackTrace);
                     //throw;
                 }
             }

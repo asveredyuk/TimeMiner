@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using TimeMiner.Master.Settings.ApplicationIdentifiers;
 
 namespace TimeMiner.Master.Settings
 {
@@ -13,17 +14,22 @@ namespace TimeMiner.Master.Settings
     { 
         public Guid Id { get; set; }
         public string Name { get; set; }
-        public string ProcName { get; set; }
+        public List<ApplicationIdentifierBase> Identifiers { get; set; }
+
+        public string ProcName
+        {
+            get { return (Identifiers[0] as ProcessNameIdetifier).ProcessName; }
+        }
 
         public ApplicationDescriptor()
         {
         }
 
-        public ApplicationDescriptor(string name, string procName)
+        public ApplicationDescriptor(string name, params ApplicationIdentifierBase[] identifiers)
         {
             Id = Guid.NewGuid();
             Name = name;
-            ProcName = procName;
+            Identifiers = new List<ApplicationIdentifierBase>(identifiers);
         }
     }
 }

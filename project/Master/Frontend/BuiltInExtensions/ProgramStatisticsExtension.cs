@@ -49,13 +49,15 @@ namespace TimeMiner.Master.Frontend.BuiltInExtensions
             Log log = Log.GetLog();
             Stopwatch w = Stopwatch.StartNew();
             ActiveReport active = new ActiveReport(log);
-            bool[] actives = active.GetActivities().Select(t => t.Value).ToArray();
+            //bool[] actives = active.GetActivities().Select(t => t.Value).ToArray();
             ProgramUsageReport report = new ProgramUsageReport(log);
+            report.Parameters.ActiveReport = active;
             //report.Calculate();
-            report.CalculateWithActives(actives);
-            w.Stop();
+            //report.CalculateWithActives(actives);
+            
 
             string res = JsonConvert.SerializeObject(report.GetItems(), Formatting.Indented);
+            w.Stop();
             WriteStringAndClose(resp,res);
             Console.Out.WriteLine($"Elapsed {w.ElapsedMilliseconds} ms"); 
             
