@@ -14,6 +14,6 @@ namespace TimeMiner.Master.Settings
     /// </summary>
     public abstract class ApplicationIdentifierBase
     { 
-        public abstract bool CheckRecord(LogRecord record);
+        public abstract int CheckRecord(LogRecord record);
     }
 }

@@ -35,11 +35,12 @@
             this.label1 = new System.Windows.Forms.Label();
             this.btExcelExport = new System.Windows.Forms.Button();
             this.btImportOldLog = new System.Windows.Forms.Button();
+            this.btLogStat = new System.Windows.Forms.Button();
             this.btClearDb = new System.Windows.Forms.Button();
             this.tabPage1 = new System.Windows.Forms.TabPage();
             this.btImportAppsList = new System.Windows.Forms.Button();
             this.btClearApps = new System.Windows.Forms.Button();
-            this.btLogStat = new System.Windows.Forms.Button();
+            this.btTest = new System.Windows.Forms.Button();
             this.tabControl1.SuspendLayout();
             this.tabPage2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numExcelExportUserId)).BeginInit();
@@ -126,6 +127,16 @@
             this.btImportOldLog.UseVisualStyleBackColor = true;
             this.btImportOldLog.Click += new System.EventHandler(this.btImportOldLog_Click);
             // 
+            // btLogStat
+            // 
+            this.btLogStat.Location = new System.Drawing.Point(7, 44);
+            this.btLogStat.Name = "btLogStat";
+            this.btLogStat.Size = new System.Drawing.Size(113, 30);
+            this.btLogStat.TabIndex = 0;
+            this.btLogStat.Text = "Statistics";
+            this.btLogStat.UseVisualStyleBackColor = true;
+            this.btLogStat.Click += new System.EventHandler(this.btLogStat_Click);
+            // 
             // btClearDb
             // 
             this.btClearDb.Location = new System.Drawing.Point(7, 7);
@@ -168,21 +179,22 @@
             this.btClearApps.UseVisualStyleBackColor = true;
             this.btClearApps.Click += new System.EventHandler(this.btClearApps_Click);
             // 
-            // btLogStat
+            // btTest
             // 
-            this.btLogStat.Location = new System.Drawing.Point(7, 44);
-            this.btLogStat.Name = "btLogStat";
-            this.btLogStat.Size = new System.Drawing.Size(113, 30);
-            this.btLogStat.TabIndex = 0;
-            this.btLogStat.Text = "Statistics";
-            this.btLogStat.UseVisualStyleBackColor = true;
-            this.btLogStat.Click += new System.EventHandler(this.btLogStat_Click);
+            this.btTest.Location = new System.Drawing.Point(627, 12);
+            this.btTest.Name = "btTest";
+            this.btTest.Size = new System.Drawing.Size(75, 23);
+            this.btTest.TabIndex = 3;
+            this.btTest.Text = "test";
+            this.btTest.UseVisualStyleBackColor = true;
+            this.btTest.Click += new System.EventHandler(this.btTest_Click);
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(718, 293);
+            this.Controls.Add(this.btTest);
             this.Controls.Add(this.tabControl1);
             this.Controls.Add(this.lbStatus);
             this.Name = "Form1";
@@ -211,6 +223,7 @@
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.NumericUpDown numExcelExportUserId;
         private System.Windows.Forms.Button btLogStat;
+        private System.Windows.Forms.Button btTest;
     }
 }
 

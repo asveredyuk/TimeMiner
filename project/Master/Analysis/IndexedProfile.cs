@@ -39,24 +39,25 @@ namespace TimeMiner.Master.Analysis
             //return allIdentifiers.Find(t => t.CheckRecord(record)); //allIdentifiers.Where(t => t.CheckRecord(record)).First();
             ApplicationIdentifierBase[] ress = /*Relevances
                 .SelectMany(t => t.App.Identifiers)*/allIdentifiers
-                .Where(t=>t.CheckRecord(record))
+                .Where(t=>t.CheckRecord(record)>0)
                 .ToArray();
-            if (ress.Length > 1)
-            {
-                string message = "Unambigious identification,\r\n";
-                message += "Conflicting apps:\r\n";
-                foreach (var applicationIdentifierBase in ress)
-                {
-                    message += this[applicationIdentifierBase].App.Name + "\r\n";
-                }
-                message += "Record (json):\r\n";
-                message += JsonConvert.SerializeObject(record);
-                throw new Exception(message);
-            }
-            if(ress.Length == 0)
-                return null;
+//            if (ress.Length > 1)
+//            {
+//                string message = "Unambigious identification,\r\n";
+//                message += "Conflicting apps:\r\n";
+//                foreach (var applicationIdentifierBase in ress)
+//                {
+//                    message += this[applicationIdentifierBase].App.Name + "\r\n";
+//                }
+//                message += "Record (json):\r\n";
+//                message += JsonConvert.SerializeObject(record);
+//                Console.WriteLine(message);
+//            }
+//            if(ress.Length == 0)
+//                return null;
 
-            return ress[0];
+//            return ress[0];
+            return ress.OrderByDescending(t => t.CheckRecord(record)).FirstOrDefault();
         }
         public ProfileApplicationRelevance this[ApplicationIdentifierBase key]
         {

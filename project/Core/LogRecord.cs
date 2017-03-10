@@ -53,15 +53,41 @@ namespace TimeMiner.Core
         /// </summary>
         public Guid PreviusRecordId { get; set; }
 
-        //        public override string ToString()
-        //        {
-        //            return $"Time: {Time}, PreviousRecordId: {PreviusRecordId}, Process: {Process}," +
-        //                   $" Window: {Window}, MousePosition: {MousePosition}, MouseButtonActions: {MouseButtonActions}, " +
-        //                   $"MouseWheelActions: {MouseWheelActions}, Keystrokes: {Keystrokes}";
-        //        }
+        public Dictionary<string,byte[]> MetaData { get; set; }
+
+        public LogRecord()
+        {
+            MetaData = new Dictionary<string, byte[]>();
+        }
+
         public override string ToString()
         {
             return $"Id: {Id}, Keystrokes: {Keystrokes}, MouseButtonActions: {MouseButtonActions}, MousePosition: {MousePosition}, MouseWheelActions: {MouseWheelActions}, PreviusRecordId: {PreviusRecordId}, Process: {Process}, Time: {Time}, Window: {Window}";
         }
+        /// <summary>
+        /// Get string from metadata
+        /// </summary>
+        /// <param name="key"></param>
+        /// <returns></returns>
+        public string GetMetaString(string key)
+        {
+            byte[] arr;
+            if (!MetaData.TryGetValue(key, out arr))
+            {
+                return null;
+            }
+            return Encoding.UTF8.GetString(arr);
+        }
+        /// <summary>
+        /// Put string to metadata
+        /// </summary>
+        /// <param name="key"></param>
+        /// <param name="value"></param>
+        public void PutMetaString(string key, string value)
+        {
+            byte[] arr = Encoding.UTF8.GetBytes(value);
+            MetaData[key] = arr;
+        }
+        //TODO: remove?
     }
 }

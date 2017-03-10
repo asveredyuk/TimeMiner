@@ -16,9 +16,22 @@ namespace TimeMiner.Master.Settings
         public string Name { get; set; }
         public List<ApplicationIdentifierBase> Identifiers { get; set; }
 
+        //TODO: избавиться от этого свойства
         public string ProcName
         {
-            get { return (Identifiers[0] as ProcessNameIdetifier).ProcessName; }
+            get
+            {
+                if (Identifiers[0] is ProcessNameIdetifier)
+                {
+                    return (Identifiers[0] as ProcessNameIdetifier).ProcessName;
+                }
+                if (Identifiers[0] is WebsiteIdentifier)
+                {
+                    return (Identifiers[0] as WebsiteIdentifier).Host;
+                }
+                return "";
+                //return (Identifiers[0] as ProcessNameIdetifier).ProcessName;
+            }
         }
 
         public ApplicationDescriptor()

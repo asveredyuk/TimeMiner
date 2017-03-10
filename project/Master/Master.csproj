@@ -98,6 +98,7 @@
     <Compile Include="Analysis\IndexedProfile.cs" />
     <Compile Include="Settings\ApplicationIdentifierBase.cs" />
     <Compile Include="Settings\ApplicationIdentifiers\ProcessNameIdetifier.cs" />
+    <Compile Include="Settings\ApplicationIdentifiers\WebsiteIdentifier.cs" />
     <Compile Include="Settings\Profile.cs" />
     <Compile Include="Settings\ProfileApplicationRelevance.cs" />
     <Compile Include="Settings\SettingsContainer.cs" />

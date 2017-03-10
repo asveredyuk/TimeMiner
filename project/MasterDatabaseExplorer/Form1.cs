@@ -223,6 +223,10 @@ namespace MasterDatabaseExplorer
                     OldLogItem ite = OldLogItem.FromCSVRow(line);
                     LogRecord rec = ToNewLogRecord(ite);
                     rec.UserId = userId;
+                    if (ite.extraInfo != null && ite.extraInfo.Length > 2)
+                    {
+                        rec.PutMetaString("site",ite.extraInfo);
+                    }
                     if (prev != null)
                         rec.PreviusRecordId = prev.Id;
                     db.PutRecord(rec);
@@ -276,7 +280,7 @@ namespace MasterDatabaseExplorer
             var res = d.ShowDialog();
             if (res == DialogResult.OK)
             {
-                Corutine corut = new Corutine(this,ImportApps(d.FileName));
+                Corutine corut = new Corutine(this, ImportApps(d.FileName));
                 SimpleProgressForm form = new SimpleProgressForm(corut);
                 form.Start();
             }
@@ -286,18 +290,38 @@ namespace MasterDatabaseExplorer
         {
             string[] lines = File.ReadAllLines(fname);
             int failedCount = 0;
+            bool sites = false;
+            int addedCount = 0;
             for (int i = 0; i < lines.Length; i++)
             {
                 string line = lines[i];
+                if (line.StartsWith("--"))
+                {
+                    if (line.EndsWith("processes"))
+                        sites = false;
+                    if (line.EndsWith("sites"))
+                        sites = true;
+                    continue;
+                }
                 try
                 {
-                    string[] split = line.Split(';');
+                    string[] split = line.Split(':');
                     string name = split[0];
                     int type = int.Parse(split[1]);
-                    ApplicationDescriptor desc = new ApplicationDescriptor(name,new ProcessNameIdetifier(name));
+                    ApplicationIdentifierBase identifier = null;
+                    if (sites)
+                    {
+                        identifier = new WebsiteIdentifier(name);
+                    }
+                    else
+                    {
+                        identifier = new ProcessNameIdetifier(name);
+                    }
+                    ApplicationDescriptor desc = new ApplicationDescriptor(name,identifier);
                     
                     ProfileApplicationRelevance rel = new ProfileApplicationRelevance(IntToRel(type),desc);
                     settings.PutNewApp(rel);
+                    addedCount++;
                 }
                 catch (Exception)
                 {
@@ -306,7 +330,7 @@ namespace MasterDatabaseExplorer
                 yield return new CorutineReportPercentage(i+1,lines.Length);
             }
             yield return new CorutineReportPercentage(100);
-            yield return new CorutineReportResult($"{lines.Length} apps added");
+            yield return new CorutineReportResult($"{addedCount} apps added");
         }
 
         private Relevance IntToRel(int val)
@@ -351,11 +375,47 @@ namespace MasterDatabaseExplorer
         private void btLogStat_Click(object sender, EventArgs e)
         {
             List<LogRecord> list = db.GetAllRecordsForUser(0);
-            
+            string stat = $"{list.Count} total records\r\n";
+            int sitecount = list.Where(t => t.GetMetaString("site") != null).Count();
+            int percent = sitecount * 100 / list.Count;
+            stat += $"{percent}% sites";
 
             //int total = db.Database.GetCollection<LogRecord>("log_u0").Count();
             //MessageBox.Show($"{total} total records");
-            MessageBox.Show($"{list.Count} total records");
+            MessageBox.Show(stat);
+        }
+
+        private void btTest_Click(object sender, EventArgs e)
+        {
+            /*ApplicationIdentifierBase id = new WebsiteIdentifier() {Host = "vk.com"};
+            ApplicationDescriptor desc = new ApplicationDescriptor("Вконтакте", id);
+            ProfileApplicationRelevance rel = new ProfileApplicationRelevance(Relevance.bad,desc);
+            settings.PutNewApp(rel);*/
+            /*List<LogRecord> list = db.GetAllRecordsForUser(0);
+            string[] allSites =
+                list.Where(t => t.GetMetaString("site") != null).Select(t => t.GetMetaString("site")).ToArray();
+            string[] sites =
+                allSites.Distinct().ToArray();
+            int count = allSites.Count(t => (GetHost(t) == "stackoverflow.com"));
+            MessageBox.Show(count.ToString());*/
+            //sites = sites.Where(t => (GetHost(t) == null)).ToArray();
+            //File.WriteAllLines("sites.txt",sites);
+
+        }
+
+        private string GetHost(string site)
+        {
+            
+            //if (Uri.IsWellFormedUriString(site, UriKind.Absolute))
+            //{
+            /*    Uri uri = new Uri(site);
+                return uri.Host;*/
+            Uri uri;
+            if (!Uri.TryCreate(site, UriKind.Absolute, out uri))
+                return null;
+            return uri.Host;
+            //}
+            //return null;
         }
     }
 }

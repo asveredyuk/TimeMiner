@@ -35,14 +35,20 @@ namespace TimeMiner.Master.Settings.ApplicationIdentifiers
             ProcessName = processName;
         }
 
-        public override bool CheckRecord(LogRecord record)
+        public override int CheckRecord(LogRecord record)
         {
             if (regex != null)
             {
-                return CheckMaskRegex(regex, record.Process.ProcessName.ToLower());
+                if(CheckMaskRegex(regex, record.Process.ProcessName.ToLower()))
+                return 1;
             }
             //process name does not contain any special character
-            return record.Process.ProcessName.Equals(ProcessName, StringComparison.CurrentCultureIgnoreCase);
+            if (record.Process.ProcessName.Equals(ProcessName, StringComparison.CurrentCultureIgnoreCase))
+            {
+                //simple process name match has higher priority
+                return 2;
+            }
+            return 0;
         }
 
         private static Regex MakeMaskRegex(string mask)
