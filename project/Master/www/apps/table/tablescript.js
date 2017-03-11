@@ -151,42 +151,90 @@ function MakeAddApp()
 {
     var addAppBtn = $("#addAppBtn");
     var addAppModal = $("#addAppModal");
-    addAppModal.appNameInput = addAppModal.find('input[name="app-name"]');
-    addAppModal.procNameInput = addAppModal.find('input[name="proc-name"]');
+    // addAppModal.appNameInput = addAppModal.find('input[name="app-name"]');
+    // addAppModal.procNameInput = addAppModal.find('input[name="proc-name"]');
+    // addAppModal.reset = function () {
+    //     addAppModal.appNameInput.val('');
+    //     addAppModal.appNameInput.parent().removeClass('error');
+    //     addAppModal.procNameInput.val('');
+    //     addAppModal.procNameInput.parent().removeClass('error');
+    // };
+    // addAppModal.modal('setting',{
+    //     onApprove : function () {
+    //         //TODO: indicate that it is loading!
+    //         var appName = addAppModal.appNameInput.val();
+    //         if(appName.length == 0)
+    //         {
+    //             addAppModal.appNameInput.parent().addClass('error');
+    //             return false;
+    //         }
+    //         var procName = addAppModal.procNameInput.val();
+    //         if(procName.length == 0)
+    //         {
+    //             addAppModal.procNameInput.parent().addClass('error');
+    //             return false;
+    //         }
+    //         //todo: extract this!
+    //         var json = JSON.stringify({
+    //             AppName:appName,
+    //             ProcName:procName
+    //         });
+    //         $.post("/api/apps/addapp", json, function () {
+    //             addAppModal.modal('hide');
+    //             //todo:reshow hiding icon
+    //             tableWrapper.reloadTable();
+    //         });
+    //         return false;
+    //     }
+    // });
+    var $form =addAppModal.find('.ui.form');
+    $form.form({
+        fields: {
+            AppName: {
+                rules:[
+                    {
+                        type: 'empty',
+                        prompt: "Application name cannot be empty"
+                    }
+                ]
+            },
+            ProcName: {
+                rules: [
+                    {
+                        type: 'empty',
+                        prompt: "Process name cannot be empty"
+                    },
+                    {
+                        type   : 'regExp',
+                        value : '^[^\\\\\/:\"><|]+$',
+                        prompt : 'Process name cannot contain [\\/:"><|] symbols'
+                    }
+                ]
+            }
+        }
+    });
     addAppModal.reset = function () {
-        addAppModal.appNameInput.val('');
-        addAppModal.appNameInput.parent().removeClass('error');
-        addAppModal.procNameInput.val('');
-        addAppModal.procNameInput.parent().removeClass('error');
+        $form.form('clear');
+        $form.find('.error.message').html('');
     };
+
     addAppModal.modal('setting',{
-        onApprove : function () {
+        onApprove: function () {
             //TODO: indicate that it is loading!
-            var appName = addAppModal.appNameInput.val();
-            if(appName.length == 0)
-            {
-                addAppModal.appNameInput.parent().addClass('error');
+            if(!$form.form('validate form')){
                 return false;
             }
-            var procName = addAppModal.procNameInput.val();
-            if(procName.length == 0)
-            {
-                addAppModal.procNameInput.parent().addClass('error');
-                return false;
-            }
-            //todo: extract this!
-            var json = JSON.stringify({
-                AppName:appName,
-                ProcName:procName
-            });
-            $.post("/api/apps/addapp", json, function () {
+            var data = $form.form('get values');
+            var json = JSON.stringify(data);
+            /*$.post("/api/apps/addapp", json, function () {
                 addAppModal.modal('hide');
                 //todo:reshow hiding icon
                 tableWrapper.reloadTable();
-            });
+            });*/
             return false;
         }
     });
+
     addAppBtn.click(function () {
         addAppModal.reset();
         addAppModal.modal("show");
