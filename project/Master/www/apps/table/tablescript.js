@@ -112,7 +112,8 @@ function TableWrapper(ctxt)
     this.reloadTable = function () {
         this.tbody.empty();
         this.tbody.append(this.loader);
-        $.ajax("/api/apps/gettable")
+
+        $.ajax("/api/apps/gettable/" + type)
             .done(function (msg) {
                 $.ajax("/apps/table/tablerow.html")
                     .done(function (template) {
@@ -209,6 +210,19 @@ function MakeAddApp()
                         type   : 'regExp',
                         value : '^[^\\\\\/:\"><|]+$',
                         prompt : 'Process name cannot contain [\\/:"><|] symbols'
+                    }
+                ]
+            },
+            DomainName: {
+                rules: [
+                    {
+                        type: 'empty',
+                        prompt: "Site domain cannot be empty"
+                    },
+                    {
+                        type   : 'regExp',
+                        value : '^.*[^\\.\\\\/ ]+\.[^\\./ ]{2,6}$',
+                        prompt : 'Domain is not valid'
                     }
                 ]
             },

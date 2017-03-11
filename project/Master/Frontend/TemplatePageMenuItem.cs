@@ -13,14 +13,14 @@ namespace TimeMiner.Master.Frontend
         public int Number { get; set; }
         public List<TemplatePageMenuItem> InnerItems { get; set; }
 
-        public TemplatePageMenuItem(string text)
+        public TemplatePageMenuItem(string text, params TemplatePageMenuItem[] innerItems)
         {
             if (string.IsNullOrEmpty(text))
             {
                 throw new Exception("Menu item cannot have null or empty text");
             }
             Text = text;
-            InnerItems = new List<TemplatePageMenuItem>();
+            InnerItems = new List<TemplatePageMenuItem>(innerItems);
         }
 
         public TemplatePageMenuItem(string text, string path) : this(text)

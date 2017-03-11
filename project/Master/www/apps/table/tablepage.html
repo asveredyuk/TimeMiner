@@ -1,5 +1,8 @@
+<script>
+    var type = "{{type}}";
+</script>
 <div class="ui container">
-    <h1>Applications</h1>
+    <h1>{{Title}}</h1>
     <table class="ui celled striped table">
         <thead>
         <tr>
@@ -22,20 +25,21 @@
         <tr>
             <th colspan="4">
                 <div class="ui right floated small primary labeled icon button" id="addAppBtn">
-                    <i class="plus icon"></i> Add program
+                    <i class="plus icon"></i> Add {{type}}
                 </div>
             </th>
         </tr>
         </tfoot>
     </table>
     <div class="ui small modal" id="addAppModal">
-        <div class="header">Add application</div>
+        <div class="header">Add {{type}}</div>
         <div class="content">
             <div class="ui form">
                 <div class="field">
-                    <label>App name</label>
-                    <input name="AppName" placeholder="Example app" type="text">
+                    <label>{{Type}} name</label>
+                    <input name="AppName" placeholder="Example {{type}}" type="text">
                 </div>
+                {{#if isapplication}}
                 <div class="field">
                     <label>Process name</label>
                     <!--<input name="proc-name" placeholder="example.exe" type="text">-->
@@ -47,8 +51,16 @@
                         </div>
                     </div>
                 </div>
+                {{#else}}
                 <div class="field">
-                    <label>Application type</label>
+                    <label>Domain name</label>
+                    <!--<input name="proc-name" placeholder="example.exe" type="text">-->
+                    <input name="DomainName" placeholder="Example app" type="text">
+
+                </div>
+                {{/if}}
+                <div class="field">
+                    <label>{{Type}} type</label>
                     <!--<input name="proc-name" placeholder="example.exe" type="text">-->
                     <select class="ui dropdown" name="Type">
                         <option value="">Select type</option>

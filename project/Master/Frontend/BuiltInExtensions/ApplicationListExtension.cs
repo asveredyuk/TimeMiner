@@ -57,27 +57,50 @@ namespace TimeMiner.Master.Frontend.BuiltInExtensions
         public ApplicationListExtension()
         {
             binder = ApplicationIdentifierTypesBinder.MakeFromCurrentAssembly();
-            MenuItems.Add(new TemplatePageMenuItem("Apps","/apps"));
+            MenuItems.Add(new TemplatePageMenuItem("Apps",
+                    new TemplatePageMenuItem("Applications","/apps/apps"),
+                    new TemplatePageMenuItem("Sites","/apps/sites")
+                ));
         }
-
+        //TODO: make this able
+        //[HandlerPath("apps/sites")]
         [HandlerPath("apps")]
         public HandlerPageDescriptor Handle(HttpListenerRequest req, HttpListenerResponse resp)
         {
-//            string path = req.Url.AbsolutePath;
-//            string subpath = GetSubPath(path);
-//            string root = GetPathRoot(subpath);
-            var res = new HandlerPageDescriptor(WWWRes.GetString("apps/table/tablepage.html"),WWWRes.GetString("apps/table/tablehead.html"));
+            string path = req.Url.AbsolutePath;
+            string subpath = GetSubPath(path);
+            string root = GetPathRoot(subpath);
+            object arg = null;
+            switch (root)
+            {
+                case "apps":
+                    arg = new {Type = "Application", type = "application", isapplication = true, Title = "Applications"};
+                    break;
+                case "sites":
+                    arg = new {Type = "Site", type = "site", isapplication = false, Title = "Sites"};
+                    break;
+                default:
+                    arg = new { Type = "Application", type = "application", isapplication = true, Title = "Applications" };
+                    break;
+            }
+            string page = WWWRes.GetString("apps/table/tablepage.html");
+            var mustacheCompiler = new FormatCompiler();
+            var generator = mustacheCompiler.Compile(page);
+            string rendered = generator.Render(arg);
+            var res = new HandlerPageDescriptor(rendered,WWWRes.GetString("apps/table/tablehead.html"));
             return res;
         }
         [ApiPath("apps")]
         public void ApiHandler(HttpListenerRequest req, HttpListenerResponse resp)
         {
             string path = SkipApiAndRoot(req.Url.AbsolutePath);
+            string root = GetPathRoot(path);
             Thread.Sleep(1000);
-            switch (path)
+            switch (root)
             {
                 case "gettable":
-                    WriteStringAndClose(resp, GetTableString());
+                    string type = GetPathRoot(GetSubPath(path));
+                    WriteStringAndClose(resp, GetTableString(type));
                     break;
                 case "updateapp":
                     UpdateApp(req,resp);
@@ -118,19 +141,33 @@ namespace TimeMiner.Master.Frontend.BuiltInExtensions
         {
             string str = ReadPostString(req);
             JObject obj = JObject.Parse(str);
-            if (obj["AppName"] == null || obj["ProcName"] == null || obj["Type"] == null)
+            if (obj["AppName"] == null || obj["Type"] == null)
             {
-                WriteStringAndClose(resp,"", 400);
+                CloseWithCode(resp, 400);
                 return;
             }
             string appName = obj["AppName"].Value<string>();
-            string procName = obj["ProcName"].Value<string>();
+            ApplicationIdentifierBase identifier = null;
+            if (obj["ProcName"] != null)
+            {
+                string procName = obj["ProcName"].Value<string>();
+                identifier=new ProcessNameIdetifier(procName);
+            }
+            if (obj["DomainName"] != null)
+            {
+                string domainName = obj["DomainName"].Value<string>();
+                identifier = new WebsiteIdentifier(domainName);
+            }
+            if (identifier == null)
+            {
+                CloseWithCode(resp,400);
+            }
             Relevance type;
             if (!Enum.TryParse(obj["Type"].Value<string>(), out type))
             {
-                WriteStringAndClose(resp,"", 400);
+                CloseWithCode(resp, 400);
             }
-            ApplicationDescriptor desc = new ApplicationDescriptor(appName,new ProcessNameIdetifier(procName));
+            ApplicationDescriptor desc = new ApplicationDescriptor(appName,identifier);
             ProfileApplicationRelevance rel = new ProfileApplicationRelevance(type, desc);
             SettingsContainer.Self.PutNewApp(rel);
             resp.Close();
@@ -162,8 +199,19 @@ namespace TimeMiner.Master.Frontend.BuiltInExtensions
             
         }*/
 
-        private string GetTableString()
+        private string GetTableString(string type)
         {
+            //TODO: bad code here, refactor
+            IReadOnlyList<ProfileApplicationRelevance> rels = SettingsContainer.Self.GetBaseProfile().Relevances;
+            switch (type)
+            {
+                case "application":
+                    rels = rels.Where(t => t.App.Identifiers.Where(q => q is ProcessNameIdetifier).Count() > 0).ToList();
+                    break;
+                case "site":
+                    rels = rels.Where(t => t.App.Identifiers.Where(q => q is WebsiteIdentifier).Count() > 0).ToList();
+                    break;
+            }
             /*string res = "";
             foreach (var rel in SettingsContainer.Self.GetBaseProfile().Relevances)
             {
@@ -171,7 +219,7 @@ namespace TimeMiner.Master.Frontend.BuiltInExtensions
             }
             return res;*/
             
-            return JsonConvert.SerializeObject(SettingsContainer.Self.GetBaseProfile().Relevances, Formatting.Indented, new JsonSerializerSettings()
+            return JsonConvert.SerializeObject(rels, Formatting.Indented, new JsonSerializerSettings()
                 {
                     TypeNameHandling = TypeNameHandling.Auto,
                     Binder = binder
