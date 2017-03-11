@@ -32,22 +32,32 @@
         <div class="header">Add application</div>
         <div class="content">
             <div class="ui form">
-                    <div class="field">
-                        <label>App name</label>
-                        <input name="AppName" placeholder="Example app" type="text">
-                    </div>
-                    <div class="field">
-                        <label>Process name</label>
-                        <!--<input name="proc-name" placeholder="example.exe" type="text">-->
-                        <div class="ui right labeled input">
+                <div class="field">
+                    <label>App name</label>
+                    <input name="AppName" placeholder="Example app" type="text">
+                </div>
+                <div class="field">
+                    <label>Process name</label>
+                    <!--<input name="proc-name" placeholder="example.exe" type="text">-->
+                    <div class="ui right labeled input">
 
-                            <input name="ProcName" placeholder="may contain * and ? mask symbols" type="text">
-                            <div class="ui label">
-                                .exe
-                            </div>
+                        <input name="ProcName" placeholder="may contain * and ? mask symbols" type="text">
+                        <div class="ui label">
+                            .exe
                         </div>
                     </div>
-                    <div class="ui error message"></div>
+                </div>
+                <div class="field">
+                    <label>Application type</label>
+                    <!--<input name="proc-name" placeholder="example.exe" type="text">-->
+                    <select class="ui dropdown" name="Type">
+                        <option value="">Select type</option>
+                        <option value="0">Good</option>
+                        <option value="1">Neutral</option>
+                        <option value="2">Bad</option>
+                    </select>
+                </div>
+                <div class="ui error message"></div>
             </div>
         </div>
         <div class="actions">

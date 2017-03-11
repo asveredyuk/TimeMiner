@@ -118,15 +118,20 @@ namespace TimeMiner.Master.Frontend.BuiltInExtensions
         {
             string str = ReadPostString(req);
             JObject obj = JObject.Parse(str);
-            if (obj["AppName"] == null || obj["ProcName"] == null)
+            if (obj["AppName"] == null || obj["ProcName"] == null || obj["Type"] == null)
             {
                 WriteStringAndClose(resp,"", 400);
                 return;
             }
             string appName = obj["AppName"].Value<string>();
             string procName = obj["ProcName"].Value<string>();
+            Relevance type;
+            if (!Enum.TryParse(obj["Type"].Value<string>(), out type))
+            {
+                WriteStringAndClose(resp,"", 400);
+            }
             ApplicationDescriptor desc = new ApplicationDescriptor(appName,new ProcessNameIdetifier(procName));
-            ProfileApplicationRelevance rel = new ProfileApplicationRelevance(Relevance.neutral, desc);
+            ProfileApplicationRelevance rel = new ProfileApplicationRelevance(type, desc);
             SettingsContainer.Self.PutNewApp(rel);
             resp.Close();
 

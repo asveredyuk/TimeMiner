@@ -188,6 +188,7 @@ function MakeAddApp()
     //     }
     // });
     var $form =addAppModal.find('.ui.form');
+    $form.find('.ui.dropdown').dropdown();
     $form.form({
         fields: {
             AppName: {
@@ -210,6 +211,14 @@ function MakeAddApp()
                         prompt : 'Process name cannot contain [\\/:"><|] symbols'
                     }
                 ]
+            },
+            Type : {
+                rules:[
+                    {
+                        type :'empty',
+                        prompt:'Select application type. Good apps are related to work, while Bad are distractions'
+                    }
+                ]
             }
         }
     });
@@ -217,6 +226,7 @@ function MakeAddApp()
         $form.form('clear');
         $form.find('.error.message').html('');
     };
+
 
     addAppModal.modal('setting',{
         onApprove: function () {
@@ -226,11 +236,12 @@ function MakeAddApp()
             }
             var data = $form.form('get values');
             var json = JSON.stringify(data);
-            /*$.post("/api/apps/addapp", json, function () {
+            addAppModal.find('.actions .approve').addClass('loading');
+            $.post("/api/apps/addapp", json, function () {
                 addAppModal.modal('hide');
                 //todo:reshow hiding icon
                 tableWrapper.reloadTable();
-            });*/
+            });
             return false;
         }
     });
