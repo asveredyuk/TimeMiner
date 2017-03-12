@@ -34,14 +34,6 @@ namespace TimeMiner.Master
             serializer.Pack(stream,rec);
             stream.Flush();
             stream.Close();
-            /*var col = db.GetCollection<LogRecord>(LOGS_TABLES_PREFIX + rec.UserId);
-            col.EnsureIndex(x => x.Id);
-            if (col.Exists(x => x.Id == rec.Id))
-            {
-                throw new Exception("Such item ");
-            }
-            col.Insert(rec);*/
-
         }
 
         /// <summary>
@@ -55,18 +47,17 @@ namespace TimeMiner.Master
             if(!File.Exists(fname))
                 return new List<LogRecord>();           //return empty list
 
-            var stream = File.OpenRead(fname);
             List<LogRecord> res = new List<LogRecord>();
-            while (stream.Position != stream.Length)
+            using (var stream = File.OpenRead(fname))
             {
-                LogRecord rec = serializer.Unpack(stream);
-                res.Add(rec);
-                //recs.Add(rec);
+                while (stream.Position != stream.Length)
+                {
+                    LogRecord rec = serializer.Unpack(stream);
+                    res.Add(rec);
+                }
+                stream.Close();
             }
             return res;
-            /*var col = db.GetCollection<LogRecord>(LOGS_TABLES_PREFIX + userid);
-            //TODO: think about this
-            return new List<LogRecord>(col.FindAll().OrderBy(t => t.Time));*/
 
         }
 

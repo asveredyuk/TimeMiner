@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -62,14 +63,20 @@ namespace TimeMiner.Slave
         /// Last captured record
         /// </summary>
         private LogRecord lastRecord;
+
         /// <summary>
         /// Make new logger
         /// </summary>
+        private IReadOnlyList<MetaExtractor> metaExtractors;
         private Logger()
         {
             mouseButtonsHook = new MouseButtonsHook();
             mouseWheelHook = new MouseWheelHook();
             keyboardHook = new KeyboardHook();
+            metaExtractors = new List<MetaExtractor>(new []
+            {
+                new BrowserUrlExtractor()
+            });
         }
         /// <summary>
         /// Destructor
@@ -114,10 +121,23 @@ namespace TimeMiner.Slave
                 while (true)
                 {
                     Thread.Sleep(LOG_INTERVAL);
-                    LogRecord rec = MakeLogRecord();
-                    lastRecord = rec;
-                    RaiseOnLogRecord(rec);
+                    try
+                    {
+                        LogRecord rec = MakeLogRecord();
+                        lastRecord = rec;
+                        RaiseOnLogRecord(rec);
+                    }
+                    catch (ThreadAbortException e)
+                    {
+                        throw;
+                    }
+                    catch (Exception e)
+                    {
+                        Console.WriteLine("Exception thrown : " +e.GetType().Name + ":" + e.Message);
+                        Console.WriteLine(e.StackTrace);
+                    }
                     ResetAllHooks();
+                    
                 }
             }
             catch (ThreadAbortException e)
@@ -171,17 +191,19 @@ namespace TimeMiner.Slave
         /// <returns></returns>
         private LogRecord MakeLogRecord()
         {
+            IntPtr hWnd = WindowsBoundary.GetForegroundWindow();
+            Process process = WindowsBoundary.GetWindowProcess(hWnd);
             //make process descriptor
             ProcessDescriptor proc = new ProcessDescriptor()
             {
-                ProcessName = WindowsBoundary.GetForegroundWindowProcess().ProcessName
+                ProcessName = process.ProcessName
             };
             //get rectangle of foreground window
-            WindowsBoundary.Rect windRect = WindowsBoundary.GetForegroundWindowRect();
+            WindowsBoundary.Rect windRect = WindowsBoundary.GetWindowRect(hWnd);
             //make window descriptor
             WindowDescriptor wind = new WindowDescriptor()
             {
-                Title = WindowsBoundary.GetForegroundWindowText(),
+                Title = WindowsBoundary.GetWindowText(hWnd),
                 Location = new IntPoint(windRect.Left, windRect.Top),
                 Size = new IntPoint(windRect.Right - windRect.Left, windRect.Top - windRect.Bottom)
             };
@@ -201,7 +223,25 @@ namespace TimeMiner.Slave
                 MouseWheelActions = mouseWheelHook.ActionsCount
                 //user id is 0 for testing
             };
+            //extract meta data
+            ExtractMetaData(record,process,hWnd);
             return record;
+        }
+
+        private void ExtractMetaData(LogRecord rec, Process process, IntPtr hWnd)
+        {
+            foreach (var metaExtractor in metaExtractors)
+            {
+                if (metaExtractor.CanAccept(process, hWnd))
+                {
+                    var meta = metaExtractor.Extract(process, hWnd);
+                    if (rec.MetaData.ContainsKey(meta.Key))
+                    {
+                        Console.WriteLine($"{meta.Key} is written twice");
+                    }
+                    rec.MetaData[meta.Key] = meta.Value;
+                }
+            }
         }
     }
 }

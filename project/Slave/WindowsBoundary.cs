@@ -25,9 +25,8 @@ namespace TimeMiner.Slave
         /// Get process-owner of foreground window
         /// </summary>
         /// <returns></returns>
-        public static Process GetForegroundWindowProcess()
+        public static Process GetWindowProcess(IntPtr hWnd)
         {
-            IntPtr hWnd = GetForegroundWindow();
             uint pid;
             GetWindowThreadProcessId(hWnd, out pid);
             return Process.GetProcessById((int)pid);
@@ -36,11 +35,10 @@ namespace TimeMiner.Slave
         /// Get title of foreground window
         /// </summary>
         /// <returns></returns>
-        public static string GetForegroundWindowText()
+        public static string GetWindowText(IntPtr hWnd)
         {
             const int nChars = 256;
             StringBuilder buff = new StringBuilder(nChars);
-            IntPtr hWnd = GetForegroundWindow();
             int hr = GetWindowText(hWnd, buff, nChars);
             if (hr > 0)
             {
@@ -52,9 +50,9 @@ namespace TimeMiner.Slave
         /// Get rectangle of foreground window
         /// </summary>
         /// <returns></returns>
-        public static Rect GetForegroundWindowRect()
+        public static Rect GetWindowRect(IntPtr hWnd)
         {
-            IntPtr hWnd = GetForegroundWindow();
+
             Rect r = new Rect();
             GetWindowRect(hWnd, ref r);
             return r;
@@ -85,7 +83,7 @@ namespace TimeMiner.Slave
         [return: MarshalAs(UnmanagedType.Bool)]
         internal static extern bool GetCursorPos(ref Win32Point pt);
         [DllImport("user32.dll")]
-        static extern IntPtr GetForegroundWindow();
+        public static extern IntPtr GetForegroundWindow();
         [DllImport("user32.dll")]
         static extern int GetWindowText(IntPtr hWnd, StringBuilder text, int count);
         [DllImport("user32.dll")]

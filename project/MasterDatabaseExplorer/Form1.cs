@@ -146,7 +146,16 @@ namespace MasterDatabaseExplorer
         {
             for (int i = 0; i < values.Length; i++)
             {
-                sheet.Cells[row, i + 1] = values[i]?.ToString() ?? "null";
+                string val = values[i]?.ToString() ?? "null";
+                if (values[i] != null && values[i] is Dictionary<string,byte[]>)
+                {
+                    val = "";
+                    foreach (var pair in values[i] as Dictionary<string,byte[]>)
+                    {
+                        val += $"[{pair.Key}:{Encoding.UTF8.GetString(pair.Value)}]";
+                    }
+                }
+                sheet.Cells[row, i + 1] = val;
             }
         }
 

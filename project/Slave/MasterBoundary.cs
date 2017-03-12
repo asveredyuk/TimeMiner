@@ -68,7 +68,8 @@ namespace TimeMiner.Slave
         {
             try
             {
-                string data = JsonConvert.SerializeObject(record);
+                string data = JsonConvert.SerializeObject(record, Formatting.Indented);
+                File.AppendAllText("log.txt",data + "\r\n");
                 HttpWebRequest req = HttpWebRequest.CreateHttp(URL);
                 req.Method = "POST";
                 using (StreamWriter sw = new StreamWriter(await req.GetRequestStreamAsync()))
@@ -79,15 +80,18 @@ namespace TimeMiner.Slave
                     if (resp.StatusCode == HttpStatusCode.OK)
                     {
                         //successfully sent
+                        Console.WriteLine("Sent!");
+                        Console.WriteLine("-");
                         RaiseOnRecordSent(record);
                     }
+                    Console.WriteLine("Not sent!");
+                    Console.WriteLine("-");
                     //log was not successfully sent
                 }
             }
             catch (Exception e)
             {
-                //log was not successfully sent
-            //    throw;
+                Console.WriteLine("Exception!");
             }
         }
 

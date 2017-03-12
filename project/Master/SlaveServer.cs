@@ -68,19 +68,35 @@ namespace TimeMiner.Master
         {
             while (true)
             {
-                HttpListenerContext context = await listener.GetContextAsync();
-                var req = context.Request;
-                var resp = context.Response;
-
-                string str = "";
-                using (StreamReader sr = new StreamReader(req.InputStream,Encoding.UTF8))
+                try
                 {
-                    str = sr.ReadToEnd();
+                    HttpListenerContext context = null;
+                    try
+                    {
+                        context = await listener.GetContextAsync();
+                    }
+                    catch (InvalidOperationException ee)
+                    {
+                        Console.WriteLine("stopped listening");
+                        break;
+                    }
+                    var req = context.Request;
+                    var resp = context.Response;
+
+                    string str = "";
+                    using (StreamReader sr = new StreamReader(req.InputStream, Encoding.UTF8))
+                    {
+                        str = sr.ReadToEnd();
+                    }
+                    //File.AppendAllText("log.txt", str + "\r\n"); //FOR DEBUG
+                    resp.OutputStream.Close();
+                    LogRecord rec = DeserializeLogRecord(str);
+                    RaiseOnLogRecordCame(rec);
                 }
-                File.AppendAllText("log.txt",str + "\r\n"); //FOR DEBUG
-                resp.OutputStream.Close();
-                LogRecord rec = DeserializeLogRecord(str);
-                RaiseOnLogRecordCame(rec);
+                catch (Exception e)
+                {
+                    Console.WriteLine(e);
+                }
             }
         }
         /// <summary>

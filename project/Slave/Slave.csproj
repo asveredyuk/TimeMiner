@@ -54,6 +54,8 @@
     <Reference Include="System.Xaml">
       <RequiredTargetFramework>4.0</RequiredTargetFramework>
     </Reference>
+    <Reference Include="UIAutomationClient" />
+    <Reference Include="UIAutomationTypes" />
     <Reference Include="WindowsBase" />
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
@@ -63,6 +65,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="BrowserUrlExtractor.cs" />
     <Compile Include="Hooks\BaseHook.cs" />
     <Compile Include="Hooks\IWinHook.cs" />
     <Compile Include="Hooks\KeyboardHook.cs" />
@@ -72,6 +75,7 @@
     <Compile Include="Logger.cs" />
     <Compile Include="MainController.cs" />
     <Compile Include="MasterBoundary.cs" />
+    <Compile Include="MetaExtractor.cs" />
     <Compile Include="SlaveDB.cs" />
     <Compile Include="TestWindow.xaml.cs">
       <DependentUpon>TestWindow.xaml</DependentUpon>
