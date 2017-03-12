@@ -383,7 +383,12 @@ namespace MasterDatabaseExplorer
 
         private void btLogStat_Click(object sender, EventArgs e)
         {
-            List<LogRecord> list = db.GetAllRecordsForUser(0);
+            List<LogRecord> list = db.GetAllRecordsForUser(0,false);
+            if (list.Count == 0)
+            {
+                MessageBox.Show("Empty");
+                return;
+            }
             string stat = $"{list.Count} total records\r\n";
             int sitecount = list.Where(t => t.GetMetaString("site") != null).Count();
             int percent = sitecount * 100 / list.Count;

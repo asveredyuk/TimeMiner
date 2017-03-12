@@ -46,7 +46,10 @@ namespace TimeMiner.Master.Frontend.BuiltInExtensions
         public void HandleApi(HttpListenerRequest req, HttpListenerResponse resp)
         {
             string path = SkipApiAndRoot(req.Url.AbsolutePath);
+            Stopwatch w2 = Stopwatch.StartNew();
             Log log = Log.GetLog();
+            w2.Stop();
+            Console.Out.WriteLine($"Log loading elapsed {w2.ElapsedMilliseconds}ms");
             Stopwatch w = Stopwatch.StartNew();
             ActiveReport active = new ActiveReport(log);
             //bool[] actives = active.GetActivities().Select(t => t.Value).ToArray();
@@ -59,7 +62,7 @@ namespace TimeMiner.Master.Frontend.BuiltInExtensions
             string res = JsonConvert.SerializeObject(report.GetItems(), Formatting.Indented);
             w.Stop();
             WriteStringAndClose(resp,res);
-            Console.Out.WriteLine($"Elapsed {w.ElapsedMilliseconds} ms"); 
+            Console.Out.WriteLine($"Analyze elapsed {w.ElapsedMilliseconds}ms"); 
             
         }
 
