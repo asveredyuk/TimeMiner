@@ -17,6 +17,7 @@ using TimeMiner.Master.Settings.ApplicationIdentifiers;
 
 namespace TimeMiner.Master.Frontend.BuiltInExtensions
 {
+    [MenuItem("Apps","apps")]
     class ApplicationListExtension: FrontendServerExtensionBase
     {
         private class ApplicationIdentifierTypesBinder : SerializationBinder
@@ -57,19 +58,19 @@ namespace TimeMiner.Master.Frontend.BuiltInExtensions
         public ApplicationListExtension()
         {
             binder = ApplicationIdentifierTypesBinder.MakeFromCurrentAssembly();
-            MenuItems.Add(new TemplatePageMenuItem("Apps",
-                    new TemplatePageMenuItem("Applications","/apps/apps"),
-                    new TemplatePageMenuItem("Sites","/apps/sites")
-                ));
+            /*MenuItems.Add(new FrontendPageMenuItem("Apps",
+                    new FrontendPageMenuItem("Applications","/apps/apps"),
+                    new FrontendPageMenuItem("Sites","/apps/sites")
+                ));*/
         }
-
+        [MenuItem("Applications","apps/apps")]
         [HandlerPath("apps/apps")]
         public HandlerPageDescriptor HandleApps(HttpListenerRequest req, HttpListenerResponse resp)
         {
             var arg = new { Type = "Application", type = "application", isapplication = true, Title = "Applications" };
             return MakeTablepage(arg);
         }
-
+        [MenuItem("Sites","apps/sites")]
         [HandlerPath("apps/sites")]
         public HandlerPageDescriptor HandleSites(HttpListenerRequest req, HttpListenerResponse resp)
         {

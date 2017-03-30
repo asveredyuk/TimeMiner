@@ -24,14 +24,15 @@ namespace TimeMiner.Master.Frontend
             get { return desc.Head; }
         }
 
-        public List<TemplatePageMenuItem> Menu { get; private set; }
+        public FrontendPageMenu Menu { get; private set; }
         #endregion
         private HandlerPageDescriptor desc;
 
-        public TemplatePageDescriptor(HandlerPageDescriptor desc)
+        public TemplatePageDescriptor(HandlerPageDescriptor desc, FrontendPageMenu menu)
         {
             this.desc = desc;
-            Menu = new List<TemplatePageMenuItem>();
+            Menu = menu;
+            //Menu = new List<FrontendPageMenuItem>();
         }
 
         

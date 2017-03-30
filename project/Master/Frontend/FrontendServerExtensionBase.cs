@@ -8,13 +8,11 @@ using System.Threading.Tasks;
 
 namespace TimeMiner.Master.Frontend
 {
-    abstract class FrontendServerExtensionBase
+    public abstract class FrontendServerExtensionBase
     {
-        public List<TemplatePageMenuItem> MenuItems { get; protected set; }
 
         protected FrontendServerExtensionBase()
         {
-            MenuItems = new List<TemplatePageMenuItem>();
         }
 
         protected IResourceContainer WWWRes

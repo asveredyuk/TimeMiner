@@ -41,10 +41,7 @@ namespace TimeMiner.Master.Frontend
             get { return _apiHandlers; }
         }
 
-        public IEnumerable<TemplatePageMenuItem> MenuItems
-        {
-            get { return _extensions.Select(t => t.MenuItems).Where(t => t != null).SelectMany(t => t); }
-        }
+        public FrontendPageMenu Menu { get; private set; }
 
         private List<FrontendServerExtensionBase> _extensions;
         private Dictionary<string, OnRequestHandler> _requestHandlers;
@@ -64,6 +61,7 @@ namespace TimeMiner.Master.Frontend
             LoadPlugins();
             ParseExtensions();
             ParseHandlers();
+            ParseMenu();
         }
 
         public OnRequestHandler GetRequestHandler(string path)
@@ -210,8 +208,63 @@ namespace TimeMiner.Master.Frontend
                     return constr != null && constr.IsPublic;
                 });
         }
-        
 
-        
+        private void ParseMenu()
+        {
+            List<FrontendPageMenuItem> items = ParseMenuItems(_extensions.Select(t => t.GetType()).ToArray());
+            Menu = FrontendPageMenu.MakeMenu(items);
+        }
+        private List<FrontendPageMenuItem> ParseMenuItems(Type[] types)
+        {
+            List<FrontendPageMenuItem> menuItems = new List<FrontendPageMenuItem>();
+            foreach (var type in types)
+            {
+                IEnumerable<MenuItemAttribute> clAttrs = type.GetCustomAttributes<MenuItemAttribute>();
+                foreach (var clAttr in clAttrs)
+                {
+                    var item = new FrontendPageMenuItem(clAttr.label, clAttr.url, clAttr.menuPath, clAttr.order);
+                    menuItems.Add(item);
+                }
+                foreach (var methodInfo in type.GetMethods())
+                {
+                    MenuItemAttribute[] menuAttributes = methodInfo.GetCustomAttributes<MenuItemAttribute>().ToArray();
+                    if (menuAttributes.Length == 0)
+                    {
+                        continue;
+                    }
+                    if (menuAttributes.Length > 1)
+                    {
+                        Console.WriteLine("Menu warning: more than one menu handler on method " + type.Name + "." + methodInfo.Name + " , first used");
+                    }
+                    MenuItemAttribute mattr = menuAttributes.First();
+                    string url = mattr.url;
+                    if (url == null)
+                    {
+                        HandlerPathAttribute[] pathAttributes = methodInfo.GetCustomAttributes<HandlerPathAttribute>().ToArray();
+                        if (pathAttributes.Length == 0)
+                        {
+                            Console.WriteLine("Menu warning: no path found for menu for method " + type.Name + "." +
+                                              methodInfo.Name);
+                        }
+                        else
+                        {
+                            if (pathAttributes.Length > 1)
+                            {
+                                Console.WriteLine("Menu warning: more than one path found in method " + type.Name + "." +
+                                              methodInfo.Name);
+                            }
+                            HandlerPathAttribute pattr = pathAttributes.First();
+                            url = pattr.path;
+                        }
+                    }
+                    var item = new FrontendPageMenuItem(mattr.label, url, mattr.menuPath, mattr.order);
+                    menuItems.Add(item);
+                }
+            }
+            return menuItems;
+        }
+
+
+
     }
 }

@@ -17,8 +17,9 @@ namespace TimeMiner.Master.Frontend.BuiltInExtensions
     {
         public ProgramStatisticsExtension()
         {
-            MenuItems.Add(new TemplatePageMenuItem("Statistics","/stat"));
+            //MenuItems.Add(new FrontendPageMenuItem("Statistics","/stat"));
         }
+        [MenuItem("Statistics","stat")]
         [HandlerPath("stat")]
         public HandlerPageDescriptor Handle(HttpListenerRequest req, HttpListenerResponse resp)
         {

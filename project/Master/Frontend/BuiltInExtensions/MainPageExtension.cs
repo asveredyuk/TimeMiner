@@ -11,14 +11,14 @@ namespace TimeMiner.Master.Frontend.BuiltInExtensions
     
     class MainPageExtension:FrontendServerExtensionBase
     {
-        private TemplatePageMenuItem ite;
+        private FrontendPageMenuItem ite;
         public MainPageExtension()
         {
-            ite = new TemplatePageMenuItem("Main");
+            /*ite = new FrontendPageMenuItem("Main");
             ite.Path = "/";
-            ite.InnerItems.Add(new TemplatePageMenuItem("Google","http://google.ru"));
-            ite.InnerItems.Add(new TemplatePageMenuItem("Yandex", "http://yandex.ru"));
-            MenuItems.Add(ite);
+            ite.InnerItems.Add(new FrontendPageMenuItem("Google","http://google.ru"));
+            ite.InnerItems.Add(new FrontendPageMenuItem("Yandex", "http://yandex.ru"));
+            MenuItems.Add(ite);*/
         }
         [HandlerPath("")]
         public HandlerPageDescriptor Handle(HttpListenerRequest req, HttpListenerResponse resp)

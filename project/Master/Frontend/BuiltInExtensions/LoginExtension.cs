@@ -13,7 +13,7 @@ namespace TimeMiner.Master.Frontend.BuiltInExtensions
     {
         public LoginExtension()
         {
-            MenuItems.Add(new TemplatePageMenuItem("Login") {Path = "/login"});
+            //MenuItems.Add(new FrontendPageMenuItem("Login") {Path = "/login"});
         }
         [HandlerPath("login")]
         public HandlerPageDescriptor Handle(HttpListenerRequest req, HttpListenerResponse resp)

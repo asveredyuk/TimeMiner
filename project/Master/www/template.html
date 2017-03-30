@@ -15,18 +15,18 @@
     <div class="item">
         <img class="ui mini image" src="http://semantic-ui.com/images/logo.png">
     </div>
-    {{#each Menu}}
-    {{#if InnerItems}}
+    {{#each Menu.Items}}
+    {{#if Children}}
     <div class="item">
-        <div class="header">{{Text}}</div>
+        <div class="header">{{Label}}</div>
             <div class="menu">
-                {{#each InnerItems}}
-                <a class="item"{{#if Path}} href="{{Path}}" {{/if}}>{{Text}}</a>
+                {{#each Children}}
+                <a class="item"{{#if Url}} href="{{Url}}" {{/if}}>{{Label}}</a>
                 {{/each}}
             </div>
     </div>
     {{#else}}
-        <a class="item"{{#if Path}} href="{{Path}}"{{/if}}>{{Text}}</a>
+        <a class="item"{{#if Url}} href="{{Url}}"{{/if}}>{{Label}}</a>
     {{/if}}
 
 
