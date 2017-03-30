@@ -35,10 +35,6 @@ namespace TimeMiner.Master.Frontend
         {
             get { return _extensions; }
         }
-        public IReadOnlyDictionary<string, OnRequestHandler> RequestHandlers
-        {
-            get { return _requestHandlers; }
-        }
 
         public IReadOnlyDictionary<string, OnApiRequestHandler> ApiHanlders
         {
@@ -68,6 +64,27 @@ namespace TimeMiner.Master.Frontend
             LoadPlugins();
             ParseExtensions();
             ParseHandlers();
+        }
+
+        public OnRequestHandler GetRequestHandler(string path)
+        {
+            OnRequestHandler result;
+            while (true)
+            {
+                if (_requestHandlers.TryGetValue(path, out result))
+                {
+                    return result;
+                }
+                if (path.Contains("/"))
+                {
+                    path = path.Substring(0, path.LastIndexOf('/'));
+                }
+                else
+                {
+                    break;
+                }
+            }
+            return null;
         }
         /// <summary>
         /// Load plugins assemblies

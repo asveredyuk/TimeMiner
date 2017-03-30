@@ -26,15 +26,30 @@ namespace TimeMiner.Master.Frontend
         {
             string q = req.Url.AbsolutePath.Trim('/');
             //check if there is no only root
-            if (q.Contains("/"))
+//            if (q.Contains("/"))
+//            {
+//                //take only root
+//                q = q.Substring(0, q.IndexOf("/"));
+//            }
+            var handler = FrontendExtensionLoader.Self.GetRequestHandler(q);
+            if (handler == null)
             {
-                //take only root
-                q = q.Substring(0, q.IndexOf("/"));
+                resp.StatusCode = 404;
+                using (StreamWriter sw = new StreamWriter(resp.OutputStream))
+                {
+                    sw.Write("404, not found");
+                    sw.Close();
+                }
+                return;
             }
-            HandlerPageDescriptor hbu = FrontendExtensionLoader.Self.RequestHandlers[q](req, resp);
+            HandlerPageDescriptor hbu = handler(req, resp);
             if (hbu == null)
             {
                 Console.Out.WriteLine("No page builder returned from handler");
+                if (resp.OutputStream.CanWrite)
+                {
+                    resp.OutputStream.Close();
+                }
                 return;
             }
             string res = CompilePage(hbu);

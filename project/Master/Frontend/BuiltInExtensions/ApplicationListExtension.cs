@@ -62,32 +62,34 @@ namespace TimeMiner.Master.Frontend.BuiltInExtensions
                     new TemplatePageMenuItem("Sites","/apps/sites")
                 ));
         }
-        //TODO: make this able
-        //[HandlerPath("apps/sites")]
-        [HandlerPath("apps")]
-        public HandlerPageDescriptor Handle(HttpListenerRequest req, HttpListenerResponse resp)
+
+        [HandlerPath("apps/apps")]
+        public HandlerPageDescriptor HandleApps(HttpListenerRequest req, HttpListenerResponse resp)
         {
-            string path = req.Url.AbsolutePath;
-            string subpath = GetSubPath(path);
-            string root = GetPathRoot(subpath);
-            object arg = null;
-            switch (root)
-            {
-                case "apps":
-                    arg = new {Type = "Application", type = "application", isapplication = true, Title = "Applications"};
-                    break;
-                case "sites":
-                    arg = new {Type = "Site", type = "site", isapplication = false, Title = "Sites"};
-                    break;
-                default:
-                    arg = new { Type = "Application", type = "application", isapplication = true, Title = "Applications" };
-                    break;
-            }
+            var arg = new { Type = "Application", type = "application", isapplication = true, Title = "Applications" };
+            return MakeTablepage(arg);
+        }
+
+        [HandlerPath("apps/sites")]
+        public HandlerPageDescriptor HandleSites(HttpListenerRequest req, HttpListenerResponse resp)
+        {
+            var arg = new { Type = "Site", type = "site", isapplication = false, Title = "Sites" };
+            return MakeTablepage(arg);
+        }
+
+        [HandlerPath("apps")]
+        public HandlerPageDescriptor HandleMain(HttpListenerRequest req, HttpListenerResponse resp)
+        {
+            return new HandlerPageDescriptor("Main config page");
+        }
+
+        private HandlerPageDescriptor MakeTablepage(object arg)
+        {
             string page = WWWRes.GetString("apps/table/tablepage.html");
             var mustacheCompiler = new FormatCompiler();
             var generator = mustacheCompiler.Compile(page);
             string rendered = generator.Render(arg);
-            var res = new HandlerPageDescriptor(rendered,WWWRes.GetString("apps/table/tablehead.html"));
+            var res = new HandlerPageDescriptor(rendered, WWWRes.GetString("apps/table/tablehead.html"));
             return res;
         }
         [ApiPath("apps")]
