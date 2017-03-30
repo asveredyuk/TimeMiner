@@ -93,34 +93,15 @@ namespace TimeMiner.Master.Frontend.BuiltInExtensions
             var res = new HandlerPageDescriptor(rendered, WWWRes.GetString("apps/table/tablehead.html"));
             return res;
         }
-        [ApiPath("apps")]
-        public void ApiHandler(HttpListenerRequest req, HttpListenerResponse resp)
+        [ApiPath("apps/gettable")]
+        public void ApiGetTableCall(HttpListenerRequest req, HttpListenerResponse resp)
         {
-            string path = SkipApiAndRoot(req.Url.AbsolutePath);
-            string root = GetPathRoot(path);
-            Thread.Sleep(1000);
-            switch (root)
-            {
-                case "gettable":
-                    string type = GetPathRoot(GetSubPath(path));
-                    WriteStringAndClose(resp, GetTableString(type));
-                    break;
-                case "updateapp":
-                    UpdateApp(req,resp);
-                    break;
-                case "addapp":
-                    AddApp(req,resp);
-                    break;
-                case "rmapp":
-                    RemoveApp(req,resp);
-                    break;
-                default:
-                    CloseWithCode(resp, 404);
-                    break;
-            }
+            string path = SkipApiAndRoot(req.Url.AbsolutePath);// /gettable/?
+            string type = GetPathRoot(GetSubPath(path));
+            WriteStringAndClose(resp, GetTableString(type));
         }
-
-        private void RemoveApp(HttpListenerRequest req, HttpListenerResponse resp)
+        [ApiPath("apps/rmapp")]
+        public void RemoveApp(HttpListenerRequest req, HttpListenerResponse resp)
         {
             string str = ReadPostString(req);
             JObject obj = JObject.Parse(str);
@@ -139,8 +120,8 @@ namespace TimeMiner.Master.Frontend.BuiltInExtensions
             resp.Close();
 
         }
-        
-        private void AddApp(HttpListenerRequest req, HttpListenerResponse resp)
+        [ApiPath("apps/addapp")]
+        public void AddApp(HttpListenerRequest req, HttpListenerResponse resp)
         {
             string str = ReadPostString(req);
             JObject obj = JObject.Parse(str);
@@ -176,7 +157,8 @@ namespace TimeMiner.Master.Frontend.BuiltInExtensions
             resp.Close();
 
         }
-        private void UpdateApp(HttpListenerRequest req, HttpListenerResponse resp)
+        [ApiPath("apps/updateapp")]
+        public void UpdateApp(HttpListenerRequest req, HttpListenerResponse resp)
         {
             //TODO:MAKE NORMAL REL PARSE
 

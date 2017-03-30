@@ -36,11 +36,6 @@ namespace TimeMiner.Master.Frontend
             get { return _extensions; }
         }
 
-        public IReadOnlyDictionary<string, OnApiRequestHandler> ApiHanlders
-        {
-            get { return _apiHandlers; }
-        }
-
         public FrontendPageMenu Menu { get; private set; }
 
         private List<FrontendServerExtensionBase> _extensions;
@@ -66,10 +61,20 @@ namespace TimeMiner.Master.Frontend
 
         public OnRequestHandler GetRequestHandler(string path)
         {
-            OnRequestHandler result;
+            return GetItemFromDictWithPath(path, _requestHandlers);
+        }
+
+        public OnApiRequestHandler GetApiRequestHandler(string path)
+        {
+            return GetItemFromDictWithPath(path, _apiHandlers);
+        }
+
+        private static T GetItemFromDictWithPath<T>(string path, Dictionary<string, T> dict) where T:class
+        {
+            T result;
             while (true)
             {
-                if (_requestHandlers.TryGetValue(path, out result))
+                if (dict.TryGetValue(path, out result))
                 {
                     return result;
                 }

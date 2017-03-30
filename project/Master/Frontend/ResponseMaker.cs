@@ -74,12 +74,22 @@ namespace TimeMiner.Master.Frontend
             //remove api part
             q = q.Substring(q.IndexOf("/")+1,q.Length - q.IndexOf("/")-1);
             //check if there is no only root
-            if (q.Contains("/"))
+            var handler = FrontendExtensionLoader.Self.GetApiRequestHandler(q);
+            if (handler != null)
             {
-                //take only root
-                q = q.Substring(0, q.IndexOf("/"));
+                handler(req, resp);
+                if(resp.OutputStream.CanWrite)
+                    resp.OutputStream.Close();
             }
-            FrontendExtensionLoader.Self.ApiHanlders[q](req, resp);
+            else
+            {
+                resp.StatusCode = 404;
+                using (StreamWriter sw = new StreamWriter(resp.OutputStream))
+                {
+                    sw.Write("404, no such query");
+                    sw.Close();
+                }
+            }
         }
 
         private string CompilePage(HandlerPageDescriptor hdesc)
