@@ -12,32 +12,30 @@ namespace TimeMiner.Master.Settings
     /// </summary>
     public class ApplicationDescriptor
     { 
+        /// <summary>
+        /// Guid of given descriptor
+        /// </summary>
         public Guid Id { get; set; }
+        /// <summary>
+        /// Application name
+        /// </summary>
         public string Name { get; set; }
+        /// <summary>
+        /// List of identifiers
+        /// </summary>
         public List<ApplicationIdentifierBase> Identifiers { get; set; }
 
-        //TODO: избавиться от этого свойства
-        public string ProcName
-        {
-            get
-            {
-                if (Identifiers[0] is ProcessNameIdetifier)
-                {
-                    return (Identifiers[0] as ProcessNameIdetifier).ProcessName;
-                }
-                if (Identifiers[0] is WebsiteIdentifier)
-                {
-                    return (Identifiers[0] as WebsiteIdentifier).Host;
-                }
-                return "";
-                //return (Identifiers[0] as ProcessNameIdetifier).ProcessName;
-            }
-        }
-
+        /// <summary>
+        /// Create new application descriptor
+        /// </summary>
         public ApplicationDescriptor()
         {
         }
-
+        /// <summary>
+        /// Create new application descriptor
+        /// </summary>
+        /// <param name="name">Application name</param>
+        /// <param name="identifiers">Identifiers</param>
         public ApplicationDescriptor(string name, params ApplicationIdentifierBase[] identifiers)
         {
             Id = Guid.NewGuid();

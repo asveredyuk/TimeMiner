@@ -27,20 +27,46 @@ namespace TimeMiner.Master.Frontend
         private static FrontendExtensionLoader self;
         #endregion
 
+        /// <summary>
+        /// Delegate to handle page
+        /// </summary>
+        /// <param name="req">Listener request</param>
+        /// <param name="resp">Listener response</param>
+        /// <returns></returns>
         public delegate HandlerPageDescriptor OnRequestHandler(HttpListenerRequest req, HttpListenerResponse resp);
 
+        /// <summary>
+        /// Delegate to handle api call
+        /// </summary>
+        /// <param name="req">Listener request</param>
+        /// <param name="resp">Listener response</param>
         public delegate void OnApiRequestHandler(HttpListenerRequest req, HttpListenerResponse resp);
-
+        /// <summary>
+        /// List of loaded extensions
+        /// </summary>
         public IReadOnlyList<FrontendServerExtensionBase> Extensions
         {
             get { return _extensions; }
         }
-
+        /// <summary>
+        /// Menu, parsed from loaded extensions
+        /// </summary>
         public FrontendPageMenu Menu { get; private set; }
-
+        /// <summary>
+        /// List of extensions
+        /// </summary>
         private List<FrontendServerExtensionBase> _extensions;
+        /// <summary>
+        /// Dictinary [path]->[request handler]
+        /// </summary>
         private Dictionary<string, OnRequestHandler> _requestHandlers;
+        /// <summary>
+        /// Dictionary [path]->[api handler]
+        /// </summary>
         private Dictionary<string, OnApiRequestHandler> _apiHandlers;
+        /// <summary>
+        /// List of loaded assemblies
+        /// </summary>
         private List<Assembly> loadedAssemblies;
         private FrontendExtensionLoader()
         {
@@ -50,7 +76,9 @@ namespace TimeMiner.Master.Frontend
             _apiHandlers = new Dictionary<string, OnApiRequestHandler>();
             Init();
         }
-
+        /// <summary>
+        /// Initialize loader
+        /// </summary>
         public void Init()
         {
             LoadPlugins();
@@ -58,20 +86,41 @@ namespace TimeMiner.Master.Frontend
             ParseHandlers();
             ParseMenu();
         }
-
+        /// <summary>
+        /// Get handler for given request path
+        /// </summary>
+        /// <param name="path"></param>
+        /// <returns>Handler or null</returns>
         public OnRequestHandler GetRequestHandler(string path)
         {
             return GetItemFromDictWithPath(path, _requestHandlers);
         }
-
+        /// <summary>
+        /// Get handler for given api request path
+        /// </summary>
+        /// <param name="path"></param>
+        /// <returns></returns>
         public OnApiRequestHandler GetApiRequestHandler(string path)
         {
             return GetItemFromDictWithPath(path, _apiHandlers);
         }
-
+        /// <summary>
+        /// Get the most appropriate item from given dicionary for given path
+        /// </summary>
+        /// <typeparam name="T">Type of items</typeparam>
+        /// <param name="path">Path</param>
+        /// <param name="dict">Dictionary with items</param>
+        /// <returns>Item if found and null if not</returns>
         private static T GetItemFromDictWithPath<T>(string path, Dictionary<string, T> dict) where T:class
         {
             T result;
+            //slowly downgrade to the root
+            //example:
+            //we have path ext/a/b
+            //the order of checks
+            //ext/a/b
+            //ext/a
+            //ext
             while (true)
             {
                 if (dict.TryGetValue(path, out result))
@@ -213,12 +262,19 @@ namespace TimeMiner.Master.Frontend
                     return constr != null && constr.IsPublic;
                 });
         }
-
+        /// <summary>
+        /// Parse menu from loaded extensions
+        /// </summary>
         private void ParseMenu()
         {
             List<FrontendPageMenuItem> items = ParseMenuItems(_extensions.Select(t => t.GetType()).ToArray());
             Menu = FrontendPageMenu.MakeMenu(items);
         }
+        /// <summary>
+        /// Parse menuitems from given types
+        /// </summary>
+        /// <param name="types">Types of loaded extensions</param>
+        /// <returns></returns>
         private List<FrontendPageMenuItem> ParseMenuItems(Type[] types)
         {
             List<FrontendPageMenuItem> menuItems = new List<FrontendPageMenuItem>();

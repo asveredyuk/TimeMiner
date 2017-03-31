@@ -8,8 +8,14 @@ using TimeMiner.Core;
 
 namespace TimeMiner.Master.Settings.ApplicationIdentifiers
 {
+    /// <summary>
+    /// Identifier via process name
+    /// </summary>
     public class ProcessNameIdetifier:ApplicationIdentifierBase
     {
+        /// <summary>
+        /// Name of process or mask
+        /// </summary>
         public string ProcessName
         {
             get { return _processName; }
@@ -22,10 +28,14 @@ namespace TimeMiner.Master.Settings.ApplicationIdentifiers
                 }
             }
         }
-
+        /// <summary>
+        /// Regex for checking, used only for mask
+        /// </summary>
         private Regex regex;
+        /// <summary>
+        /// Name of process or mask
+        /// </summary>
         private string _processName;
-
         public ProcessNameIdetifier()
         {
         }
@@ -35,6 +45,7 @@ namespace TimeMiner.Master.Settings.ApplicationIdentifiers
             ProcessName = processName;
         }
 
+        /// <inheritdoc />
         public override int CheckRecord(LogRecord record)
         {
             if (regex != null)
@@ -50,15 +61,24 @@ namespace TimeMiner.Master.Settings.ApplicationIdentifiers
             }
             return 0;
         }
-
+        /// <summary>
+        /// Make regex from mask
+        /// </summary>
+        /// <param name="mask"></param>
+        /// <returns></returns>
         private static Regex MakeMaskRegex(string mask)
         {
             return new Regex("^" + mask.ToLower().Replace(".", "[.]").Replace("*", ".*").Replace("?", ".") + "$", RegexOptions.Singleline);
         }
-
-        private static bool CheckMaskRegex(Regex regex, string fname)
+        /// <summary>
+        /// Check if process name fits regex 
+        /// </summary>
+        /// <param name="regex">Regex with mask</param>
+        /// <param name="processName">Process name</param>
+        /// <returns></returns>
+        private static bool CheckMaskRegex(Regex regex, string processName)
         {
-            return regex.IsMatch(fname);
+            return regex.IsMatch(processName);
         }
     }
 }

@@ -7,10 +7,14 @@ using TimeMiner.Core;
 
 namespace TimeMiner.Master.Settings.ApplicationIdentifiers
 {
+    /// <summary>
+    /// Identifier for website
+    /// </summary>
     public class WebsiteIdentifier : ApplicationIdentifierBase
     {
-    
-
+        /// <summary>
+        /// Host of website
+        /// </summary>
         public string Host { get; set; }
 
         public WebsiteIdentifier()
@@ -22,17 +26,17 @@ namespace TimeMiner.Master.Settings.ApplicationIdentifiers
             Host = host;
         }
 
+        /// <inheritdoc />
         public override int CheckRecord(LogRecord record)
         {
-            string site = record.GetMetaString("site");
-            if (site == null)
+            string url = record.GetMetaString("url");
+            //if there is no url - no relation
+            if (url == null)
                 return 0;
-            string host = GetHost(site);
+            string host = GetHost(url);
+            //if url is broken - no relation
             if (host == null)
-            {
                 return 0;
-            }
-
             if (host.EndsWith(Host))
             {
                 return Host.Length;
@@ -41,14 +45,17 @@ namespace TimeMiner.Master.Settings.ApplicationIdentifiers
                 //real host is m.vk.com
                 //it has larger length and it wins
             }
-
             return 0;
         }
-        private string GetHost(string site)
+        /// <summary>
+        /// Get host from given url
+        /// </summary>
+        /// <param name="url"></param>
+        /// <returns></returns>
+        private string GetHost(string url)
         {
-
             Uri uri;
-            if (!Uri.TryCreate(site, UriKind.Absolute, out uri))
+            if (!Uri.TryCreate(url, UriKind.Absolute, out uri))
                 return null;
             return uri.Host;
         }

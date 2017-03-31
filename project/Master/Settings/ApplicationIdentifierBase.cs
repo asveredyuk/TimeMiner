@@ -14,6 +14,11 @@ namespace TimeMiner.Master.Settings
     /// </summary>
     public abstract class ApplicationIdentifierBase
     { 
+        /// <summary>
+        /// Check if given record fits identifier
+        /// </summary>
+        /// <param name="record">Log record to check</param>
+        /// <returns>Relation of record to given app</returns>
         public abstract int CheckRecord(LogRecord record);
     }
 }
