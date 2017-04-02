@@ -95,7 +95,6 @@ namespace TimeMiner.Master.Frontend
         private string CompilePage(HandlerPageDescriptor hdesc)
         {
             var menu = FrontendExtensionLoader.Self.Menu;
-            menu.Print();
             TemplatePageDescriptor de = new TemplatePageDescriptor(hdesc, menu);
             return mustacheGenerator.Render(de);
         }

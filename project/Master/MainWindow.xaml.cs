@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -33,8 +34,12 @@ namespace TimeMiner.Master
             InitializeComponent();
         }
 
+        [DllImport("Kernel32.dll")]
+        public static extern bool AttachConsole(int processId);
+
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
+            AttachConsole(-1);
             MainController.Self.OnStartup();
         }
         private void Window_Closing(object sender, System.ComponentModel.CancelEventArgs e)

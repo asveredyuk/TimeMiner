@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows.Media;
 using MsgPack.Serialization;
 using TimeMiner.Core;
 
@@ -104,14 +105,33 @@ namespace TimeMiner.Master.Database
             }
 
             List<LogRecord> res = new List<LogRecord>();
-            using (var stream = File.OpenRead(fname))
+//                        using (var stream = File.OpenRead(fname))
+//                        {
+//                            while (stream.Position != stream.Length)
+//                            {
+//                                LogRecord rec = serializer.Unpack(stream);
+//                                res.Add(rec);
+//                            }
+//                            stream.Close();
+//                        }
+            //improved version of file read (we suppose that file are little enough, ex. logs for 1 day)
+            using (var fstream = File.OpenRead(fname))
             {
-                while (stream.Position != stream.Length)
+                using (MemoryStream stream = new MemoryStream())
                 {
-                    LogRecord rec = serializer.Unpack(stream);
-                    res.Add(rec);
+                    //read file to memory and close
+                    fstream.CopyTo(stream);
+                    fstream.Close();
+                    stream.Position = 0;
+                    //and now log is parsed, so there is no little periodi
+                    while (stream.Position != stream.Length)
+                    {
+                        LogRecord rec = serializer.Unpack(stream);
+                        res.Add(rec);
+                    }
+                    stream.Close();
                 }
-                stream.Close();
+                
             }
             return res;
         }
