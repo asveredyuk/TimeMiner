@@ -41,6 +41,7 @@
             this.btImportAppsList = new System.Windows.Forms.Button();
             this.btClearApps = new System.Windows.Forms.Button();
             this.btTest = new System.Windows.Forms.Button();
+            this.btCountPerDay = new System.Windows.Forms.Button();
             this.tabControl1.SuspendLayout();
             this.tabPage2.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.numExcelExportUserId)).BeginInit();
@@ -76,6 +77,7 @@
             this.tabPage2.Controls.Add(this.label1);
             this.tabPage2.Controls.Add(this.btExcelExport);
             this.tabPage2.Controls.Add(this.btImportOldLog);
+            this.tabPage2.Controls.Add(this.btCountPerDay);
             this.tabPage2.Controls.Add(this.btLogStat);
             this.tabPage2.Controls.Add(this.btClearDb);
             this.tabPage2.Location = new System.Drawing.Point(4, 22);
@@ -189,6 +191,16 @@
             this.btTest.UseVisualStyleBackColor = true;
             this.btTest.Click += new System.EventHandler(this.btTest_Click);
             // 
+            // btCountPerDay
+            // 
+            this.btCountPerDay.Location = new System.Drawing.Point(7, 178);
+            this.btCountPerDay.Name = "btCountPerDay";
+            this.btCountPerDay.Size = new System.Drawing.Size(113, 30);
+            this.btCountPerDay.TabIndex = 0;
+            this.btCountPerDay.Text = "Count per day ";
+            this.btCountPerDay.UseVisualStyleBackColor = true;
+            this.btCountPerDay.Click += new System.EventHandler(this.btCountPerDay_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -224,6 +236,7 @@
         private System.Windows.Forms.NumericUpDown numExcelExportUserId;
         private System.Windows.Forms.Button btLogStat;
         private System.Windows.Forms.Button btTest;
+        private System.Windows.Forms.Button btCountPerDay;
     }
 }
 

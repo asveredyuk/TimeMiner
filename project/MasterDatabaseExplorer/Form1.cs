@@ -431,5 +431,41 @@ namespace MasterDatabaseExplorer
             //}
             //return null;
         }
+
+        private void btCountPerDay_Click(object sender, EventArgs e)
+        {
+            var dict = CountLogsPerDay();
+
+            Excel.Application app = new Excel.Application();
+            app.DisplayAlerts = false;
+            var book = app.Workbooks.Add(Type.Missing);
+
+            Excel.Worksheet sheet = book.ActiveSheet;
+            int pos = 1;
+            foreach (var pair in dict.OrderBy(t=>t.Key))
+            {
+                sheet.Cells[pos, 1] = pair.Key;
+                sheet.Cells[pos, 2] = pair.Value;
+                pos++;
+            }
+            int count = dict.Sum(t => t.Value);
+            sheet.Cells[pos, 1] = "Total";
+            sheet.Cells[pos, 2] = count;
+            app.Columns.AutoFit();
+            app.Visible = true;
+        }
+        private Dictionary<DateTime, int> CountLogsPerDay()
+        {
+            var logs = db.GetAllRecordsForUser(0, false);
+            Dictionary<DateTime,int> dict = new Dictionary<DateTime, int>();
+            foreach (var logRecord in logs)
+            {
+                var date = logRecord.Time.Date;
+                if (!dict.ContainsKey(date))
+                    dict[date] = 0;
+                dict[date]++;
+            }
+            return dict;
+        }
     }
 }
