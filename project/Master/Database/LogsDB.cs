@@ -95,10 +95,23 @@ namespace TimeMiner.Master
             lock (storages0)
             {
                 var all = storages0.Select(t => t.GetRecords(cacheResults)).SelectMany(t => t);
-                return new List<LogRecord>(all);
+                return all.ToList();
             }
         }
 
+        public List<LogRecord> GetLogRecordsForUserForPeriod(int userid, DateTime timeFrom, DateTime timeTo,
+            bool cacheResults = true)
+        {
+            List<CachedStorage> neededStorages;
+            lock (storages0)
+            {
+                var needed = storages0.Where(t => t.Descriptor.CheckInterceptionWithPeriod(timeFrom, timeTo));
+                neededStorages = needed.ToList();
+            }
+            var all = neededStorages.Select(t => t.GetRecords(cacheResults)).SelectMany(t=>t);
+            var inPeriod = all.Where(t => Util.CheckDateInPeriod(t.Time, timeFrom, timeTo));
+            return inPeriod.ToList();
+        }
         /// <summary>
         /// Make name of storage file for given user
         /// </summary>

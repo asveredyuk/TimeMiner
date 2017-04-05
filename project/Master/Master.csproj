@@ -96,7 +96,7 @@
     <Compile Include="Frontend\Plugins\HandlerPathAttribute.cs" />
     <Compile Include="Frontend\ResponseMaker.cs" />
     <Compile Include="Frontend\FrontendPageMenu.cs" />
-    <Compile Include="Frontend\Util.cs" />
+    <Compile Include="Util.cs" />
     <Compile Include="IResourceContainer.cs" />
     <Compile Include="Settings\ApplicationDescriptor.cs" />
     <Compile Include="Analysis\IndexedProfile.cs" />

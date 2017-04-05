@@ -41,5 +41,12 @@ namespace TimeMiner.Master.Database
         {
             return UserId == rec.UserId && Date.ToString("ddMMyy") == rec.Time.ToString("ddMMyy");
         }
+
+        public bool CheckInterceptionWithPeriod(DateTime begin, DateTime end)
+        {
+            DateTime myBegin = Date;
+            DateTime myEnd = Date.AddDays(1);
+            return Util.CheckPeriodsIntercept(myBegin, myEnd, begin, end);
+        }
     }
 }
