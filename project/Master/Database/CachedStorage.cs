@@ -37,6 +37,10 @@ namespace TimeMiner.Master.Database
         /// </summary>
         private MessagePackSerializer<LogRecord> serializer;
         /// <summary>
+        /// Descriptor of this storage
+        /// </summary>
+        public StorageDescriptor Descriptor { get; }
+        /// <summary>
         /// Create new cached storage
         /// </summary>
         /// <param name="fname">Name of file to store records</param>
@@ -44,6 +48,14 @@ namespace TimeMiner.Master.Database
         {
             this.fname = fname;
             serializer = MessagePackSerializer.Get<LogRecord>();
+            try
+            {
+                Descriptor = new StorageDescriptor(fname);
+            }
+            catch (Exception e)
+            {
+                throw new Exception("Wrong file name, cannot parse descriptor",e);
+            }
         }
         /// <summary>
         /// Get collection of records in storage

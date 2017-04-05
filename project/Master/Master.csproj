@@ -78,6 +78,7 @@
     <Compile Include="Database\LogsDB.cs" />
     <Compile Include="Database\LogsDBLiteDB.cs" />
     <Compile Include="Database\SettingsDB.cs" />
+    <Compile Include="Database\StorageDescriptor.cs" />
     <Compile Include="DirResourceContainer.cs" />
     <Compile Include="Frontend\Authorization.cs" />
     <Compile Include="Frontend\BuiltInExtensions\ApplicationListExtension.cs" />
