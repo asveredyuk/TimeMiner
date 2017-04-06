@@ -265,6 +265,8 @@ namespace MasterDatabaseExplorer
                 Title = ite.activeWindowTitle
             };
             DateTime time = ConvertToDatetime(ite.time);
+            //Solve Timezone problem
+            time = time.AddHours(-3).ToLocalTime();
             LogRecord rec = new LogRecord()
             {
                 Id = Guid.NewGuid(),

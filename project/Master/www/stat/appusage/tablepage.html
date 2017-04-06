@@ -1,7 +1,30 @@
 <div class="ui container">
+    <div class="ui basic segment" style="height: 70px;">
+        <div id="selector">
+            <div class="ui basic icon buttons">
+                <button class="ui button dateSelectorBtPrev">
+                    <i class="left chevron icon"></i>
+                </button>
+                <button class="ui button dateSelectorBt">
+                    00.00.00
+                </button>
+                <button class="ui button dateSelectorBtNext">
+                    <i class="right chevron icon"></i>
+                </button>
+            </div>
+            <div class="ui special popup dateSelectPopup">
+                <div class="header" style="margin-bottom: 5px">Select date</div>
+                <div class="dateSelectDatePicker" style="margin-bottom: 10px"></div>
+                <button class="ui right floated primary button dateSelectorApplyPickerBt">
+                    Apply
+                </button>
+            </div>
+        </div>
+    </div>
+
     <h1>Applications used</h1>
 
-    <table class="ui celled striped table">
+    <table class="ui celled striped table statTable">
         <thead>
         <tr>
             <th class="six wide">Program</th>

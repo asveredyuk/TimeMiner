@@ -1,6 +1,75 @@
 /**
  * Created by ALEX on 02.03.2017.
  */
+function PeriodSelector($context, current){
+    var that = this;
+    //this is called every time when value changes
+    this.onValueChanged = $.Callbacks();
+    //this is called only after value has changed and 100ms passed with no changes
+    this.onChangedValueAccepted = $.Callbacks();
+    //this function waits 500ms
+    this.assignValue = function(date){
+        var valFrom = moment(date).startOf('day');
+        var valTo = moment(date).endOf('day');
+        that.val = {
+            from:valFrom,
+            to:valTo
+        };
+        that.onValueChanged.fire(that.val);
+    };
+    this.goBack = function(){
+        var prev = that.val.from.subtract(1,'day');
+        that.assignValue(prev);
+    };
+    this.goForward = function(){
+        var next = that.val.from.add(1,'day');
+        that.assignValue(next);
+    };
+    this.refreshView = function(val){
+        var text = val.from.format('DD.MM.YY');
+        that.controls.dateSelectorBt.html(text);
+        //that.controls.datePicker.datepicker('setDate', val.from.toDate());
+    };
+    //view setup
+    this.controlSetup = function() {
+        that.controls = {
+            dateSelectorBt: $context.find('.dateSelectorBt'),
+            dateSelectorBtPrev: $context.find('.dateSelectorBtPrev'),
+            dateSelectorBtNext: $context.find('.dateSelectorBtNext'),
+            datePicker : $context.find('.dateSelectDatePicker'),
+            applyPickerBt: $context.find('.dateSelectorApplyPickerBt')
+        };
+        that.controls.dateSelectorBtPrev.click(function () {
+            that.goBack();
+        });
+        that.controls.dateSelectorBtNext.click(function () {
+            that.goForward();
+        });
+        that.controls.dateSelectorBt.popup({
+            popup: '.dateSelectPopup',
+            on: 'click'
+        });
+        that.controls.applyPickerBt.click(function () {
+            that.controls.dateSelectorBt.popup('hide');
+            var val = that.controls.datePicker.datepicker('getDate');
+            that.assignValue(val);
+        });
+        that.controls.datePicker.datepicker();
+    };
+    //init
+    this.controlSetup();
+    this.onValueChanged.add(this.refreshView);
+    this.assignValue(current);
+    //implement onChangedValueAccepted firing
+    //added here to avoid first fire (or move to top?)
+    var waitTimer;
+    this.onValueChanged.add(function (arg) {
+        clearTimeout(waitTimer);
+        waitTimer = setTimeout(function () {
+            that.onChangedValueAccepted.fire(arg);
+        },500);
+    });
+}
 Number.prototype.pad = function(size) {
     var s = String(this);
     while (s.length < (size || 2)) {s = "0" + s;}
@@ -65,11 +134,20 @@ function TableWrapper(ctxt)
 {
     var that = this;
     this.tbody = ctxt.find('tbody');
-    this.loader = this.tbody.find('tr');
-    this.reloadTable = function () {
-        this.tbody.empty();
-        this.tbody.append(this.loader);
-        $.ajax("/api/stat")
+    this.loader = that.tbody.find('tr');
+    this.reloadTable = function (arg) {
+        var jobj = {
+            Begin : arg.from,
+            End : arg.to
+        };
+        var json = JSON.stringify(jobj);
+        that.tbody.empty();
+        that.tbody.append(that.loader);
+        $.ajax({
+            url: "/api/stat",
+            type: 'POST',
+            data: json
+        })
             .done(function (msg) {
                 $.ajax("/stat/appusage/tablerow.html")
                     .done(function (template) {
@@ -90,9 +168,12 @@ function TableWrapper(ctxt)
             });
     }
 }
-
 $(document).ready(function () {
-    var wrapper = new TableWrapper($("table"));
-    wrapper.reloadTable();
+    var selector = new PeriodSelector($('#selector'));
+    var wrapper = new TableWrapper($(".statTable"));
+    wrapper.reloadTable(selector.val);
+    selector.onChangedValueAccepted.add(function (arg) {
+        wrapper.reloadTable(arg);
+    });
     //ReloadTable();
 });

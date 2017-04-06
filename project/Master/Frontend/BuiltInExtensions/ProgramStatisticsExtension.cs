@@ -42,13 +42,16 @@ namespace TimeMiner.Master.Frontend.BuiltInExtensions
             var res = new HandlerPageDescriptor(WWWRes.GetString("stat/appusage/tablepage.html"), WWWRes.GetString("stat/appusage/tablehead.html"));
             return res;
         }
-
+        
         [ApiPath("stat")]
         public void HandleApi(HttpListenerRequest req, HttpListenerResponse resp)
         {
             string path = SkipApiAndRoot(req.Url.AbsolutePath);
+            string postString = ReadPostString(req);
+            StatRequestData reqData = JsonConvert.DeserializeObject<StatRequestData>(postString);
             Stopwatch w2 = Stopwatch.StartNew();
-            Log log = Log.GetLog();
+            Log log = Log.GetLog(reqData.Begin,reqData.End);
+            Console.WriteLine("Number of records:" + log.Records.Length);
             w2.Stop();
             Console.Out.WriteLine($"Log loading elapsed {w2.ElapsedMilliseconds}ms");
             Stopwatch w = Stopwatch.StartNew();
@@ -67,6 +70,11 @@ namespace TimeMiner.Master.Frontend.BuiltInExtensions
             
         }
 
+        private class StatRequestData
+        {
+            public DateTime Begin { get; set; }
+            public DateTime End { get; set; }
+        }
         
     }
 }

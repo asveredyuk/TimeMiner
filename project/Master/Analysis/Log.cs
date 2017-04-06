@@ -51,5 +51,12 @@ namespace TimeMiner.Master.Analysis
             LogRecord[] recs = MasterDB.Logs.GetAllRecordsForUser(0).ToArray();
             return new Log(recs,prof);
         }
+
+        public static Log GetLog(DateTime begin, DateTime end)
+        {
+            IndexedProfile prof = IndexedProfile.FromProfile(SettingsContainer.Self.GetBaseProfile());
+            LogRecord[] recs = MasterDB.Logs.GetLogRecordsForUserForPeriod(0,begin,end).ToArray();
+            return new Log(recs, prof);
+        }
     }
 }
