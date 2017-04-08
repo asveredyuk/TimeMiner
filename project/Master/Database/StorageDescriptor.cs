@@ -17,7 +17,7 @@ namespace TimeMiner.Master.Database
         /// <summary>
         /// Id of user
         /// </summary>
-        public int UserId { get; set; }
+        public Guid UserId { get; set; }
         /// <summary>
         /// Date of logs (includes Year Month and Day)
         /// </summary>
@@ -27,7 +27,7 @@ namespace TimeMiner.Master.Database
         /// </summary>
         /// <param name="userId">Id of user</param>
         /// <param name="date">Date</param>
-        public StorageDescriptor(int userId, DateTime date)
+        public StorageDescriptor(Guid userId, DateTime date)
         {
             UserId = userId;
             Date = date;

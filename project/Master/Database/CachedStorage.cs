@@ -85,7 +85,7 @@ namespace TimeMiner.Master.Database
         /// <param name="date">Date of storage</param>
         /// <param name="storageDir">Directory with storages</param>
         /// <returns></returns>
-        public static CachedStorage CreateNewStorage(int userId, DateTime date, string storageDir)
+        public static CachedStorage CreateNewStorage(Guid userId, DateTime date, string storageDir)
         {
             if (!Directory.Exists(storageDir))
             {
@@ -147,7 +147,7 @@ namespace TimeMiner.Master.Database
         /// <param name="userid">id of user</param>
         /// <param name="date">date of log record</param>
         /// <returns>relative path to the log file</returns>
-        private static string MakeStorageFileName(int userid, DateTime date)
+        private static string MakeStorageFileName(Guid userid, DateTime date)
         {
             string dateStr = date.ToString("ddMMyy");
             return string.Format(LOG_FNAME_PATTERN, userid, dateStr);

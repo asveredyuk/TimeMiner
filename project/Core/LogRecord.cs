@@ -19,7 +19,7 @@ namespace TimeMiner.Core
         /// <summary>
         /// Id of user
         /// </summary>
-        public int UserId { get; set; } 
+        public Guid UserId { get; set; } 
         /// <summary>
         /// Name of current foreground process
         /// </summary>

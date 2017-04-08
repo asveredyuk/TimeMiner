@@ -175,7 +175,8 @@ namespace MasterDatabaseExplorer
 
         private void btImportOldLog_Click(object sender, EventArgs e)
         {
-            int userId = (int) numExcelExportUserId.Value;
+            //int userId = (int) numExcelExportUserId.Value;
+            Guid userId = Guid.Empty;
             OpenFileDialog d = new OpenFileDialog();
             d.Multiselect = true;
             var res = d.ShowDialog();
@@ -199,7 +200,7 @@ namespace MasterDatabaseExplorer
             }
         }
 
-        private IEnumerable<CorutineReport> ImportManyLogs(string[] fnames, int userId)
+        private IEnumerable<CorutineReport> ImportManyLogs(string[] fnames, Guid userId)
         {
             for (int i = 0; i < fnames.Length; i++)
             {
@@ -218,7 +219,7 @@ namespace MasterDatabaseExplorer
             }
             yield return new CorutineReportResult(0);
         }
-        private IEnumerable<CorutineReport> ImportOldLog(string fname, int userId)
+        private IEnumerable<CorutineReport> ImportOldLog(string fname, Guid userId)
         {
             const int REPORT_EACH = 100;
             string[] lines = File.ReadAllLines(fname, Encoding.Default);

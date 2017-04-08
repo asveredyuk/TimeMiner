@@ -41,7 +41,7 @@ namespace TimeMiner.Master
         /// <returns></returns>
         private CachedStorage CreateNewStoreageForRecord(LogRecord rec)
         {
-            int userId = rec.UserId;
+            Guid userId = rec.UserId;
             DateTime date = rec.Time.Date;
             CachedStorage storage = CachedStorage.CreateNewStorage(userId, date, LOGS_DIR);
             lock (storages0)
@@ -85,8 +85,9 @@ namespace TimeMiner.Master
         /// <param name="userid"></param>
         /// <param name="cacheResults">Should read results be cached or not</param>
         /// <returns></returns>
-        public List<LogRecord> GetAllRecordsForUser(int userid, bool cacheResults = true)
+        public List<LogRecord> GetAllRecordsForUser(Guid userid, bool cacheResults = true)
         {
+            //TODO: filter by user
             lock (storages0)
             {
                 var all = storages0.Select(t => t.GetRecords(cacheResults)).SelectMany(t => t);
@@ -97,9 +98,10 @@ namespace TimeMiner.Master
         //TODO: make ability to get arrays per each file
         //public public List<LogRecord[]> GetSplitrecordsForUserForPeriod(int userid)
 
-        public List<LogRecord> GetLogRecordsForUserForPeriod(int userid, DateTime timeFrom, DateTime timeTo,
+        public List<LogRecord> GetLogRecordsForUserForPeriod(Guid userid, DateTime timeFrom, DateTime timeTo,
             bool cacheResults = true)
         {
+            //TODO: filter by user
             List<CachedStorage> neededStorages;
             lock (storages0)
             {

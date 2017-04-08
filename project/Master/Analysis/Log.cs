@@ -48,14 +48,14 @@ namespace TimeMiner.Master.Analysis
         public static Log GetLog()
         {
             IndexedProfile prof = IndexedProfile.FromProfile(SettingsContainer.Self.GetBaseProfile());
-            LogRecord[] recs = MasterDB.Logs.GetAllRecordsForUser(0).ToArray();
+            LogRecord[] recs = MasterDB.Logs.GetAllRecordsForUser(Guid.Empty).ToArray();
             return new Log(recs,prof);
         }
 
         public static Log GetLog(DateTime begin, DateTime end)
         {
             IndexedProfile prof = IndexedProfile.FromProfile(SettingsContainer.Self.GetBaseProfile());
-            LogRecord[] recs = MasterDB.Logs.GetLogRecordsForUserForPeriod(0,begin,end).ToArray();
+            LogRecord[] recs = MasterDB.Logs.GetLogRecordsForUserForPeriod(Guid.Empty, begin,end).ToArray();
             return new Log(recs, prof);
         }
     }
