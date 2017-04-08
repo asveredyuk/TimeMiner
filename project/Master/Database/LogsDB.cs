@@ -76,6 +76,9 @@ namespace TimeMiner.Master
         /// <param name="rec"></param>
         public void PutRecord(LogRecord rec)
         {
+            //convert time to local
+            rec.Time = rec.Time.ToLocalTime();
+            //put record to concrete storage
             CachedStorage storage = FindStorageForRecord(rec);
             if (storage == null)
             {

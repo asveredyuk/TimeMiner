@@ -83,8 +83,8 @@ namespace MasterDatabaseExplorer
             //PutValuesToRow(sheet,1,"Time","Process","MousePos","KeyStrokes");
             for (int i = 0; i < records.Count; i++)
             {
-                if(i > 1000)
-                    break;
+//                if(i > 1000)
+//                    break;
                 var rec = records[i];
                 if (i % REPORT_EACH == 0)
                     yield return new CorutineReportPercentage(i + 1, records.Count);
@@ -265,8 +265,7 @@ namespace MasterDatabaseExplorer
                 Title = ite.activeWindowTitle
             };
             DateTime time = ConvertToDatetime(ite.time);
-            //Solve Timezone problem
-            time = time.AddHours(-3).ToLocalTime();
+
             LogRecord rec = new LogRecord()
             {
                 Id = Guid.NewGuid(),
@@ -282,7 +281,9 @@ namespace MasterDatabaseExplorer
         }
         public static DateTime ConvertToDatetime(int time)
         {
-            return new DateTime(1970, 1, 1).AddSeconds(time);
+            System.DateTime dtDateTime = new DateTime(1970, 1, 1, 0, 0, 0, 0, System.DateTimeKind.Local);
+            dtDateTime = dtDateTime.AddSeconds(time);
+            return dtDateTime;
         }
 
         private void btImportAppsList_Click(object sender, EventArgs e)

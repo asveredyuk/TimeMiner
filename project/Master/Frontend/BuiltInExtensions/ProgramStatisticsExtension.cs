@@ -50,7 +50,8 @@ namespace TimeMiner.Master.Frontend.BuiltInExtensions
             string postString = ReadPostString(req);
             StatRequestData reqData = JsonConvert.DeserializeObject<StatRequestData>(postString);
             Stopwatch w2 = Stopwatch.StartNew();
-            Log log = Log.GetLog(reqData.Begin,reqData.End);
+            //temporarly solved by local time
+            Log log = Log.GetLog(reqData.Begin.ToLocalTime(),reqData.End.ToLocalTime());
             Console.WriteLine("Number of records:" + log.Records.Length);
             w2.Stop();
             Console.Out.WriteLine($"Log loading elapsed {w2.ElapsedMilliseconds}ms");
