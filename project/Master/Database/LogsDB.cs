@@ -20,11 +20,6 @@ namespace TimeMiner.Master
         /// </summary>
         public static string LOGS_DIR = "logs";
         /// <summary>
-        /// File name pattern. {0} - userid, {1} - date in format DDMMYYYY
-        /// </summary>
-        const string LOG_FNAME_PATTERN= "log_u{0}_{1}.storage";
-
-        /// <summary>
         /// Temporary, storages for the user #0 for all dates
         /// </summary>
         private List<CachedStorage> storages0;
@@ -37,7 +32,7 @@ namespace TimeMiner.Master
                 Directory.CreateDirectory(LOGS_DIR);
             storages0 = new List<CachedStorage>();
             //create cached storages for all existing files
-            storages0.AddRange(Directory.GetFiles(LOGS_DIR,"*.storage").Select(t=>new CachedStorage(t)));
+            storages0.AddRange(CachedStorage.LoadAllStorages(LOGS_DIR));
         }
         /// <summary>
         /// Create new storage, appropriate for given record
@@ -46,12 +41,9 @@ namespace TimeMiner.Master
         /// <returns></returns>
         private CachedStorage CreateNewStoreageForRecord(LogRecord rec)
         {
-            string fname = MakeStorageFileName(rec.UserId,rec.Time);
-            if (File.Exists(fname))
-            {
-                throw new Exception("Given log already exists");
-            }
-            CachedStorage storage = new CachedStorage(fname);
+            int userId = rec.UserId;
+            DateTime date = rec.Time.Date;
+            CachedStorage storage = CachedStorage.CreateNewStorage(userId, date, LOGS_DIR);
             lock (storages0)
             {
                 storages0.Add(storage);
@@ -102,6 +94,9 @@ namespace TimeMiner.Master
             }
         }
 
+        //TODO: make ability to get arrays per each file
+        //public public List<LogRecord[]> GetSplitrecordsForUserForPeriod(int userid)
+
         public List<LogRecord> GetLogRecordsForUserForPeriod(int userid, DateTime timeFrom, DateTime timeTo,
             bool cacheResults = true)
         {
@@ -115,16 +110,6 @@ namespace TimeMiner.Master
             var inPeriod = all.Where(t => Util.CheckDateInPeriod(t.Time, timeFrom, timeTo));
             return inPeriod.ToList();
         }
-        /// <summary>
-        /// Make name of storage file for given user
-        /// </summary>
-        /// <param name="userid">id of user</param>
-        /// <param name="date">date of log record</param>
-        /// <returns>relative path to the log file</returns>
-        private static string MakeStorageFileName(int userid, DateTime date)
-        {
-            string dateStr = date.ToString("ddMMyy");
-            return LOGS_DIR + "/" + string.Format(LOG_FNAME_PATTERN, userid,dateStr);
-        }
+        
     }
 }

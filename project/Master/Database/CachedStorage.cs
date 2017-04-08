@@ -17,6 +17,19 @@ namespace TimeMiner.Master.Database
     class CachedStorage
     {
         /// <summary>
+        /// Extension of files with logs
+        /// </summary>
+        private const string LOG_EXT = ".storage";
+        /// <summary>
+        /// Extension of storage descriptor files
+        /// </summary>
+        private const string DESCRIPTOR_EXT = ".descriptor";
+        /// <summary>
+        /// Pattern for generating log storage name. Format: {0} - userid, {1} - date in format DDMMYYYY
+        /// </summary>
+        const string LOG_FNAME_PATTERN = "log_u{0}_{1}" + LOG_EXT;
+
+        /// <summary>
         /// Are results cached or not by default
         /// </summary>
         public const bool CACHE_RESULTS_DEFAULT = true;
@@ -44,18 +57,105 @@ namespace TimeMiner.Master.Database
         /// Create new cached storage
         /// </summary>
         /// <param name="fname">Name of file to store records</param>
-        public CachedStorage(string fname)
+        private CachedStorage(string fname)
         {
+            if (!File.Exists(fname))
+            {
+                throw new Exception("File does not exists");
+            }
+            if (!File.Exists(MakeStorageDescriptorFilePath(fname)))
+            {
+                throw new Exception($"Storage {fname} does not have descriptor");
+            }
             this.fname = fname;
             serializer = MessagePackSerializer.Get<LogRecord>();
             try
             {
-                Descriptor = new StorageDescriptor(fname);
+                Descriptor = StorageDescriptor.LoadFromFile(MakeStorageDescriptorFilePath(fname));
             }
             catch (Exception e)
             {
-                throw new Exception("Wrong file name, cannot parse descriptor",e);
+                throw new Exception("Wrong storage descriptor",e);
             }
+        }
+        /// <summary>
+        /// Creates new storage with given parameters
+        /// </summary>
+        /// <param name="userId">Id of user-owner</param>
+        /// <param name="date">Date of storage</param>
+        /// <param name="storageDir">Directory with storages</param>
+        /// <returns></returns>
+        public static CachedStorage CreateNewStorage(int userId, DateTime date, string storageDir)
+        {
+            if (!Directory.Exists(storageDir))
+            {
+                throw new Exception("Storage directory does not exist");
+            }
+            if (date != date.Date)
+            {
+                throw new Exception("Given timestamp is not a date");
+            }
+            string fname = storageDir + "/" + MakeStorageFileName(userId, date);
+
+            if (File.Exists(fname))
+            {
+                throw new Exception("Given log" + fname + " already exists");
+            }
+
+            StorageDescriptor desc = new StorageDescriptor(userId,date);
+            desc.SaveToFile(MakeStorageDescriptorFilePath(fname));
+            File.Create(fname).Close();
+            return new CachedStorage(fname);
+        }
+        /// <summary>
+        /// Loads all existing storages in given directory  
+        /// </summary>
+        /// <param name="storageDir">Directory with storages</param>
+        /// <returns></returns>
+        public static List<CachedStorage> LoadAllStorages(string storageDir)
+        {
+            if (!Directory.Exists(storageDir))
+            {
+                throw new Exception("Storage directory does not exist");
+            }
+            List<CachedStorage> storages = new List<CachedStorage>();
+            List<string > failed = new List<string >();
+            foreach (var fname in Directory.GetFiles(storageDir, "*" + LOG_EXT))
+            {
+                try
+                {
+                    CachedStorage storage = new CachedStorage(fname);
+                    storages.Add(storage);
+                }
+                catch (Exception e)
+                {
+                    Console.WriteLine(e);
+                    failed.Add(fname);
+                }
+            }
+            if (failed.Count > 0)
+            {
+                Console.WriteLine($"Failed to load {failed.Count} storages");
+                Console.WriteLine("List of failed files:");
+                Console.WriteLine(failed.Aggregate("",((r, t) => r += "\r\n" + t)));
+            }
+            return storages;
+        }
+        /// <summary>
+        /// Make name of storage file for given user
+        /// </summary>
+        /// <param name="userid">id of user</param>
+        /// <param name="date">date of log record</param>
+        /// <returns>relative path to the log file</returns>
+        private static string MakeStorageFileName(int userid, DateTime date)
+        {
+            string dateStr = date.ToString("ddMMyy");
+            return string.Format(LOG_FNAME_PATTERN, userid, dateStr);
+        }
+
+        public static string MakeStorageDescriptorFilePath(string storageFilePath)
+        {
+            return storageFilePath + DESCRIPTOR_EXT;
         }
         /// <summary>
         /// Get collection of records in storage
