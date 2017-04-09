@@ -72,6 +72,11 @@ namespace TimeMiner.Master.Frontend
         {
             Label = label;
             Url = url;
+            //For all non external urls add / at the start
+            if (Url != null && !Url.StartsWith("/") && !Url.StartsWith("http"))
+            {
+                Url = "/" + Url;
+            }
             this.menuPath = menuPath;
             this.order = order;
         }
