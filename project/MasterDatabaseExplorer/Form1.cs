@@ -407,11 +407,39 @@ namespace MasterDatabaseExplorer
 
         private void btTest_Click(object sender, EventArgs e)
         {
-            Log log = Log.GetLog();
+            /*Log log = Log.GetLog();
             ProductivityReport report = new ProductivityReport(log);
             var res = report.Calculate();
             string json = JsonConvert.SerializeObject(res, Formatting.Indented);
-            MessageBox.Show(json);
+            MessageBox.Show(json);*/
+            Log[] allLogs = Log.GetSeparateLogs(DateTime.MinValue, DateTime.MaxValue);
+            List<ProductivityReport.ReportResult> results = new List<ProductivityReport.ReportResult>();
+            foreach (var log in allLogs)
+            {
+                ProductivityReport rep = new ProductivityReport(log);
+                results.Add(rep.Calculate());
+            }
+            Excel.Application app = new Excel.Application();
+            app.DisplayAlerts = false;
+            var book = app.Workbooks.Add(Type.Missing);
+
+            Excel.Worksheet sheet = book.ActiveSheet;
+
+            sheet.Cells[1, 1] = "Date";
+            sheet.Cells[1, 2] = "Productive, s";
+            sheet.Cells[1, 3] = "Distractions, s";
+            sheet.Cells[1, 4] = "Total, s";
+            int pos = 2;
+            for (int i = 0; i < allLogs.Length; i++)
+            {
+                sheet.Cells[pos, 1] = allLogs[i].Date;
+                sheet.Cells[pos, 2] = results[i].ProductiveTime;
+                sheet.Cells[pos, 3] = results[i].DistractionsTime;
+                sheet.Cells[pos, 4] = results[i].TotalTime;
+                pos++;
+            }
+            app.Columns.AutoFit();
+            app.Visible = true;
             /*ApplicationIdentifierBase id = new WebsiteIdentifier() {Host = "vk.com"};
             ApplicationDescriptor desc = new ApplicationDescriptor("Вконтакте", id);
             ProfileApplicationRelevance rel = new ProfileApplicationRelevance(Relevance.bad,desc);
@@ -427,7 +455,6 @@ namespace MasterDatabaseExplorer
             //File.WriteAllLines("sites.txt",sites);
 
         }
-
         private string GetHost(string site)
         {
             

@@ -14,6 +14,16 @@ namespace TimeMiner.Master.Analysis
         public IndexedProfile Prof { get; }
         public LogRecord[] Records { get; }
 
+        public DateTime Date
+        {
+            get
+            {
+                if (Records.Length == 0)
+                    throw new Exception("empty log, no datetime");
+                return Records[0].Time.Date;
+            }
+        }
+
         public Log(LogRecord[] records, IndexedProfile prof)
         {
             this.Records = records;
@@ -57,6 +67,14 @@ namespace TimeMiner.Master.Analysis
             IndexedProfile prof = IndexedProfile.FromProfile(SettingsContainer.Self.GetBaseProfile());
             LogRecord[] recs = MasterDB.Logs.GetLogRecordsForUserForPeriod(Guid.Empty, begin,end).ToArray();
             return new Log(recs, prof);
+        }
+
+        public static Log[] GetSeparateLogs(DateTime begin, DateTime end)
+        {
+            IndexedProfile prof = IndexedProfile.FromProfile(SettingsContainer.Self.GetBaseProfile());
+            LogRecord[][] recs = MasterDB.Logs.GetLogRecordsForUserForPeriodSeparate(Guid.Empty, begin, end);
+            Log[] logs = recs.Select(t => new Log(t, prof)).ToArray();
+            return logs;
         }
     }
 }

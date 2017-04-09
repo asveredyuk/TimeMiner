@@ -94,10 +94,36 @@ namespace TimeMiner.Master
                 return all.ToList();
             }
         }
-
-        //TODO: make ability to get arrays per each file
-        //public public List<LogRecord[]> GetSplitrecordsForUserForPeriod(int userid)
-
+        /// <summary>
+        /// Get logs for user for given period. Logs are separated by storage
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="timeFrom"></param>
+        /// <param name="timeTo"></param>
+        /// <param name="cacheResuts"></param>
+        /// <returns></returns>
+        public LogRecord[][] GetLogRecordsForUserForPeriodSeparate(Guid userId, DateTime timeFrom, DateTime timeTo,
+            bool cacheResuts = true)
+        {
+            List<CachedStorage> neededStorages;
+            lock (storages0)
+            {
+                var needed = storages0.Where(t => t.Descriptor.CheckInterceptionWithPeriod(timeFrom, timeTo));
+                neededStorages = needed.ToList();
+            }
+            var inPeriod = neededStorages.Select(
+                t=>t.GetRecords(cacheResuts).Where(q=> Util.CheckDateInPeriod(q.Time, timeFrom, timeTo)).ToArray()
+                ).ToArray();
+            return inPeriod;
+        }
+        /// <summary>
+        /// Get logs for user for given period
+        /// </summary>
+        /// <param name="userid"></param>
+        /// <param name="timeFrom"></param>
+        /// <param name="timeTo"></param>
+        /// <param name="cacheResults"></param>
+        /// <returns></returns>
         public List<LogRecord> GetLogRecordsForUserForPeriod(Guid userid, DateTime timeFrom, DateTime timeTo,
             bool cacheResults = true)
         {
