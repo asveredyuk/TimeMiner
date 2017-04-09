@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Permissions;
 using System.Text;
 using System.Threading.Tasks;
 using TimeMiner.Core;
@@ -12,7 +13,7 @@ namespace TimeMiner.Master.Analysis
     /// <summary>
     /// Report to detect which programs are used
     /// </summary>
-    public class ProgramUsageReport
+    public class ProgramUsageReport : BaseReport<ProgramUsageReport.ReportResult>
     {
         public struct AppDesc
         {
@@ -54,7 +55,7 @@ namespace TimeMiner.Master.Analysis
                 return !left.Equals(right);
             }
         }
-        public class ProgramUsageReportItem
+        public class ReportItem
         {
             /// <summary>
             /// Reference to the profile relevance to the current application
@@ -69,15 +70,25 @@ namespace TimeMiner.Master.Analysis
             /// </summary>
             public int Percent { get; set; }
 
-            public ProgramUsageReportItem(AppDesc desc, int secondsSpent, int percent)
+            public ReportItem(AppDesc desc, int secondsSpent, int percent)
             {
                 Desc = desc;
                 SecondsSpent = secondsSpent;
                 Percent = percent;
             }
 
-            public ProgramUsageReportItem()
+            public ReportItem()
             {
+            }
+        }
+
+        public class ReportResult : BaseReportResultCollection<ReportItem>
+        {
+            public override ReportItem[] Items { get; }
+
+            public ReportResult(ReportItem[] items)
+            {
+                Items = items;
             }
         }
 
@@ -99,14 +110,15 @@ namespace TimeMiner.Master.Analysis
             Parameters = new Params();
         }
 
-        public void Calculate()
+
+        public void CalculateIt()
         {
             if(spentTimes != null)
                 throw new Exception("Already calculated");
             LogRecord[] records = log.Records;
             if (Parameters.ActiveReport != null)
             {
-                bool[] actives = Parameters.ActiveReport.GetActivities().Select(t=>t.Value).ToArray();
+                bool[] actives = Parameters.ActiveReport.GetActivitiesOnly().ToArray();
                 if(actives.Length != records.Length)
                     throw new Exception("Wrong active report assigned");
                 records = records.Where((t, index) => actives[index]).ToArray();
@@ -114,16 +126,23 @@ namespace TimeMiner.Master.Analysis
             //logic here
             spentTimes = CalculateSpentTimes(records);
         }
-        public IEnumerable<ProgramUsageReportItem> GetItems()
+
+        public override ReportResult Calculate()
+        {
+            ReportItem[] items = GetItems().ToArray();
+            return new ReportResult(items);
+        }
+
+        private IEnumerable<ReportItem> GetItems()
         {
             if(spentTimes == null)
-                Calculate();
+                CalculateIt();
             //logic here
             int totalTime = spentTimes.Select(t => t.Value).Sum();
             foreach (var pair in spentTimes.OrderByDescending(t => t.Value))
             {
                 int percentage = pair.Value * 100 / totalTime;
-                yield return new ProgramUsageReportItem(pair.Key, pair.Value,percentage);
+                yield return new ReportItem(pair.Key, pair.Value,percentage);
             }
         }
         private Dictionary<AppDesc, int> CalculateSpentTimes(IEnumerable<LogRecord> records)

@@ -10,8 +10,29 @@ namespace TimeMiner.Master.Analysis
     /// <summary>
     /// Report for decting when user was active or not
     /// </summary>
-    public class ActiveReport
+    public class ActiveReport : BaseReport<ActiveReport.ReportResult>
     {
+        public class ReportItem
+        {
+            public LogRecord Rec { get; set; }
+            public bool IsActive { get; set; }
+
+            public ReportItem(LogRecord rec, bool isActive)
+            {
+                Rec = rec;
+                IsActive = isActive;
+            }
+        }
+
+        public class ReportResult : BaseReportResultCollection<ReportItem>
+        {
+            public override ReportItem[] Items { get; }
+
+            public ReportResult(ReportItem[] items)
+            {
+                Items = items;
+            }
+        }
         /// <summary>
         /// Log to analyze
         /// </summary>
@@ -24,16 +45,34 @@ namespace TimeMiner.Master.Analysis
         {
             this.log = log;
         }
+
+        public override ReportResult Calculate()
+        {
+            ReportItem[] items = GetActivities().ToArray();
+            return new ReportResult(items);
+        }
         /// <summary>
         /// Get collection of activities per each log record
         /// </summary>
         /// <returns></returns>
-        public IEnumerable<KeyValuePair<LogRecord, bool>> GetActivities()
+        public IEnumerable<ReportItem> GetActivities()
         {
             for (int i = 0; i < log.Records.Length; i++)
             {
                 bool res = AnalyzeRecord(i);
-                yield return new KeyValuePair<LogRecord, bool>(log.Records[i],res);
+                yield return new ReportItem(log.Records[i],res);
+            }
+        }
+        /// <summary>
+        /// Get collection of activities per each log record
+        /// </summary>
+        /// <returns></returns>
+        public IEnumerable<bool> GetActivitiesOnly()
+        {
+            for (int i = 0; i < log.Records.Length; i++)
+            {
+                bool res = AnalyzeRecord(i);
+                yield return res;
             }
         }
         /// <summary>
@@ -82,5 +121,6 @@ namespace TimeMiner.Master.Analysis
             }
         }
 
+        
     }
 }

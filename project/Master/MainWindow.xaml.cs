@@ -178,7 +178,7 @@ namespace TimeMiner.Master
             /*ProgramUsageReport report = new ProgramUsageReport(log);
             report.Calculate();*/
             ActiveReport report = new ActiveReport(log);
-            int total = report.GetActivities().Select(t => t.Value ? 1 : 0).Sum();
+            int total = report.GetActivities().Select(t => t.IsActive ? 1 : 0).Sum();
             w.Stop();
             MessageBox.Show($"Total active seconds = {total}");
             MessageBox.Show($"{w.ElapsedMilliseconds}ms");

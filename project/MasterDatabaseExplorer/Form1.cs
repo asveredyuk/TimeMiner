@@ -11,8 +11,10 @@ using System.Windows.Forms;
 using CorutinesWorker;
 using CorutinesWorker.Corutines;
 using LiteDB;
+using Newtonsoft.Json;
 using TimeMiner.Core;
 using TimeMiner.Master;
+using TimeMiner.Master.Analysis;
 using TimeMiner.Master.Database;
 using TimeMiner.Master.Settings;
 using TimeMiner.Master.Settings.ApplicationIdentifiers;
@@ -49,7 +51,7 @@ namespace MasterDatabaseExplorer
         private void btExcelExport_Click(object sender, EventArgs e)
         {
             int userId = (int)numExcelExportUserId.Value;
-            Corutine corut = new Corutine(this, ExportToExcelCorut(userId));
+            Corutine corut = new Corutine(this, ExportToExcelCorut(Guid.Empty));
             SimpleProgressForm form = new SimpleProgressForm(corut)
             {
                 showCompletedDialog = false
@@ -66,7 +68,7 @@ namespace MasterDatabaseExplorer
             //File.WriteAllLines("out.csv", lines);s
         }
 
-        private IEnumerable<CorutineReport> ExportToExcelCorut(int userId)
+        private IEnumerable<CorutineReport> ExportToExcelCorut(Guid userId)
         {
             const int REPORT_EACH = 100;
 
@@ -387,7 +389,7 @@ namespace MasterDatabaseExplorer
 
         private void btLogStat_Click(object sender, EventArgs e)
         {
-            List<LogRecord> list = db.GetAllRecordsForUser(0,false);
+            List<LogRecord> list = db.GetAllRecordsForUser(Guid.Empty,false);
             if (list.Count == 0)
             {
                 MessageBox.Show("Empty");
@@ -405,6 +407,11 @@ namespace MasterDatabaseExplorer
 
         private void btTest_Click(object sender, EventArgs e)
         {
+            Log log = Log.GetLog();
+            ProductivityReport report = new ProductivityReport(log);
+            var res = report.Calculate();
+            string json = JsonConvert.SerializeObject(res, Formatting.Indented);
+            MessageBox.Show(json);
             /*ApplicationIdentifierBase id = new WebsiteIdentifier() {Host = "vk.com"};
             ApplicationDescriptor desc = new ApplicationDescriptor("Вконтакте", id);
             ProfileApplicationRelevance rel = new ProfileApplicationRelevance(Relevance.bad,desc);
@@ -460,7 +467,7 @@ namespace MasterDatabaseExplorer
         }
         private Dictionary<DateTime, int> CountLogsPerDay()
         {
-            var logs = db.GetAllRecordsForUser(0, false);
+            var logs = db.GetAllRecordsForUser(Guid.Empty, false);
             Dictionary<DateTime,int> dict = new Dictionary<DateTime, int>();
             foreach (var logRecord in logs)
             {

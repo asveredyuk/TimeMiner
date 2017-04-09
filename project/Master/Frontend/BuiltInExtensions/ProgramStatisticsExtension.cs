@@ -64,7 +64,7 @@ namespace TimeMiner.Master.Frontend.BuiltInExtensions
             //report.CalculateWithActives(actives);
             
 
-            string res = JsonConvert.SerializeObject(report.GetItems(), Formatting.Indented);
+            string res = JsonConvert.SerializeObject(report.Calculate().Items, Formatting.Indented);
             w.Stop();
             WriteStringAndClose(resp,res);
             Console.Out.WriteLine($"Analyze elapsed {w.ElapsedMilliseconds}ms"); 
