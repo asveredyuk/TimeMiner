@@ -22,15 +22,17 @@ namespace TimeMiner.Master.Database
         /// Date of logs (includes Year Month and Day)
         /// </summary>
         public DateTime Date { get; set; }
+
         /// <summary>
-        /// Create new storage descriptor
+        /// Hash of storage file
         /// </summary>
-        /// <param name="userId">Id of user</param>
-        /// <param name="date">Date</param>
-        public StorageDescriptor(Guid userId, DateTime date)
+        public string FileMD5 { get; set; }
+
+        public StorageDescriptor(Guid userId, DateTime date, string fileMd5)
         {
             UserId = userId;
             Date = date;
+            FileMD5 = fileMd5;
         }
 
         /// <summary>
@@ -82,6 +84,36 @@ namespace TimeMiner.Master.Database
             string text = JsonConvert.SerializeObject(desc);
             File.WriteAllText(path,text);
         }
-        
+
+        protected bool Equals(StorageDescriptor other)
+        {
+            return UserId.Equals(other.UserId) && Date.Equals(other.Date);
+        }
+
+        public override bool Equals(object obj)
+        {
+            if (ReferenceEquals(null, obj)) return false;
+            if (ReferenceEquals(this, obj)) return true;
+            if (obj.GetType() != this.GetType()) return false;
+            return Equals((StorageDescriptor) obj);
+        }
+
+        public override int GetHashCode()
+        {
+            unchecked
+            {
+                return (UserId.GetHashCode() * 397) ^ Date.GetHashCode();
+            }
+        }
+
+        public static bool operator ==(StorageDescriptor left, StorageDescriptor right)
+        {
+            return Equals(left, right);
+        }
+
+        public static bool operator !=(StorageDescriptor left, StorageDescriptor right)
+        {
+            return !Equals(left, right);
+        }
     }
 }

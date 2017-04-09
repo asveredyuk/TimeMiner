@@ -78,6 +78,8 @@
     <Compile Include="Analysis\Log.cs" />
     <Compile Include="Analysis\ProductivityReport.cs" />
     <Compile Include="Analysis\ProgramUsageReport.cs" />
+    <Compile Include="Cache\CacheDB.cs" />
+    <Compile Include="Cache\ReportResultCacheItem.cs" />
     <Compile Include="Database\CachedStorage.cs" />
     <Compile Include="Database\LogsDB.cs" />
     <Compile Include="Database\LogsDBLiteDB.cs" />

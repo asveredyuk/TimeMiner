@@ -102,7 +102,7 @@ namespace TimeMiner.Master.Database
                 throw new Exception("Given log" + fname + " already exists");
             }
 
-            StorageDescriptor desc = new StorageDescriptor(userId,date);
+            StorageDescriptor desc = new StorageDescriptor(userId,date, Util.GetEmptyMD5Hash());
             desc.SaveToFile(MakeStorageDescriptorFilePath(fname));
             File.Create(fname).Close();
             return new CachedStorage(fname);
@@ -247,16 +247,35 @@ namespace TimeMiner.Master.Database
             }
             return res;
         }
+
+        //TODO: make larger transactions of numbers of records
+        //this will save the time and can be useful for import or late sending
         /// <summary>
         /// Append log record to the file
         /// </summary>
         /// <param name="rec">Log record to append</param>
         private void AppendToFile(LogRecord rec)
         {
-            var stream = File.Open(fname, FileMode.Append);
-            serializer.Pack(stream, rec);
-            stream.Flush();
-            stream.Close();
+            using (var stream = File.Open(fname, FileMode.Append))
+            {
+                serializer.Pack(stream, rec);
+                stream.Flush();
+                stream.Close();
+            }
+        }
+
+        private void UpdateDescriptor()
+        {
+            if (!File.Exists(fname))
+            {
+                Descriptor.FileMD5 = Util.GetEmptyMD5Hash();
+            }
+            else
+            {
+                string hash = Util.ComputeFileMD5Hash(fname);
+                Descriptor.FileMD5 = hash;
+            }
+            Descriptor.SaveToFile(MakeStorageDescriptorFilePath(fname));
         }
     }
 }
