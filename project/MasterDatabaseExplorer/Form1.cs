@@ -225,6 +225,7 @@ namespace MasterDatabaseExplorer
         {
             const int REPORT_EACH = 100;
             string[] lines = File.ReadAllLines(fname, Encoding.Default);
+            List<LogRecord> parsed = new List<LogRecord>();
             int failedCount = 0;
             LogRecord prev = null;
             for (int i = 0; i < lines.Length; i++)
@@ -241,7 +242,7 @@ namespace MasterDatabaseExplorer
                     }
                     if (prev != null)
                         rec.PreviusRecordId = prev.Id;
-                    db.PutRecord(rec);
+                    parsed.Add(rec);
                     prev = rec;
                 }
                 catch (Exception)
@@ -253,6 +254,7 @@ namespace MasterDatabaseExplorer
                     yield return new CorutineReportPercentage(i + 1, lines.Length);
                 }
             }
+            db.PutManyRecords(parsed);
             yield return new CorutineReportPercentage(100);
             yield return new CorutineReportResult($"Failed : {failedCount}");
         }

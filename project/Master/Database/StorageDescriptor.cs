@@ -27,12 +27,17 @@ namespace TimeMiner.Master.Database
         /// Hash of storage file
         /// </summary>
         public string FileMD5 { get; set; }
+        /// <summary>
+        /// Date of file being modified
+        /// </summary>
+        public DateTime LastModified { get; set; }
 
-        public StorageDescriptor(Guid userId, DateTime date, string fileMd5)
+        public StorageDescriptor(Guid userId, DateTime date, string fileMd5, DateTime lastModified)
         {
             UserId = userId;
             Date = date;
             FileMD5 = fileMd5;
+            LastModified = lastModified;
         }
 
         /// <summary>
@@ -81,7 +86,7 @@ namespace TimeMiner.Master.Database
         /// <param name="path"></param>
         public static void SaveToFile(StorageDescriptor desc, string path)
         {
-            string text = JsonConvert.SerializeObject(desc);
+            string text = JsonConvert.SerializeObject(desc, Formatting.Indented);
             File.WriteAllText(path,text);
         }
 

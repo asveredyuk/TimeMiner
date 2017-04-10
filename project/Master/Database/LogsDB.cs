@@ -33,6 +33,11 @@ namespace TimeMiner.Master
             storages0 = new List<CachedStorage>();
             //create cached storages for all existing files
             storages0.AddRange(CachedStorage.LoadAllStorages(LOGS_DIR));
+            //Refresh all descriptors at start
+            foreach (var cachedStorage in storages0)
+            {
+                cachedStorage.RefreshDescriptor();
+            }
         }
         /// <summary>
         /// Create new storage, appropriate for given record
@@ -77,8 +82,43 @@ namespace TimeMiner.Master
                 storage = CreateNewStoreageForRecord(rec);
             }
             storage.PutRecord(rec);
+            //descriptor is refreshed
+            storage.RefreshDescriptor();
         }
 
+        /// <summary>
+        /// Put many records in one transaction. This method is better for large amounts of records
+        /// </summary>
+        /// <param name="recs"></param>
+        public void PutManyRecords(IEnumerable<LogRecord> recs)
+        {
+            //Accumulates log records per cached storage
+            Dictionary<CachedStorage, List<LogRecord>> dict = new Dictionary<CachedStorage, List<LogRecord>>();
+
+            foreach (var logRecord in recs)
+            {
+                //For now, all logs are stored in local time
+                logRecord.Time = logRecord.Time.ToLocalTime();
+
+                CachedStorage storage = FindStorageForRecord(logRecord);
+                if (storage == null)
+                {
+                    storage = CreateNewStoreageForRecord(logRecord);
+                }
+                if (!dict.ContainsKey(storage))
+                    dict[storage] = new List<LogRecord>();
+                dict[storage].Add(logRecord);
+            }
+            foreach (var pair in dict)
+            {
+                pair.Key.PutManyRecords(pair.Value);
+            }
+            //After all logs were imported, refresh descriptors
+            foreach (var pair in dict)
+            {
+                pair.Key.RefreshDescriptor();
+            }
+        }
         /// <summary>
         /// Get all records for given user
         /// </summary>
@@ -112,7 +152,7 @@ namespace TimeMiner.Master
                 neededStorages = needed.ToList();
             }
             var inPeriod = neededStorages.Select(
-                t=>t.GetRecords(cacheResuts).Where(q=> Util.CheckDateInPeriod(q.Time, timeFrom, timeTo)).ToArray()
+                t => t.GetRecords(cacheResuts).Where(q => Util.CheckDateInPeriod(q.Time, timeFrom, timeTo)).ToArray()
                 ).ToArray();
             return inPeriod;
         }
@@ -134,10 +174,10 @@ namespace TimeMiner.Master
                 var needed = storages0.Where(t => t.Descriptor.CheckInterceptionWithPeriod(timeFrom, timeTo));
                 neededStorages = needed.ToList();
             }
-            var all = neededStorages.Select(t => t.GetRecords(cacheResults)).SelectMany(t=>t);
+            var all = neededStorages.Select(t => t.GetRecords(cacheResults)).SelectMany(t => t);
             var inPeriod = all.Where(t => Util.CheckDateInPeriod(t.Time, timeFrom, timeTo));
             return inPeriod.ToList();
         }
-        
+
     }
 }

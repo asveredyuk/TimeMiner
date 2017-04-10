@@ -53,10 +53,12 @@ namespace TimeMiner.Master.Database
         /// Descriptor of this storage
         /// </summary>
         public StorageDescriptor Descriptor { get; }
+
         /// <summary>
         /// Create new cached storage
         /// </summary>
         /// <param name="fname">Name of file to store records</param>
+        /// <param name="skipDescriptorUpdate">Should descriptor be updated or not</param>
         private CachedStorage(string fname)
         {
             if (!File.Exists(fname))
@@ -102,7 +104,7 @@ namespace TimeMiner.Master.Database
                 throw new Exception("Given log" + fname + " already exists");
             }
 
-            StorageDescriptor desc = new StorageDescriptor(userId,date, Util.GetEmptyMD5Hash());
+            StorageDescriptor desc = new StorageDescriptor(userId,date, Util.GetEmptyMD5Hash(), DateTime.MinValue);
             desc.SaveToFile(MakeStorageDescriptorFilePath(fname));
             File.Create(fname).Close();
             return new CachedStorage(fname);
@@ -194,6 +196,20 @@ namespace TimeMiner.Master.Database
             }
         }
         /// <summary>
+        /// Put many records at once. This method is better for large amounts of records
+        /// </summary>
+        /// <param name="recs"></param>
+        public void PutManyRecords(IEnumerable<LogRecord> recs)
+        {
+            lock (_lock)
+            {
+                var logRecords = recs as IList<LogRecord> ?? recs.ToList();
+                AppendToFileMany(logRecords);
+                if(cache!=null)
+                    cache.AddRange(logRecords);
+            }
+        }
+        /// <summary>
         /// Erace cache of given storage
         /// </summary>
         public void EraceCache()
@@ -248,8 +264,22 @@ namespace TimeMiner.Master.Database
             return res;
         }
 
-        //TODO: make larger transactions of numbers of records
-        //this will save the time and can be useful for import or late sending
+        /// <summary>
+        /// Append many log records to the file
+        /// </summary>
+        /// <param name="recs"></param>
+        private void AppendToFileMany(IEnumerable<LogRecord> recs)
+        {
+            using (var stream = File.Open(fname, FileMode.Append))
+            {
+                foreach (var rec in recs)
+                {
+                    serializer.Pack(stream, rec);
+                }
+                stream.Flush();
+                stream.Close();
+            }
+        }
         /// <summary>
         /// Append log record to the file
         /// </summary>
@@ -264,16 +294,23 @@ namespace TimeMiner.Master.Database
             }
         }
 
-        private void UpdateDescriptor()
+        public void RefreshDescriptor()
         {
+            
             if (!File.Exists(fname))
             {
                 Descriptor.FileMD5 = Util.GetEmptyMD5Hash();
             }
             else
             {
-                string hash = Util.ComputeFileMD5Hash(fname);
-                Descriptor.FileMD5 = hash;
+                DateTime lastModifiedReal = File.GetLastWriteTime(fname);
+                if (lastModifiedReal.ToUniversalTime() > Descriptor.LastModified.ToUniversalTime())
+                {
+                    string hash = Util.ComputeFileMD5Hash(fname);
+                    Console.WriteLine("Hash recomputed : " + Path.GetFileName(fname));
+                    Descriptor.FileMD5 = hash;
+                    Descriptor.LastModified = lastModifiedReal;
+                }
             }
             Descriptor.SaveToFile(MakeStorageDescriptorFilePath(fname));
         }
