@@ -172,16 +172,16 @@ namespace TimeMiner.Master
             var res = log.GetRelevanceTimes();
             string str = res.Aggregate("", (q, t) => q += $"{t.Key}:{t.Value}\r\n");
             MessageBox.Show(str);*/
-            Log log = Log.GetLog();
-            Stopwatch w = Stopwatch.StartNew();
-
-            /*ProgramUsageReport report = new ProgramUsageReport(log);
-            report.Calculate();*/
-            ActiveReport report = new ActiveReport(log);
-            int total = report.GetActivities().Select(t => t.IsActive ? 1 : 0).Sum();
-            w.Stop();
-            MessageBox.Show($"Total active seconds = {total}");
-            MessageBox.Show($"{w.ElapsedMilliseconds}ms");
+//            Log log = Log.GetLog();
+//            Stopwatch w = Stopwatch.StartNew();
+//
+//            /*ProgramUsageReport report = new ProgramUsageReport(log);
+//            report.Calculate();*/
+//            ActiveReport report = new ActiveReport(log);
+//            int total = report.GetActivities().Select(t => t.IsActive ? 1 : 0).Sum();
+//            w.Stop();
+//            MessageBox.Show($"Total active seconds = {total}");
+//            MessageBox.Show($"{w.ElapsedMilliseconds}ms");
             
             //string res = JsonConvert.SerializeObject(report.GetItems(), Formatting.Indented);
             //WriteStringAndClose(resp, res);

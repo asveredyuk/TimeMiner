@@ -6,7 +6,9 @@ using System.Text;
 using System.Threading.Tasks;
 using MsgPack.Serialization;
 using TimeMiner.Core;
+using TimeMiner.Master.Analysis;
 using TimeMiner.Master.Database;
+using TimeMiner.Master.Settings;
 
 namespace TimeMiner.Master
 {
@@ -140,10 +142,10 @@ namespace TimeMiner.Master
         /// <param name="userId"></param>
         /// <param name="timeFrom"></param>
         /// <param name="timeTo"></param>
-        /// <param name="cacheResuts"></param>
+        /// <param name="cacheResults"></param>
         /// <returns></returns>
-        public LogRecord[][] GetLogRecordsForUserForPeriodSeparate(Guid userId, DateTime timeFrom, DateTime timeTo,
-            bool cacheResuts = true)
+        public Log[] GetLogsForUserForPeriodSeparate(Guid userId, DateTime timeFrom, DateTime timeTo,
+            bool cacheResults = true)
         {
             List<CachedStorage> neededStorages;
             lock (storages0)
@@ -152,19 +154,34 @@ namespace TimeMiner.Master
                 neededStorages = needed.ToList();
             }
             var inPeriod = neededStorages.Select(
-                t => t.GetRecords(cacheResuts).Where(q => Util.CheckDateInPeriod(q.Time, timeFrom, timeTo)).ToArray()
+                t=>MakeLogFromStorageInPeriod(t,timeFrom,timeTo,cacheResults)
                 ).ToArray();
             return inPeriod;
         }
+
+        private Log MakeLogFromStorageInPeriod(CachedStorage storage, DateTime timeFrom, DateTime timeTo,
+            bool cacheResults)
+        {
+            LogRecord[] recs =
+                storage.GetRecords(cacheResults).Where(q => Util.CheckDateInPeriod(q.Time, timeFrom, timeTo)).ToArray();
+            Log log = new Log(recs,TMPMakeProfile(),storage.Descriptor);
+            return log;
+        }
+
+        private IndexedProfile TMPMakeProfile()
+        {
+            IndexedProfile prof = IndexedProfile.FromProfile(SettingsContainer.Self.GetBaseProfile());
+            return prof;
+        }
         /// <summary>
-        /// Get logs for user for given period
+        /// Get log for user for given period
         /// </summary>
         /// <param name="userid"></param>
         /// <param name="timeFrom"></param>
         /// <param name="timeTo"></param>
         /// <param name="cacheResults"></param>
         /// <returns></returns>
-        public List<LogRecord> GetLogRecordsForUserForPeriod(Guid userid, DateTime timeFrom, DateTime timeTo,
+        public Log GetLogRecordsForUserForPeriod(Guid userid, DateTime timeFrom, DateTime timeTo,
             bool cacheResults = true)
         {
             //TODO: filter by user
@@ -176,7 +193,8 @@ namespace TimeMiner.Master
             }
             var all = neededStorages.Select(t => t.GetRecords(cacheResults)).SelectMany(t => t);
             var inPeriod = all.Where(t => Util.CheckDateInPeriod(t.Time, timeFrom, timeTo));
-            return inPeriod.ToList();
+            Log log = new Log(inPeriod.ToArray(),TMPMakeProfile(),null);
+            return log;
         }
 
     }

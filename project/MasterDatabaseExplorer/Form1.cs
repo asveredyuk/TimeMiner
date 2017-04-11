@@ -414,7 +414,7 @@ namespace MasterDatabaseExplorer
             var res = report.Calculate();
             string json = JsonConvert.SerializeObject(res, Formatting.Indented);
             MessageBox.Show(json);*/
-            Log[] allLogs = Log.GetSeparateLogs(DateTime.MinValue, DateTime.MaxValue);
+            Log[] allLogs = MasterDB.Logs.GetLogsForUserForPeriodSeparate(Guid.Empty, DateTime.MinValue, DateTime.MaxValue);
             List<ProductivityReport.ReportResult> results = new List<ProductivityReport.ReportResult>();
             foreach (var log in allLogs)
             {

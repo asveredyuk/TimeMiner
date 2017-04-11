@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using TimeMiner.Core;
+using TimeMiner.Master.Database;
 using TimeMiner.Master.Settings;
 
 namespace TimeMiner.Master.Analysis
@@ -13,6 +14,7 @@ namespace TimeMiner.Master.Analysis
 
         public IndexedProfile Prof { get; }
         public LogRecord[] Records { get; }
+        public StorageDescriptor StorageDescriptor { get; }
 
         public DateTime Date
         {
@@ -23,11 +25,17 @@ namespace TimeMiner.Master.Analysis
                 return Records[0].Time.Date;
             }
         }
-
-        public Log(LogRecord[] records, IndexedProfile prof)
+        /// <summary>
+        /// Create new log
+        /// </summary>
+        /// <param name="records">Array of records</param>
+        /// <param name="prof">Profile for indexing</param>
+        /// <param name="desc">Descriptor of storage. Null for compound logs (records from different storages)</param>
+        public Log(LogRecord[] records, IndexedProfile prof, StorageDescriptor desc)
         {
             this.Records = records;
             this.Prof = prof;
+            this.StorageDescriptor = desc;
         }
 
         public Dictionary<Relevance, int> GetRelevanceTimes()
@@ -54,27 +62,6 @@ namespace TimeMiner.Master.Analysis
         {
             return Prof[Prof.FindIdentifier(rec)];
         }
-        //TODO: make better make log with user id and dates
-        public static Log GetLog()
-        {
-            IndexedProfile prof = IndexedProfile.FromProfile(SettingsContainer.Self.GetBaseProfile());
-            LogRecord[] recs = MasterDB.Logs.GetAllRecordsForUser(Guid.Empty).ToArray();
-            return new Log(recs,prof);
-        }
-
-        public static Log GetLog(DateTime begin, DateTime end)
-        {
-            IndexedProfile prof = IndexedProfile.FromProfile(SettingsContainer.Self.GetBaseProfile());
-            LogRecord[] recs = MasterDB.Logs.GetLogRecordsForUserForPeriod(Guid.Empty, begin,end).ToArray();
-            return new Log(recs, prof);
-        }
-
-        public static Log[] GetSeparateLogs(DateTime begin, DateTime end)
-        {
-            IndexedProfile prof = IndexedProfile.FromProfile(SettingsContainer.Self.GetBaseProfile());
-            LogRecord[][] recs = MasterDB.Logs.GetLogRecordsForUserForPeriodSeparate(Guid.Empty, begin, end);
-            Log[] logs = recs.Select(t => new Log(t, prof)).ToArray();
-            return logs;
-        }
+        
     }
 }
