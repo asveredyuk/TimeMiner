@@ -11,29 +11,37 @@ namespace TimeMiner.Master.Analysis
 {
     public class Log
     {
-
+        private IEnumerable<LogRecord> recordsSource;
+        private LogRecord[] records;
         public IndexedProfile Prof { get; }
-        public LogRecord[] Records { get; }
+
+        public LogRecord[] Records
+        {
+            get
+            {
+                if (records == null)
+                    records = recordsSource.ToArray();
+                return records;
+            }
+        }
+
         public StorageDescriptor StorageDescriptor { get; }
 
         public DateTime Date
         {
             get
             {
+                if (StorageDescriptor != null)
+                    return StorageDescriptor.Date;
                 if (Records.Length == 0)
                     throw new Exception("empty log, no datetime");
                 return Records[0].Time.Date;
             }
         }
-        /// <summary>
-        /// Create new log
-        /// </summary>
-        /// <param name="records">Array of records</param>
-        /// <param name="prof">Profile for indexing</param>
-        /// <param name="desc">Descriptor of storage. Null for compound logs (records from different storages)</param>
-        public Log(LogRecord[] records, IndexedProfile prof, StorageDescriptor desc)
+        
+        public Log(IEnumerable<LogRecord> recordsSource, IndexedProfile prof, StorageDescriptor desc)
         {
-            this.Records = records;
+            this.recordsSource = recordsSource;
             this.Prof = prof;
             this.StorageDescriptor = desc;
         }

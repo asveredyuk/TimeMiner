@@ -162,8 +162,8 @@ namespace TimeMiner.Master
         private Log MakeLogFromStorageInPeriod(CachedStorage storage, DateTime timeFrom, DateTime timeTo,
             bool cacheResults)
         {
-            LogRecord[] recs =
-                storage.GetRecords(cacheResults).Where(q => Util.CheckDateInPeriod(q.Time, timeFrom, timeTo)).ToArray();
+            var recs =
+                storage.GetRecords(cacheResults).Where(q => Util.CheckDateInPeriod(q.Time, timeFrom, timeTo));
             Log log = new Log(recs,TMPMakeProfile(),storage.Descriptor);
             return log;
         }

@@ -164,14 +164,39 @@ namespace TimeMiner.Master.Database
         /// </summary>
         /// <param name="cacheResults">Should results be cached or not</param>
         /// <returns>List of all records in storage</returns>
-        public List<LogRecord> GetRecords(bool cacheResults = CACHE_RESULTS_DEFAULT)
+        public IEnumerable<LogRecord> GetRecords(bool cacheResults = CACHE_RESULTS_DEFAULT)
         {
             lock (_lock)
             {
-                if(cache!=null)
-                    return new List<LogRecord>(cache);
-                var list = ReadRecordsFromFile();
-                if (!cacheResults)
+                if (cache != null)
+                {
+                    foreach (var logRecord in cache)
+                    {
+                        yield return logRecord;
+                    }
+                }
+                else
+                {
+                    var fileEnum = ReadRecordsFromFile();
+                    //if this is called, we really need to read items
+                    if (cacheResults)
+                    {
+                        cache = new List<LogRecord>(fileEnum);
+                        foreach (var logRecord in cache)
+                        {
+                            yield return logRecord;
+                        }
+
+                    }
+                    else
+                    {
+                        foreach (var logRecord in fileEnum)
+                        {
+                            yield return logRecord;
+                        }
+                    }
+                }
+                /*if (!cacheResults)
                 {
                     return list;
                 }
@@ -179,7 +204,7 @@ namespace TimeMiner.Master.Database
                 {
                     cache = list;
                     return new List<LogRecord>(cache);
-                }
+                }*/
             }
         }
         /// <summary>
@@ -224,15 +249,17 @@ namespace TimeMiner.Master.Database
         /// Read log records from the file
         /// </summary>
         /// <returns></returns>
-        private List<LogRecord> ReadRecordsFromFile()
+        private IEnumerable<LogRecord> ReadRecordsFromFile()
         {
 
             if (!File.Exists(fname))
             {
-                return new List<LogRecord>(); //nothing to read
+                //nothing to return/
+                yield break;
+                //return new List<LogRecord>(); //nothing to read
             }
 
-            List<LogRecord> res = new List<LogRecord>();
+//            List<LogRecord> res = new List<LogRecord>();
 //                        using (var stream = File.OpenRead(fname))
 //                        {
 //                            while (stream.Position != stream.Length)
@@ -243,25 +270,42 @@ namespace TimeMiner.Master.Database
 //                            stream.Close();
 //                        }
             //improved version of file read (we suppose that file are little enough, ex. logs for 1 day)
-            using (var fstream = File.OpenRead(fname))
+            using (MemoryStream mstream = new MemoryStream())
             {
-                using (MemoryStream stream = new MemoryStream())
+                using (var fstream = File.OpenRead(fname))
                 {
-                    //read file to memory and close
-                    fstream.CopyTo(stream);
+                    Console.WriteLine($"File {fname} opened");
+                    fstream.CopyTo(mstream);
                     fstream.Close();
-                    stream.Position = 0;
-                    //and now log is parsed, so there is no little periodi
-                    while (stream.Position != stream.Length)
-                    {
-                        LogRecord rec = serializer.Unpack(stream);
-                        res.Add(rec);
-                    }
-                    stream.Close();
                 }
-                
+                mstream.Position = 0;
+                while (mstream.Position != mstream.Length)
+                {
+                    LogRecord rec = serializer.Unpack(mstream);
+                    yield return rec;
+                    //res.Add(rec);
+                }
+                mstream.Close();
             }
-            return res;
+//            using (var fstream = File.OpenRead(fname))
+//            {
+//                using (MemoryStream stream = new MemoryStream())
+//                {
+//                    //read file to memory and close
+//                    fstream.CopyTo(stream);
+//                    fstream.Close();
+//                    stream.Position = 0;
+//                    //and now log is parsed, so there is no little periodi
+//                    while (stream.Position != stream.Length)
+//                    {
+//                        LogRecord rec = serializer.Unpack(stream);
+//                        res.Add(rec);
+//                    }
+//                    stream.Close();
+//                }
+//                
+//            }
+//            return res;
         }
 
         /// <summary>
