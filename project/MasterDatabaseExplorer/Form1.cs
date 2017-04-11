@@ -36,6 +36,7 @@ namespace MasterDatabaseExplorer
             LogsDB.LOGS_DIR = @"C:\dev\TimeMiner\project\Master\bin\Debug\Logs";
             //LogsDB.LOG_DB_PATH = @"C:\dev\TimeMiner\project\Master\bin\Debug\logstorage.db";
             SettingsDB.DB_PATH = @"C:\dev\TimeMiner\project\Master\bin\Debug\settings.db";
+            CacheDB.DB_PATH = @"C:\dev\TimeMiner\project\Master\bin\Debug\cache.db";
             try
             {
                 db = MasterDB.Logs;
@@ -419,7 +420,7 @@ namespace MasterDatabaseExplorer
             foreach (var log in allLogs)
             {
                 ProductivityReport rep = new ProductivityReport(log);
-                results.Add(rep.Calculate());
+                results.Add(rep.GetFromCacheOrCalculate());
             }
             Excel.Application app = new Excel.Application();
             app.DisplayAlerts = false;

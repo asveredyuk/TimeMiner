@@ -14,10 +14,6 @@ namespace TimeMiner.Master.Analysis
     public class ProductivityReport : BaseReport<ProductivityReport.ReportResult>
     {
         /// <summary>
-        /// Log instance
-        /// </summary>
-        private Log log;
-        /// <summary>
         /// Result of report
         /// </summary>
         public class ReportResult:BaseReportResult
@@ -39,9 +35,8 @@ namespace TimeMiner.Master.Analysis
         /// Crete new productivity report
         /// </summary>
         /// <param name="log">Log to analyze</param>
-        public ProductivityReport(Log log)
+        public ProductivityReport(Log log):base(log)
         {
-            this.log = log;
         }
 
         public override ReportResult Calculate()
@@ -61,6 +56,11 @@ namespace TimeMiner.Master.Analysis
                 ProductiveTime = totalProductive,
                 DistractionsTime = totalDistractions
             };
+            //this report is cached!
+            if (log.StorageDescriptor != null)
+            {
+                CacheResult(result,log.StorageDescriptor);
+            }
             return result;
         }
     }

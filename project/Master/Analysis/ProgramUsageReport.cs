@@ -100,13 +100,11 @@ namespace TimeMiner.Master.Analysis
             public ActiveReport ActiveReport { get; set; }
         }
        
-        private Log log;
 
         private Dictionary<AppDesc, int> spentTimes;
         public Params Parameters { get; }
-        public ProgramUsageReport(Log log)
+        public ProgramUsageReport(Log log):base(log)
         {
-            this.log = log;
             Parameters = new Params();
         }
 

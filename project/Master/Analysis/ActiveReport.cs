@@ -34,16 +34,11 @@ namespace TimeMiner.Master.Analysis
             }
         }
         /// <summary>
-        /// Log to analyze
-        /// </summary>
-        private Log log;
-        /// <summary>
         /// Create new report
         /// </summary>
         /// <param name="log">log to analyze</param>
-        public ActiveReport(Log log)
+        public ActiveReport(Log log):base(log)
         {
-            this.log = log;
         }
 
         public override ReportResult Calculate()
