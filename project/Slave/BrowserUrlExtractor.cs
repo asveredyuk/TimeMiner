@@ -11,7 +11,7 @@ namespace TimeMiner.Slave
     public class BrowserUrlExtractor : MetaExtractor
     {
         public static readonly string[] ACEPTABLE_BROWSERS = {"chrome","firefox","opera","iexplore"};
-        public const string META_KEY = "site";
+        public const string META_KEY = "url";
         public override bool CanAccept(Process process, IntPtr wHandle)
         {
             return ACEPTABLE_BROWSERS.Contains(process.ProcessName.ToLower());

@@ -239,7 +239,7 @@ namespace MasterDatabaseExplorer
                     rec.UserId = userId;
                     if (ite.extraInfo != null && ite.extraInfo.Length > 2)
                     {
-                        rec.PutMetaString("site",ite.extraInfo);
+                        rec.PutMetaString("url",ite.extraInfo);
                     }
                     if (prev != null)
                         rec.PreviusRecordId = prev.Id;
@@ -399,7 +399,7 @@ namespace MasterDatabaseExplorer
                 return;
             }
             string stat = $"{list.Count} total records\r\n";
-            int sitecount = list.Where(t => t.GetMetaString("site") != null).Count();
+            int sitecount = list.Where(t => t.GetMetaString("url") != null).Count();
             int percent = sitecount * 100 / list.Count;
             stat += $"{percent}% sites";
 
