@@ -166,45 +166,28 @@ namespace TimeMiner.Master.Database
         /// <returns>List of all records in storage</returns>
         public IEnumerable<LogRecord> GetRecords(bool cacheResults = CACHE_RESULTS_DEFAULT)
         {
+            List<LogRecord> results = new List<LogRecord>();
+            //if we are here, results are really requested
             lock (_lock)
             {
                 if (cache != null)
                 {
-                    foreach (var logRecord in cache)
-                    {
-                        yield return logRecord;
-                    }
+                    results = cache;
                 }
                 else
                 {
                     var fileEnum = ReadRecordsFromFile();
-                    //if this is called, we really need to read items
+                    results = fileEnum.ToList(); //read all items
                     if (cacheResults)
                     {
-                        cache = new List<LogRecord>(fileEnum);
-                        foreach (var logRecord in cache)
-                        {
-                            yield return logRecord;
-                        }
-
-                    }
-                    else
-                    {
-                        foreach (var logRecord in fileEnum)
-                        {
-                            yield return logRecord;
-                        }
+                        cache = results.ToList();//make new list for cache
                     }
                 }
-                /*if (!cacheResults)
-                {
-                    return list;
-                }
-                else
-                {
-                    cache = list;
-                    return new List<LogRecord>(cache);
-                }*/
+            }
+            //storage is not locked anymore
+            foreach (var logRecord in results)
+            {
+                yield return logRecord;
             }
         }
         /// <summary>
@@ -254,21 +237,10 @@ namespace TimeMiner.Master.Database
 
             if (!File.Exists(fname))
             {
-                //nothing to return/
+                //nothing to return
                 yield break;
-                //return new List<LogRecord>(); //nothing to read
             }
 
-//            List<LogRecord> res = new List<LogRecord>();
-//                        using (var stream = File.OpenRead(fname))
-//                        {
-//                            while (stream.Position != stream.Length)
-//                            {
-//                                LogRecord rec = serializer.Unpack(stream);
-//                                res.Add(rec);
-//                            }
-//                            stream.Close();
-//                        }
             //improved version of file read (we suppose that file are little enough, ex. logs for 1 day)
             using (MemoryStream mstream = new MemoryStream())
             {
@@ -287,25 +259,6 @@ namespace TimeMiner.Master.Database
                 }
                 mstream.Close();
             }
-//            using (var fstream = File.OpenRead(fname))
-//            {
-//                using (MemoryStream stream = new MemoryStream())
-//                {
-//                    //read file to memory and close
-//                    fstream.CopyTo(stream);
-//                    fstream.Close();
-//                    stream.Position = 0;
-//                    //and now log is parsed, so there is no little periodi
-//                    while (stream.Position != stream.Length)
-//                    {
-//                        LogRecord rec = serializer.Unpack(stream);
-//                        res.Add(rec);
-//                    }
-//                    stream.Close();
-//                }
-//                
-//            }
-//            return res;
         }
 
         /// <summary>
