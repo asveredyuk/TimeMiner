@@ -61,7 +61,7 @@ namespace TimeMiner.Master.Frontend.BuiltInExtensions
                 log = logs[0];
             }
             ProductivityReport rep = new ProductivityReport(log);
-            var result = rep.Calculate();
+            var result = rep.GetFromCacheOrCalculate();
             WriteObjectJsonAndClose(resp,result);
         }
         private StatRequestData ParseStatRequestData(HttpListenerRequest req)

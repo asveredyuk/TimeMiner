@@ -98,31 +98,42 @@ namespace TimeMiner.Master.Frontend
                 HttpListenerContext context = await listener.GetContextAsync();
                 HttpListenerRequest req = context.Request;
                 HttpListenerResponse resp = context.Response;
+                //start task to handle this request
+                Task.Run(() => GoHandleRequest(req, resp));
+
+            }
+        }
+        /// <summary>
+        /// Method to be called in separate thread to handle the request
+        /// </summary>
+        /// <param name="req"></param>
+        /// <param name="resp"></param>
+        private void GoHandleRequest(HttpListenerRequest req, HttpListenerResponse resp)
+        {
+            try
+            {
+                HandleRequest(req, resp);
+            }
+            catch (Exception e)
+            {
                 try
                 {
-                    HandleRequest(req, resp);
+                    if (resp.OutputStream.CanWrite)
+                    {
+                        //responce was not closed
+                        //set 500 - internal server error
+                        resp.StatusCode = (int)HttpStatusCode.InternalServerError;
+                        resp.Close();
+                    }
                 }
-                catch (Exception e)
+                catch (Exception)
                 {
-                    try
-                    {
-                        if (resp.OutputStream.CanWrite)
-                        {
-                            //responce was not closed
-                            //set 500 - internal server error
-                            resp.StatusCode = (int)HttpStatusCode.InternalServerError;
-                            resp.Close();
-                        }
-                    }
-                    catch (Exception)
-                    {
-                        //do nothing
-                        //throw;
-                    }
-                    Console.Out.WriteLine("Exception in handler thread, " + e.Message);
-                    Console.Out.WriteLine(e.StackTrace);
+                    //do nothing
                     //throw;
                 }
+                Console.Out.WriteLine("Exception in handler thread, " + e.Message);
+                Console.Out.WriteLine(e.StackTrace);
+                //throw;
             }
         }
         /// <summary>
@@ -134,6 +145,7 @@ namespace TimeMiner.Master.Frontend
         {
             //always return file data
             string path = req.Url.PathAndQuery;
+            Console.WriteLine(path);
             /*if (path == "/")
                 path = "/index.html";*/
             path = path.TrimStart('/');
@@ -165,6 +177,7 @@ namespace TimeMiner.Master.Frontend
                 }
                 resp.OutputStream.Close();*/
             }
+            Console.WriteLine(path + ":A");
             /*StreamWriter sw = new StreamWriter(resp.OutputStream);
             sw.WriteLine(req.Url.PathAndQuery);
             sw.Close();*/
