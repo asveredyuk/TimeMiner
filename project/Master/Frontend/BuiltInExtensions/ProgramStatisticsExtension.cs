@@ -48,14 +48,19 @@ namespace TimeMiner.Master.Frontend.BuiltInExtensions
         {
             StatRequestData reqData = ParseStatRequestData(req);
             Log[] logs = MasterDB.Logs.GetLogsForUserForPeriodSeparate(Guid.Empty, reqData.Begin, reqData.End);
+            Log log;
             if(logs.Length > 1)
                 throw new NotImplementedException("More than one log is not supported");
-            if (logs.Length < 0)
+            if (logs.Length < 1)
             {
-                //TODO: return empty object?
-                throw new NotImplementedException();
+                //make fake empty log
+                log = new Log(new List<LogRecord>(), null, null);
             }
-            ProductivityReport rep = new ProductivityReport(logs[0]);
+            else
+            {
+                log = logs[0];
+            }
+            ProductivityReport rep = new ProductivityReport(log);
             var result = rep.Calculate();
             WriteObjectJsonAndClose(resp,result);
         }
