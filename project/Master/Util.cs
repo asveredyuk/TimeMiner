@@ -54,5 +54,13 @@ namespace TimeMiner.Master
         {
             return ComputeMD5Hash(new byte[0]);
         }
+
+        public static string GetHostFromUrl(string url)
+        {
+            Uri uri;
+            if (!Uri.TryCreate(url, UriKind.Absolute, out uri))
+                return null;
+            return uri.Host;
+        }
     }
 }

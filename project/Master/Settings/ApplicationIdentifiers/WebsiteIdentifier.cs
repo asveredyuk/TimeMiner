@@ -33,7 +33,7 @@ namespace TimeMiner.Master.Settings.ApplicationIdentifiers
             //if there is no url - no relation
             if (url == null)
                 return 0;
-            string host = GetHost(url);
+            string host = Util.GetHostFromUrl(url);
             //if url is broken - no relation
             if (host == null)
                 return 0;
@@ -46,18 +46,6 @@ namespace TimeMiner.Master.Settings.ApplicationIdentifiers
                 //it has larger length and it wins
             }
             return 0;
-        }
-        /// <summary>
-        /// Get host from given url
-        /// </summary>
-        /// <param name="url"></param>
-        /// <returns></returns>
-        private string GetHost(string url)
-        {
-            Uri uri;
-            if (!Uri.TryCreate(url, UriKind.Absolute, out uri))
-                return null;
-            return uri.Host;
         }
     }
 }
