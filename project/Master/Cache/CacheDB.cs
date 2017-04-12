@@ -32,20 +32,20 @@ namespace TimeMiner.Master.Database
             col = db.GetCollection<ReportResultCacheItem>("cache");
         }
 
-        public T FindReportInCache<T>(string fileMd5) where T: BaseReportResult
+        public T FindReportInCache<T>(string fileMd5, string profileMd5) where T: BaseReportResult
         {
             Type t = typeof(T);
-            var item = FindItemInCache(fileMd5, t);
+            var item = FindItemInCache(fileMd5,profileMd5, t);
             return item?.Result as T;
         }
-        public ReportResultCacheItem FindItemInCache(string fileMd5, Type reportType)
+        public ReportResultCacheItem FindItemInCache(string fileMd5, string profileMd5, Type reportType)
         {
-            var item = col.FindOne(t => t.FileHash == fileMd5 && t.ReportTypeGuid == reportType.GUID);
+            var item = col.FindOne(t => t.FileHash == fileMd5 && t.ProfileHash == profileMd5 && t.ReportTypeGuid == reportType.GUID);
             return item;
         }
-        public void PutToCache<T>(T report, StorageDescriptor desc) where T : BaseReportResult
+        public void PutToCache<T>(T report, string fileMD5, string profileMd5) where T : BaseReportResult
         {
-            var item = new ReportResultCacheItem(desc.FileMD5, "", typeof(T).GUID, report);
+            var item = new ReportResultCacheItem(fileMD5, profileMd5, typeof(T).GUID, report);
             col.Upsert(item);
         }
     }

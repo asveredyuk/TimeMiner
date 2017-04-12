@@ -45,6 +45,11 @@ namespace TimeMiner.Master
             }
         }
 
+        public static string ComputeStringMD5Hash(string str)
+        {
+            byte[] arr = Encoding.UTF8.GetBytes(str);
+            return ComputeMD5Hash(arr);
+        }
         public static string GetEmptyMD5Hash()
         {
             return ComputeMD5Hash(new byte[0]);

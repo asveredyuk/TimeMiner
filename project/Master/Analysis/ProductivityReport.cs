@@ -59,7 +59,7 @@ namespace TimeMiner.Master.Analysis
             //this report is cached!
             if (log.StorageDescriptor != null)
             {
-                CacheResult(result,log.StorageDescriptor);
+                CacheResult(result);
             }
             return result;
         }

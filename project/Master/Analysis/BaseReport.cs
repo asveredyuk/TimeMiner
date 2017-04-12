@@ -35,7 +35,7 @@ namespace TimeMiner.Master.Analysis
         {
             T rep = null;
             if(log.StorageDescriptor != null)
-                rep = CacheDB.Self.FindReportInCache<T>(log.StorageDescriptor.FileMD5);
+                rep = CacheDB.Self.FindReportInCache<T>(log.StorageDescriptor.FileMD5, log.Prof.ComputeHash());
             if (rep == null)
                 rep = Calculate();
             return rep;
@@ -44,11 +44,18 @@ namespace TimeMiner.Master.Analysis
         /// <summary>
         /// Add result to cache
         /// </summary>
-        /// <param name="result"></param>
-        /// <param name="descriptor"></param>
-        protected void CacheResult(T result, StorageDescriptor descriptor)
+        /// <param name="result">Report result</param>
+        protected void CacheResult(T result)
         {
-            CacheDB.Self.PutToCache(result,descriptor);
+            if (log.StorageDescriptor == null)
+            {
+                throw new Exception("Tried to add to cache log without descriptor");
+            }
+            if (log.Prof == null)
+            {
+                throw new Exception("Tried to add to cache log without profile");
+            }
+            CacheDB.Self.PutToCache(result,log.StorageDescriptor.FileMD5, log.Prof.ComputeHash());
         }
     }
 }

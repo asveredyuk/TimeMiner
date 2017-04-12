@@ -13,7 +13,7 @@ namespace TimeMiner.Master.Cache
     {
         public string Id
         {
-            get { return FileHash + ReportTypeGuid.ToString() + ProfileHash??""; }
+            get { return FileHash + ReportTypeGuid.ToString() + ProfileHash; }
         }
         [BsonIndex]
         public string FileHash { get; set; }
