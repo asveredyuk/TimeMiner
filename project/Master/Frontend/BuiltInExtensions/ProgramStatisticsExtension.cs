@@ -42,13 +42,34 @@ namespace TimeMiner.Master.Frontend.BuiltInExtensions
             var res = new HandlerPageDescriptor(WWWRes.GetString("stat/appusage/tablepage.html"), WWWRes.GetString("stat/appusage/tablehead.html"));
             return res;
         }
-        
-        [ApiPath("stat")]
+
+        [ApiPath("stat/overall_productivity")]
+        public void HandlOverallProdApi(HttpListenerRequest req, HttpListenerResponse resp)
+        {
+            StatRequestData reqData = ParseStatRequestData(req);
+            Log[] logs = MasterDB.Logs.GetLogsForUserForPeriodSeparate(Guid.Empty, reqData.Begin, reqData.End);
+            if(logs.Length > 1)
+                throw new NotImplementedException("More than one log is not supported");
+            if (logs.Length < 0)
+            {
+                //TODO: return empty object?
+                throw new NotImplementedException();
+            }
+            ProductivityReport rep = new ProductivityReport(logs[0]);
+            var result = rep.Calculate();
+            WriteObjectJsonAndClose(resp,result);
+        }
+        private StatRequestData ParseStatRequestData(HttpListenerRequest req)
+        {
+            string postString = ReadPostString(req);
+            StatRequestData reqData = JsonConvert.DeserializeObject<StatRequestData>(postString);
+            return reqData;
+        }
+        [ApiPath("stat/appusage")]
         public void HandleApi(HttpListenerRequest req, HttpListenerResponse resp)
         {
             string path = SkipApiAndRoot(req.Url.AbsolutePath);
-            string postString = ReadPostString(req);
-            StatRequestData reqData = JsonConvert.DeserializeObject<StatRequestData>(postString);
+            StatRequestData reqData = ParseStatRequestData(req);
             Stopwatch w2 = Stopwatch.StartNew();
             //temporarly solved by local time
             Log log = MasterDB.Logs.GetLogRecordsForUserForPeriod(Guid.Empty, reqData.Begin.ToLocalTime(),reqData.End.ToLocalTime());

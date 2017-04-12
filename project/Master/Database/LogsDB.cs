@@ -147,6 +147,8 @@ namespace TimeMiner.Master
         public Log[] GetLogsForUserForPeriodSeparate(Guid userId, DateTime timeFrom, DateTime timeTo,
             bool cacheResults = true)
         {
+            timeFrom = ConvertDatetime(timeFrom);
+            timeTo = ConvertDatetime(timeTo);
             List<CachedStorage> neededStorages;
             lock (storages0)
             {
@@ -184,6 +186,8 @@ namespace TimeMiner.Master
         public Log GetLogRecordsForUserForPeriod(Guid userid, DateTime timeFrom, DateTime timeTo,
             bool cacheResults = true)
         {
+            timeFrom = ConvertDatetime(timeFrom);
+            timeTo = ConvertDatetime(timeTo);
             //TODO: filter by user
             List<CachedStorage> neededStorages;
             lock (storages0)
@@ -195,6 +199,11 @@ namespace TimeMiner.Master
             var inPeriod = all.Where(t => Util.CheckDateInPeriod(t.Time, timeFrom, timeTo));
             Log log = new Log(inPeriod.ToArray(),TMPMakeProfile(),null);
             return log;
+        }
+
+        private DateTime ConvertDatetime(DateTime dt)
+        {
+            return dt.ToLocalTime();
         }
 
     }

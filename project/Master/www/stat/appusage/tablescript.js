@@ -90,7 +90,6 @@ function RowWrapper(tBody, data, template) {
     tBody.append(this.row);
     this.postRowUpdate = function () {
         var mom = moment.duration(this.data.SecondsSpent,'seconds');
-        var durationStr = '';
         var days = mom.days();
         var hours = mom.hours();
         var minutes = mom.minutes();
@@ -144,7 +143,7 @@ function TableWrapper(ctxt)
         that.tbody.empty();
         that.tbody.append(that.loader);
         $.ajax({
-            url: "/api/stat",
+            url: "/api/stat/appusage",
             type: 'POST',
             data: json
         })
@@ -171,9 +170,14 @@ function TableWrapper(ctxt)
 $(document).ready(function () {
     var selector = new PeriodSelector($('#selector'));
     var wrapper = new TableWrapper($(".statTable"));
+    var ostat = new OverallStatisticsWrapper($(".ostat"));
     wrapper.reloadTable(selector.val);
+    ostat.reloadStats(selector.val);
     selector.onChangedValueAccepted.add(function (arg) {
         wrapper.reloadTable(arg);
+        ostat.reloadStats(arg);
     });
+
+
     //ReloadTable();
 });

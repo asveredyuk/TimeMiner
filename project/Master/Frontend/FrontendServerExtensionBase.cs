@@ -5,6 +5,7 @@ using System.Linq;
 using System.Net;
 using System.Text;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
 
 namespace TimeMiner.Master.Frontend
 {
@@ -108,6 +109,18 @@ namespace TimeMiner.Master.Frontend
         {
             byte[] data = Encoding.UTF8.GetBytes(str);
             WriteBytesAndClose(resp,data,code);
+        }
+
+        /// <summary>
+        /// Serialize object with Newtonsoft Json, send it and close response stream
+        /// </summary>
+        /// <param name="resp"></param>
+        /// <param name="o"></param>
+        /// <param name="code"></param>
+        protected void WriteObjectJsonAndClose(HttpListenerResponse resp, object o, int code = 200)
+        {
+            string json = JsonConvert.SerializeObject(o);
+            WriteStringAndClose(resp,json,code);
         }
     }
 }

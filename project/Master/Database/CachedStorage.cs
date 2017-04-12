@@ -110,7 +110,7 @@ namespace TimeMiner.Master.Database
             return new CachedStorage(fname);
         }
         /// <summary>
-        /// Loads all existing storages in given directory  
+        /// Loads all existing storages in given directory
         /// </summary>
         /// <param name="storageDir">Directory with storages</param>
         /// <returns></returns>
