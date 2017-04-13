@@ -2,7 +2,25 @@
     var type = "{{type}}";
 </script>
 <div class="ui container">
-    <h1>{{Title}}</h1>
+    <div class="ui center aligned grid" style="margin-top: 10px">
+        <div class="column">
+            <h1>{{Title}}</h1>
+        </div>
+    </div>
+    <div class="ui two grid">
+        <div class="twelve wide column">
+            <div class="ui left floated small primary labeled icon button addAppBtn">
+                <i class="plus icon"></i> Add {{type}}
+            </div>
+        </div>
+        <div class="four wide column">
+            <div class="ui fluid icon input">
+                <input type="text" id="tableSearchInput" placeholder="Search...">
+                <i class="search icon"></i>
+            </div>
+        </div>
+    </div>
+
     <table class="ui celled striped table">
         <thead>
         <tr>
@@ -24,7 +42,7 @@
         <tfoot class="full-width">
         <tr>
             <th colspan="4">
-                <div class="ui right floated small primary labeled icon button" id="addAppBtn">
+                <div class="ui right floated small primary labeled icon button addAppBtn" >
                     <i class="plus icon"></i> Add {{type}}
                 </div>
             </th>

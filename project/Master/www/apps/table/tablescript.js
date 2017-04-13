@@ -72,12 +72,12 @@ function ButtonsWrapper(ctxt, rowWrapper)
 
 }
 
-function RowWrapper(tBody, data, template) {
+function RowWrapper(tBody, data, hbstemplate) {
     var that = this;
     //this indicates that no changes can be applyed
     this.sending = false;
     this.data = data;
-    this.row = $(Mustache.render(template,data));
+    this.row = $(hbstemplate(data));
     tBody.append(this.row);
     //row.css("background-color","red");
     //relevance change buttons
@@ -102,6 +102,13 @@ function RowWrapper(tBody, data, template) {
             tableWrapper.reloadTable();
         })
     });
+    // this.setVisibility = function(visibility)
+    // {
+    //     if(visibility)
+    //         this.row.show();
+    //     else
+    //         this.row.hide();
+    // }
 
 }
 function TableWrapper(ctxt)
@@ -109,23 +116,25 @@ function TableWrapper(ctxt)
     var that = this;
     this.tbody = ctxt.find('tbody');
     this.loader = this.tbody.find('tr');
+    this.lastSearch = "";
     this.reloadTable = function () {
         this.tbody.empty();
         this.tbody.append(this.loader);
 
         $.ajax("/api/apps/gettable/" + type)
             .done(function (msg) {
-                $.ajax("/apps/table/tablerow.html")
-                    .done(function (template) {
+                $.ajax("/apps/table/tablerow.hbs")
+                    .done(function (tpl) {
                         var arr = JSON.parse(msg);
                         that.loader.detach();
-                        Mustache.parse(template);
+                        var template = Handlebars.compile(tpl);
                         $.each(arr, function (key, value) {
                             //var res = Mustache.render(template,value);
                             //var row = tbody.append(res);
                             var r = new RowWrapper(that.tbody,value,template);
 
                         });
+                        that.doSearch(that.lastSearch);
                     });
 
             })
@@ -133,7 +142,31 @@ function TableWrapper(ctxt)
                 //set message that failed to load
                 console.log("failed to load data");
             });
-    }
+    };
+    this.doSearch = function(searchValue){
+        this.lastSearch = searchValue;
+        searchValue = searchValue.toLowerCase();
+        var rows = this.tbody.find('tr');
+        rows.each(function () {
+            var trs = $(this).find("td");
+            var found = false;
+            trs.each(function (index) {
+                if(index > 1)
+                    return false; //break
+                var html = $(this).text();
+                if(html.toLowerCase().indexOf(searchValue) > -1){
+                    found = true;
+                    return false; //break
+                }
+            });
+            if(found)
+                $(this).show();
+            else
+                $(this).hide();
+        });
+    };
+
+
 }
 // function ReloadTable()
 // {
@@ -150,7 +183,7 @@ function TableWrapper(ctxt)
 // }
 function MakeAddApp()
 {
-    var addAppBtn = $("#addAppBtn");
+    var addAppBtn = $(".addAppBtn");
     var addAppModal = $("#addAppModal");
     // addAppModal.appNameInput = addAppModal.find('input[name="app-name"]');
     // addAppModal.procNameInput = addAppModal.find('input[name="proc-name"]');
@@ -265,9 +298,25 @@ function MakeAddApp()
         addAppModal.modal("show");
     });
 }
+function MakeTableSearch(callback)
+{
+    var $search = $("#tableSearchInput");
+    var waitTimer;
+    $search.keyup(function () {
+        clearTimeout(waitTimer);
+        var text = $(this).val();
+        waitTimer= setTimeout(function () {
+            callback(text);
+        },100);
+    });
+}
 $(document).ready(function () {
     MakeAddApp();
     tableWrapper = new TableWrapper($('table'));
     tableWrapper.reloadTable();
+    MakeTableSearch(function (text) {
+        tableWrapper.doSearch(text);
+    });
+
     //ReloadTable();
 });

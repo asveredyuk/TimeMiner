@@ -11,7 +11,7 @@ namespace TimeMiner.Master.Settings.ApplicationIdentifiers
     /// <summary>
     /// Identifier via process name
     /// </summary>
-    public class ProcessNameIdetifier:ApplicationIdentifierBase
+    public class ProcessNameIdentifier:ApplicationIdentifierBase
     {
         /// <summary>
         /// Name of process or mask
@@ -36,11 +36,11 @@ namespace TimeMiner.Master.Settings.ApplicationIdentifiers
         /// Name of process or mask
         /// </summary>
         private string _processName;
-        public ProcessNameIdetifier()
+        public ProcessNameIdentifier()
         {
         }
 
-        public ProcessNameIdetifier(string processName)
+        public ProcessNameIdentifier(string processName)
         {
             ProcessName = processName;
         }

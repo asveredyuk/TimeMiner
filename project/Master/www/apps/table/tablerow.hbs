@@ -1,6 +1,21 @@
 <tr>
     <td>{{App.Name}}</td>
-    <td>{{App.ProcName}}</td>
+    <td>
+        <div class="ui large labels">
+        {{#each App.Identifiers}}
+            <div class="ui label">
+            {{#switch $type}}
+                {{#case "ProcessNameIdentifier"}}
+                    <i class="desktop icon"></i>{{ProcessName}}.exe
+                {{/case}}
+                {{#case "WebsiteIdentifier"}}
+                    <i class="world icon"></i>{{Host}}
+                {{/case}}
+            {{/switch}}
+            </div>
+        {{/each}}
+        </div>
+    </td>
     <td>
         <div class="ui grid">
             <div class="center aligned column">
@@ -11,10 +26,8 @@
                     <div class="or"></div>
                     <button class="ui  button" data-active-class="red" name="bad">Bad</button>
                 </div>
-
             </div>
         </div>
-        <!--{{Rel}}-->
     </td>
     <td>
         <div class="ui small icon button rmbutton">

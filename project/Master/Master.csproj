@@ -107,7 +107,7 @@
     <Compile Include="Settings\ApplicationDescriptor.cs" />
     <Compile Include="Analysis\IndexedProfile.cs" />
     <Compile Include="Settings\ApplicationIdentifierBase.cs" />
-    <Compile Include="Settings\ApplicationIdentifiers\ProcessNameIdetifier.cs" />
+    <Compile Include="Settings\ApplicationIdentifiers\ProcessNameIdentifier.cs" />
     <Compile Include="Settings\ApplicationIdentifiers\WebsiteIdentifier.cs" />
     <Compile Include="Settings\Profile.cs" />
     <Compile Include="Settings\ProfileApplicationRelevance.cs" />

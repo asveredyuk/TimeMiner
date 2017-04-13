@@ -135,7 +135,7 @@ namespace TimeMiner.Master.Frontend.BuiltInExtensions
             if (obj["ProcName"] != null)
             {
                 string procName = obj["ProcName"].Value<string>();
-                identifier=new ProcessNameIdetifier(procName);
+                identifier=new ProcessNameIdentifier(procName);
             }
             if (obj["DomainName"] != null)
             {
@@ -191,7 +191,7 @@ namespace TimeMiner.Master.Frontend.BuiltInExtensions
             switch (type)
             {
                 case "application":
-                    rels = rels.Where(t => t.App.Identifiers.Where(q => q is ProcessNameIdetifier).Count() > 0).ToList();
+                    rels = rels.Where(t => t.App.Identifiers.Where(q => q is ProcessNameIdentifier).Count() > 0).ToList();
                     break;
                 case "site":
                     rels = rels.Where(t => t.App.Identifiers.Where(q => q is WebsiteIdentifier).Count() > 0).ToList();

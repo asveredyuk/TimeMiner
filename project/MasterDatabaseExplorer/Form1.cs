@@ -333,7 +333,7 @@ namespace MasterDatabaseExplorer
                     }
                     else
                     {
-                        identifier = new ProcessNameIdetifier(name);
+                        identifier = new ProcessNameIdentifier(name);
                     }
                     ApplicationDescriptor desc = new ApplicationDescriptor(name,identifier);
                     
