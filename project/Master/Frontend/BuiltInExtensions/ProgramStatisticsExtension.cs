@@ -46,7 +46,7 @@ namespace TimeMiner.Master.Frontend.BuiltInExtensions
         [ApiPath("stat/overall_productivity")]
         public void HandlOverallProdApi(HttpListenerRequest req, HttpListenerResponse resp)
         {
-            StatRequestData reqData = ParseStatRequestData(req);
+            StatRequestData reqData = ParseStatRequestDataAndLocalize(req);
             Log[] logs = MasterDB.Logs.GetLogsForUserForPeriodSeparate(Guid.Empty, reqData.Begin, reqData.End);
             Log log;
             if(logs.Length > 1)
@@ -64,20 +64,47 @@ namespace TimeMiner.Master.Frontend.BuiltInExtensions
             var result = rep.GetFromCacheOrCalculate();
             WriteObjectJsonAndClose(resp,result);
         }
-        private StatRequestData ParseStatRequestData(HttpListenerRequest req)
+
+        [ApiPath("stat/overall_prod_per_day")]
+        public void HandleOverallProdPerDayApi(HttpListenerRequest req, HttpListenerResponse resp)
+        {
+            StatRequestData reqData = ParseStatRequestDataAndLocalize(req);
+            Log[] logs = MasterDB.Logs.GetLogsForUserForPeriodSeparate(Guid.Empty, reqData.Begin, reqData.End);
+            List<object> results = new List<object>();
+            //List<ProductivityReport.ReportResult> reportResults = new List<ProductivityReport.ReportResult>();
+            foreach (var log in logs)
+            {
+                ProductivityReport rep = new ProductivityReport(log);
+                var res = rep.GetFromCacheOrCalculate();
+                var wrap = new
+                {
+                    Date=log.Date,
+                    ProductiveTime = res.ProductiveTime,
+                    DistractionsTime = res.DistractionsTime,
+                    TotalTime = res.TotalTime
+                };
+                results.Add(wrap);
+            }
+            
+
+            WriteObjectJsonAndClose(resp,results);
+        }
+      
+        private StatRequestData ParseStatRequestDataAndLocalize(HttpListenerRequest req)
         {
             string postString = ReadPostString(req);
-            StatRequestData reqData = JsonConvert.DeserializeObject<StatRequestData>(postString);
+            StatRequestData reqData = JsonConvert.DeserializeObject<StatRequestData>(postString);            
+            reqData.Localize();
             return reqData;
         }
         [ApiPath("stat/appusage")]
         public void HandleApi(HttpListenerRequest req, HttpListenerResponse resp)
         {
             string path = SkipApiAndRoot(req.Url.AbsolutePath);
-            StatRequestData reqData = ParseStatRequestData(req);
+            StatRequestData reqData = ParseStatRequestDataAndLocalize(req);
             Stopwatch w2 = Stopwatch.StartNew();
             //temporarly solved by local time
-            Log log = MasterDB.Logs.GetLogRecordsForUserForPeriod(Guid.Empty, reqData.Begin.ToLocalTime(),reqData.End.ToLocalTime());
+            Log log = MasterDB.Logs.GetLogRecordsForUserForPeriod(Guid.Empty, reqData.Begin,reqData.End);
             Console.WriteLine("Number of records:" + log.Records.Length);
             w2.Stop();
             Console.Out.WriteLine($"Log loading elapsed {w2.ElapsedMilliseconds}ms");
@@ -101,6 +128,12 @@ namespace TimeMiner.Master.Frontend.BuiltInExtensions
         {
             public DateTime Begin { get; set; }
             public DateTime End { get; set; }
+
+            public void Localize()
+            {
+                Begin = Begin.ToLocalTime();
+                End = End.ToLocalTime();
+            }
         }
         
     }

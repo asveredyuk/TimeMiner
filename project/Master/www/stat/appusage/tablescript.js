@@ -68,5 +68,6 @@ $(document).ready(function () {
     var selector = new PeriodSelector($('#selector'));
     var wrapper = new TableWrapper($(".statTable"));
     var ostat = new OverallStatisticsWrapper($(".ostat"));
+    var prodGraph = new ProductivityGraph($("#prodGraph").get(0));
     StatController.interval(new StatInterval(moment()));
 });

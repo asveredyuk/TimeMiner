@@ -71,5 +71,23 @@ var ApiBoundary = {
         }).fail(function () {
             ApiBoundary.whenError(ApiBoundary.loadProgramUsageStats, apiCallArgs);
         });
+    },
+    loadOverallStatsSeparate : function(statInterval, callback){
+        var jobj = {
+            Begin : statInterval.from,
+            End : statInterval.to
+        };
+        var json = JSON.stringify(jobj);
+        var apiCallArgs = arguments;
+        $.ajax({
+            url: "/api/stat/overall_prod_per_day",
+            type: 'POST',
+            data: json
+        }).done(function (msg) {
+            var obj = JSON.parse(msg);
+            callback(obj);
+        }).fail(function () {
+            ApiBoundary.whenError(ApiBoundary.loadOverallStatsSeparate, apiCallArgs);
+        });
     }
 };
