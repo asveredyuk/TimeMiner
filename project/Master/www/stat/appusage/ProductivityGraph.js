@@ -11,9 +11,11 @@ function ProductivityGraph(domElement)
 
     var YELLOW = '#DBBD08';
     var MARGIN = 15;
-    var BOTTOM_LABELS_H = 20;
+    var BOTTOM_LABELS_H = 28;
     var $context = $(domElement);
     var draw = SVG(domElement);
+    var point;
+    var bars = []; //bars objects
     this.recalculateSizes = function () {
         this.totalW = $context.width();
         this.totalH = $context.height();
@@ -24,6 +26,8 @@ function ProductivityGraph(domElement)
 
     this.redraw = function () {
         console.log(this.totalW + 'x' + this.totalH);
+        bars = [];
+        var currentDate = StatController.interval().from; //TODO: may be a problem later
         var count = this.data.length;
         var max = 0;
         $(this.data).each(function () {
@@ -34,39 +38,18 @@ function ProductivityGraph(domElement)
             }
         });
         draw.clear();
-        //var rect = draw.rect(w/2,h).move(w/4,0).attr({ fill: '#f06' });
 
         var itemW = (this.barsW-(count-1)*MARGIN)/count;
-        var bars = draw.group().move(0,this.barsH).transform({scaleY:this.barsH/max}).flip('y');
-        var dates = draw.group().move(0,this.barsH);
-        // for(var i = 0; i < this.data.length; i++)
-        // {
-        //     var d = this.data[i];
-        //     var x = (itemW+MARGIN)*i;
-        //     var group = bars.group();
-        //     var bgRect = group.rect(itemW,d.TotalTime).move(x,0).attr({ fill: 'transparent' });
-        //     bgRect.click(function () {
-        //
-        //     });
-        //     var goodRect= group.rect(itemW,d.ProductiveTime).move(x,0).attr({ fill: GREEN , 'pointer-events':'none'});
-        //     var badRect= group.rect(itemW,d.DistractionsTime).move(x,d.ProductiveTime).attr({ fill: RED ,'pointer-events':'none'});
-        //
-        //
-        //
-        //     var text = dates.plain(moment(d.Date).date() + "");
-        //     text.font({
-        //         family:   'Helvetica',
-        //         size:     15,
-        //         anchor:   'middle'
-        //     });
-        //     text.attr({ fill: DATES_COLOR });
-        //     text.move(x + itemW/2,0);
-        // }
+        var barsGroup = draw.group().move(0,this.barsH).transform({scaleY:this.barsH/max}).flip('y');
+        var dates = draw.group().move(0,this.barsH+10);
+        var lines = draw.group().move(0,this.barsH);
+        lines.line(0,0,this.totalW,0).stroke({width:0.25});
+        //draw each element
         $.each(this.data, function (index, value) {
             var d = value;
             var x = (itemW+MARGIN)*index;
-            var group = bars.group();
-            var bgRect = group.rect(itemW,d.TotalTime).move(x,0).attr({ fill: 'transparent' });
+            var group = barsGroup.group();
+            var bgRect = group.rect(itemW,max).move(x,0).attr({ fill: 'transparent' });
             bgRect.click(function () {
                 var date = moment(d.Date);
                 var newInterval = new StatInterval(date);
@@ -74,7 +57,13 @@ function ProductivityGraph(domElement)
             });
             var goodRect= group.rect(itemW,d.ProductiveTime).move(x,0).attr({ fill: GREEN , 'pointer-events':'none'});
             var badRect= group.rect(itemW,d.DistractionsTime).move(x,d.ProductiveTime).attr({ fill: RED ,'pointer-events':'none'});
-
+            var pointPlace = {
+                x: x + itemW/2 - 3.5,
+                y:3.5
+            };
+            if(moment(d.Date).startOf('day').valueOf() == moment(currentDate).startOf('day').valueOf()) {
+                point = lines.circle(7,7).attr({fill:"#444d56"}).move(pointPlace.x, pointPlace.y);
+            }
             var text = dates.plain(moment(d.Date).date() + "");
             text.font({
                 family:   'Helvetica',
@@ -83,7 +72,30 @@ function ProductivityGraph(domElement)
             });
             text.attr({ fill: DATES_COLOR });
             text.move(x + itemW/2,0);
+            var bar = {
+                data:d,
+                ptPlace:pointPlace
+            };
+            bars.push(bar);
         });
+
+    };
+    this.movePoint = function (dateTo) {
+        for(var i = 0; i < bars.length; i++)
+        {
+            var bar = bars[i];
+            if(moment(bar.data.Date).startOf('day').valueOf() == dateTo.valueOf())
+            {
+                var pos = bar.ptPlace;
+                point.animate(1500, function (pos) {
+                    if (pos == !!pos) return pos;
+                    return Math.pow(2, -8 * Math.sqrt(pos)) * Math.sin((pos - 0.075) * (2 * Math.PI) / .3) + 1;
+                    //return .04 * t / (--t) * Math.sin(25 * t)
+                }).move(pos.x,pos.y);
+                return;
+            }
+        }
+        console.log("point pos not found!")
     };
     StatController.onIntervalChanged.add(function (interval) {
         var intervalCenter = moment((interval.from + interval.to)/2);
@@ -92,7 +104,7 @@ function ProductivityGraph(domElement)
         var newInterval = new StatInterval(monthBegin, monthEnd);
         if(typeof that.nowInterval == 'undefined' || that.nowInterval.valueOf() != newInterval.valueOf())
         {
-            //interval really changed
+            //month interval changed
             that.nowInterval = newInterval;
             ApiBoundary.loadOverallStatsSeparate(newInterval, function (data) {
                 //in data we ba have not all monthes
@@ -130,6 +142,8 @@ function ProductivityGraph(domElement)
                 that.redraw();
             })
         }
+        that.movePoint(moment(interval.from).startOf('day'));
+
     });
     $(window).resize(function () {
         var wNew = $context.width();
