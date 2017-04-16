@@ -24,6 +24,7 @@ namespace MasterDatabaseExplorer
 {
     public partial class Form1 : Form
     {
+        private const int IMPORT_TIME_OFFSET_SECS = - 6 * 60 * 60;
         LogsDB db;
         SettingsContainer settings;
         public Form1()
@@ -270,7 +271,7 @@ namespace MasterDatabaseExplorer
             {
                 Title = ite.activeWindowTitle
             };
-            DateTime time = ConvertToDatetime(ite.time);
+            DateTime time = ConvertToDatetime(ite.time+IMPORT_TIME_OFFSET_SECS);
 
             LogRecord rec = new LogRecord()
             {
