@@ -99,7 +99,8 @@ function RowWrapper(tBody, data, hbstemplate) {
     rmbutton.click(function () {
         rmbutton.addClass('loading');
         $.post('/api/apps/rmapp',JSON.stringify({Id:that.data.App.Id}),function (res) {
-            tableWrapper.reloadTable();
+            that.row.remove();
+            //tableWrapper.reloadTable();
         })
     });
     // this.setVisibility = function(visibility)
@@ -118,9 +119,9 @@ function TableWrapper(ctxt)
     this.loader = this.tbody.find('tr');
     this.lastSearch = "";
     this.reloadTable = function () {
+        ScrollControl.rememberPos();
         this.tbody.empty();
         this.tbody.append(this.loader);
-
         $.ajax("/api/apps/gettable/" + type)
             .done(function (msg) {
                 $.ajax("/apps/table/tablerow.hbs")
@@ -135,8 +136,8 @@ function TableWrapper(ctxt)
 
                         });
                         that.doSearch(that.lastSearch);
+                        ScrollControl.restoreScroll();
                     });
-
             })
             .fail(function () {
                 //set message that failed to load

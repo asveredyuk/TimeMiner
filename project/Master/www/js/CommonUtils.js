@@ -40,3 +40,12 @@ function DelayedApplier(applyFunc, disapplyFunc, delay) {
         disapplyFunc();
     }
 }
+var ScrollControl = {
+    nowScroll:0,
+    rememberPos: function () {
+        this.nowScroll = $(window).scrollTop();
+    },
+    restoreScroll:function () {
+        $(window).scrollTop(this.nowScroll);
+    }
+};
