@@ -76,6 +76,7 @@ function TableWrapper(ctxt) {
 }
 $(document).ready(function () {
     var selector = new PeriodSelector($('#selector'));
+    var mselector = new MonthSelector($('#monthSelector'));
     var wrapper = new TableWrapper($(".statTable"));
     var ostat = new OverallStatisticsWrapper($(".ostat"));
     var prodGraph = new ProductivityGraph($("#prodGraph").get(0));

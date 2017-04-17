@@ -38,7 +38,7 @@ function ProductivityGraph(domElement)
         bars = [];
         var currentDate = StatController.interval().from; //TODO: may be a problem later
         var count = this.data.length;
-        var max = 0;
+        var max = 1;
         $(this.data).each(function () {
             var d = this;
             if(max < d.TotalTime)

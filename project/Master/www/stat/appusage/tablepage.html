@@ -1,14 +1,14 @@
 <div class="ui container">
-    <div class="ui basic segment" style="height: 70px;">
-        <div id="selector">
+    <div class="ui container">
+        <div class="ui left floated basic compact segment" id="selector">
             <div class="ui basic icon buttons">
-                <button class="ui button dateSelectorBtPrev">
+                <button class="ui button dateSelectorBtPrev" title="Previous day">
                     <i class="left chevron icon"></i>
                 </button>
-                <button class="ui button dateSelectorBt">
+                <button class="ui button dateSelectorBt" title="Select day on calendar">
                     00.00.00
                 </button>
-                <button class="ui button dateSelectorBtNext">
+                <button class="ui button dateSelectorBtNext" title="Next day">
                     <i class="right chevron icon"></i>
                 </button>
             </div>
@@ -20,9 +20,22 @@
                 </button>
             </div>
         </div>
+        <div class="ui basic compact segment"  id="monthSelector">
+            <div class="ui basic icon buttons">
+                <button class="ui button dateSelectorBtPrev" title="Previous month">
+                    <i class="left chevron icon"></i>
+                </button>
+                <button class="ui button dateSelectorBt" style="width: 130px">
+                    January
+                </button>
+                <button class="ui button dateSelectorBtNext" title="Next month">
+                    <i class="right chevron icon"></i>
+                </button>
+            </div>
+        </div>
     </div>
     <div class="ui horizontal divider header">
-        Overall statistics for April
+        Overall statistics for month
     </div>
     <div class="ui basic segment" id="prodGraph">
     </div>

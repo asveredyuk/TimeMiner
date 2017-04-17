@@ -16,7 +16,7 @@ function PeriodSelector($context) {
     this.refreshView = function (val) {
         var text = val.from.format('DD.MM.YY');
         that.controls.dateSelectorBt.html(text);
-        //that.controls.datePicker.datepicker('setDate', val.from.toDate());
+        that.controls.datePicker.datepicker('setDate', val.from.toDate());
     };
     //view setup
     this.controlSetup = function () {
