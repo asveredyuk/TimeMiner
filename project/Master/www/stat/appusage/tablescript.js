@@ -42,14 +42,23 @@ function TableWrapper(ctxt) {
     var that = this;
     this.tbody = ctxt.find('tbody');
     this.loader = that.tbody.find('tr');
+    var loadingApplier = new DelayedApplier(
+        function () {
+            that.tbody.empty();
+            that.tbody.append(that.loader);
+        },
+        function () {
+            that.loader.detach();
+            that.tbody.empty();
+        },
+        200
+    );
     this.reloadTable = function (arg) {
-        that.tbody.empty();
-        that.tbody.append(that.loader);
-
+        loadingApplier.apply();
         ApiBoundary.loadProgramUsageStats(arg, function (arr) {
             $.ajax("/stat/appusage/tablerow.html")
                 .done(function (template) {
-                    that.loader.detach();
+                    loadingApplier.disapply();
                     Mustache.parse(template);
                     $.each(arr, function (key, value) {
                         //var res = Mustache.render(template,value);

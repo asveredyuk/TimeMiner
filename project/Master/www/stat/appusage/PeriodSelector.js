@@ -6,11 +6,11 @@ function PeriodSelector($context) {
 
 
     this.goBack = function () {
-        var prev = that.val.from.subtract(1, 'day');
+        var prev = moment(that.val.from).subtract(1, 'day');
         that.changeValueByUser(prev);
     };
     this.goForward = function () {
-        var next = that.val.from.add(1, 'day');
+        var next = moment(that.val.from).add(1, 'day');
         that.changeValueByUser(next);
     };
     this.refreshView = function (val) {

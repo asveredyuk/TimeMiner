@@ -16,6 +16,15 @@ function ProductivityGraph(domElement)
     var draw = SVG(domElement);
     var point;
     var bars = []; //bars objects
+    var loadingApplier = new DelayedApplier(
+        function () {
+            $(domElement).addClass('loading');
+        },
+        function () {
+            $(domElement).removeClass('loading');
+        },
+        200
+    );
     this.recalculateSizes = function () {
         this.totalW = $context.width();
         this.totalH = $context.height();
@@ -106,7 +115,10 @@ function ProductivityGraph(domElement)
         {
             //month interval changed
             that.nowInterval = newInterval;
+
+            loadingApplier.apply();
             ApiBoundary.loadOverallStatsSeparate(newInterval, function (data) {
+                loadingApplier.disapply();
                 //in data we ba have not all monthes
                 var arrData = [];
                 var day = moment(that.nowInterval.from).startOf('day');

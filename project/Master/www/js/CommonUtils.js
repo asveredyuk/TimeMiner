@@ -29,3 +29,14 @@ var CommonUtils = {
         return res;
     }
 };
+function DelayedApplier(applyFunc, disapplyFunc, delay) {
+    var timeout;
+    this.apply = function () {
+        clearTimeout(timeout);
+        timeout = setTimeout(applyFunc,delay);
+    };
+    this.disapply= function () {
+        clearTimeout(timeout);
+        disapplyFunc();
+    }
+}
