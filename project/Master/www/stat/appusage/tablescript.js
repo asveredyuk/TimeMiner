@@ -19,7 +19,7 @@ function RowWrapper(tBody, data, template) {
     };
     //this indicates that no changes can be applyed
     this.data = data;
-    this.row = $(Mustache.render(template, data));
+    this.row = $(template(data));
 
     tBody.append(this.row);
     this.postRowUpdate = function () {
@@ -56,11 +56,12 @@ function TableWrapper(ctxt) {
     this.reloadTable = function (arg) {
         loadingApplier.apply();
         ApiBoundary.loadProgramUsageStats(arg, function (arr) {
-            $.ajax("/stat/appusage/tablerow.html")
-                .done(function (template) {
+            $.ajax("/stat/appusage/tablerow.hbs")
+                .done(function (tpl) {
                     loadingApplier.disapply();
-                    Mustache.parse(template);
+                    //Mustache.parse(template);
                     $.each(arr, function (key, value) {
+                        var template = Handlebars.compile(tpl);
                         //var res = Mustache.render(template,value);
                         //var row = tbody.append(res);
                         var r = new RowWrapper(that.tbody, value, template);
