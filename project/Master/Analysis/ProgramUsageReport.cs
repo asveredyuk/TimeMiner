@@ -128,7 +128,8 @@ namespace TimeMiner.Master.Analysis
         public override ReportResult Calculate()
         {
             ReportItem[] items = GetItems().ToArray();
-            return new ReportResult(items);
+            var result = new ReportResult(items);
+            return result;
         }
 
         private IEnumerable<ReportItem> GetItems()

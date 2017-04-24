@@ -119,7 +119,7 @@ namespace TimeMiner.Master.Frontend
         /// <param name="code"></param>
         protected void WriteObjectJsonAndClose(HttpListenerResponse resp, object o, int code = 200)
         {
-            string json = JsonConvert.SerializeObject(o);
+            string json = JsonConvert.SerializeObject(o, Formatting.Indented);
             WriteStringAndClose(resp,json,code);
         }
     }

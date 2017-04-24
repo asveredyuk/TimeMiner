@@ -1,6 +1,13 @@
 /**
  * Created by ALEX on 16.04.2017.
  */
+Number.prototype.pad = function (size) {
+    var s = String(this);
+    while (s.length < (size || 2)) {
+        s = "0" + s;
+    }
+    return s;
+};
 var CommonUtils = {
     stringifyDurationExtended:function(dur)
     {

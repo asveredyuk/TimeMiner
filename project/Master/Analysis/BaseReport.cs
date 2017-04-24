@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -50,10 +51,14 @@ namespace TimeMiner.Master.Analysis
             if (log.StorageDescriptor == null)
             {
                 throw new Exception("Tried to add to cache log without descriptor");
+                //cannot cache this
+                //return;
             }
             if (log.Prof == null)
             {
                 throw new Exception("Tried to add to cache log without profile");
+                //cannot cache this
+                //return;
             }
             CacheDB.Self.PutToCache(result,log.StorageDescriptor.FileMD5, log.Prof.ComputeHash());
         }

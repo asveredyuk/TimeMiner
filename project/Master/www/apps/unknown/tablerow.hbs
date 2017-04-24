@@ -1,0 +1,27 @@
+<tr>
+    <td>
+        {{#switch Type}}
+            {{#case "process"}}
+                <i class="desktop icon"></i> {{Identifier}}.exe
+            {{/case}}
+            {{#case "site"}}
+                <i class="world icon"></i> {{Identifier}}
+            {{/case}}
+        {{/switch}}
+    </td>
+    <td>
+        <div class="ui grid">
+            <div class="two wide column middle aligned right aligned timeLabel"  style="padding-right: 0">{{SecondsSpent}}s</div>
+            <div class="fourteen wide column" style="padding-left:10px">
+                <div class="ui blue progress" style="border-radius: 0; margin-bottom: 0">
+                    <div class="bar" style="border-radius: 0; min-width: 3px">
+                        <div class="progress" style="color: white;"></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </td>
+    <td>
+        +
+    </td>
+</tr>

@@ -11,13 +11,14 @@ using System.Threading.Tasks;
 using Mustache;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
+using TimeMiner.Master.Analysis;
 using TimeMiner.Master.Frontend.Plugins;
 using TimeMiner.Master.Settings;
 using TimeMiner.Master.Settings.ApplicationIdentifiers;
 
 namespace TimeMiner.Master.Frontend.BuiltInExtensions
 {
-    [MenuItem("Apps","apps")]
+    [MenuItem("Configuration","config", 15)]
     class ApplicationListExtension: FrontendServerExtensionBase
     {
         private class ApplicationIdentifierTypesBinder : SerializationBinder
@@ -63,22 +64,31 @@ namespace TimeMiner.Master.Frontend.BuiltInExtensions
                     new FrontendPageMenuItem("Sites","/apps/sites")
                 ));*/
         }
-        [MenuItem("Applications","apps/apps")]
-        [HandlerPath("apps/apps")]
+        [MenuItem("Applications","config/apps")]
+        [HandlerPath("config/apps")]
         public HandlerPageDescriptor HandleApps(HttpListenerRequest req, HttpListenerResponse resp)
         {
             var arg = new { Type = "Application", type = "application", isapplication = true, Title = "Applications" };
             return MakeTablepage(arg);
         }
-        [MenuItem("Sites","apps/sites")]
-        [HandlerPath("apps/sites")]
+        [MenuItem("Sites","config/sites")]
+        [HandlerPath("config/sites")]
         public HandlerPageDescriptor HandleSites(HttpListenerRequest req, HttpListenerResponse resp)
         {
             var arg = new { Type = "Site", type = "site", isapplication = false, Title = "Sites" };
             return MakeTablepage(arg);
         }
-
-        [HandlerPath("apps")]
+        [MenuItem("Unknown apps & sites", "config/unknown")]
+        [HandlerPath("config/unknown")]
+        public HandlerPageDescriptor UnknownHandler(HttpListenerRequest req, HttpListenerResponse resp)
+        {
+            string page = WWWRes.GetString("apps/unknown/page.html");
+            string head = WWWRes.GetString("apps/unknown/head.html");
+            var descriptor = new HandlerPageDescriptor(page,head);
+            return descriptor;
+        }
+        //TODO: remove this method
+        [HandlerPath("config")]
         public HandlerPageDescriptor HandleMain(HttpListenerRequest req, HttpListenerResponse resp)
         {
             return new HandlerPageDescriptor("Main config page");
@@ -173,6 +183,17 @@ namespace TimeMiner.Master.Frontend.BuiltInExtensions
             Console.WriteLine($"changed to {rel.Rel}");
             resp.Close();
         }
+
+        [ApiPath("apps/unknown")]
+        public void GetUnknownApps(HttpListenerRequest req, HttpListenerResponse resp)
+        {
+            Log log = LogsDB.Self.GetLogRecordsForUserForPeriod(Guid.Empty, new DateTime(2017, 4, 1),
+                new DateTime(2017, 4, 15));
+            UnknownIdentificationReport report = new UnknownIdentificationReport(log);
+            var result = report.Calculate().Items;
+            WriteObjectJsonAndClose(resp,result);
+        }
+        
       /*  /// <summary>
         /// Is called when /ajax path is handled
         /// </summary>

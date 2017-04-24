@@ -57,6 +57,10 @@ namespace TimeMiner.Master
 
         public static string GetHostFromUrl(string url)
         {
+            if (url == null)
+                return null;
+            if (url.StartsWith("localhost"))
+                return "localhost";
             Uri uri;
             if (!Uri.TryCreate(url, UriKind.Absolute, out uri))
                 return null;

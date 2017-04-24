@@ -72,10 +72,10 @@ var ApiBoundary = {
             ApiBoundary.whenError(ApiBoundary.loadProgramUsageStats, apiCallArgs);
         });
     },
-    loadOverallStatsSeparate : function(statInterval, callback){
+    loadOverallStatsSeparate : function(statInterval, callback) {
         var jobj = {
-            Begin : statInterval.from,
-            End : statInterval.to
+            Begin: statInterval.from,
+            End: statInterval.to
         };
         var json = JSON.stringify(jobj);
         var apiCallArgs = arguments;
@@ -88,6 +88,18 @@ var ApiBoundary = {
             callback(obj);
         }).fail(function () {
             ApiBoundary.whenError(ApiBoundary.loadOverallStatsSeparate, apiCallArgs);
+        });
+    },
+    loadUnknownAppsList : function (callback) {
+        var apiCallArgs = arguments;
+        $.ajax({
+            url: "/api/apps/unknown",
+            type: 'GET'
+        }).done(function (msg) {
+            var obj = JSON.parse(msg);
+            callback(obj);
+        }).fail(function () {
+            ApiBoundary.whenError(ApiBoundary.loadUnknownAppsList, apiCallArgs);
         });
     }
 };

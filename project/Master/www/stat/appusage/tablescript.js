@@ -59,9 +59,9 @@ function TableWrapper(ctxt) {
             $.ajax("/stat/appusage/tablerow.hbs")
                 .done(function (tpl) {
                     loadingApplier.disapply();
+                    var template = Handlebars.compile(tpl);
                     //Mustache.parse(template);
                     $.each(arr, function (key, value) {
-                        var template = Handlebars.compile(tpl);
                         //var res = Mustache.render(template,value);
                         //var row = tbody.append(res);
                         var r = new RowWrapper(that.tbody, value, template);
