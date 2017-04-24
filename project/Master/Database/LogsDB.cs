@@ -21,6 +21,35 @@ namespace TimeMiner.Master
         /// Directory containing log files
         /// </summary>
         public static string LOGS_DIR = "logs";
+
+        /// <summary>
+        /// Lock, to prevent multiple initialization
+        /// </summary>
+        private static readonly object _lock = new object();
+
+        /// <summary>
+        /// Singleton instance
+        /// </summary>
+        private static LogsDB self;
+
+        /// <summary>
+        /// Singleton instance
+        /// </summary>
+        public static LogsDB Self
+        {
+            get
+            {
+                lock (_lock)
+                {
+                    if (self == null)
+                    {
+                        self = new LogsDB();
+                    }
+                    return self;
+                }
+            }
+        }
+        
         /// <summary>
         /// Temporary, storages for the user #0 for all dates
         /// </summary>
@@ -28,7 +57,7 @@ namespace TimeMiner.Master
         /// <summary>
         /// Create new LogsDB object
         /// </summary>
-        public LogsDB()
+        private LogsDB()
         {
             if (!Directory.Exists(LOGS_DIR))
                 Directory.CreateDirectory(LOGS_DIR);
@@ -199,6 +228,16 @@ namespace TimeMiner.Master
             var inPeriod = all.Where(t => Util.CheckDateInPeriod(t.Time, timeFrom, timeTo));
             Log log = new Log(inPeriod.ToArray(),TMPMakeProfile(),null);
             return log;
+        }
+        /// <summary>
+        /// Clears cache of all cached storages
+        /// </summary>
+        public void UnloadAllCollections()
+        {
+            foreach (var cachedStorage in storages0)
+            {
+                cachedStorage.EraceCache();
+            }
         }
 
         private DateTime ConvertDatetime(DateTime dt)

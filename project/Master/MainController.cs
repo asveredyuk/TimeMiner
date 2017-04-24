@@ -31,7 +31,7 @@ namespace TimeMiner.Master
         {
             frontendServer = FrontendServer.Self;
             slaveServer = SlaveServer.Self;
-            logsDb = MasterDB.Logs;
+            logsDb = LogsDB.Self;
 
             //bind connections
             slaveServer.onLogRecordCame += delegate(LogRecord rec)

@@ -40,7 +40,7 @@ namespace MasterDatabaseExplorer
             CacheDB.DB_PATH = @"C:\dev\TimeMiner\project\Master\bin\Debug\cache.db";
             try
             {
-                db = MasterDB.Logs;
+                db = LogsDB.Self;
                 settings = SettingsContainer.Self;
                 lbStatus.Text = "LogDatabase successfully loaded";
             }
@@ -384,7 +384,7 @@ namespace MasterDatabaseExplorer
 
         private void btClearApps_Click(object sender, EventArgs e)
         {
-            LiteDatabase db = MasterDB.Settings.Database;
+            LiteDatabase db = SettingsDB.Self.Database;
             foreach (var collectionName in db.GetCollectionNames().ToList())
             {
                 db.DropCollection(collectionName);
@@ -416,7 +416,7 @@ namespace MasterDatabaseExplorer
             var res = report.Calculate();
             string json = JsonConvert.SerializeObject(res, Formatting.Indented);
             MessageBox.Show(json);*/
-            Log[] allLogs = MasterDB.Logs.GetLogsForUserForPeriodSeparate(Guid.Empty, DateTime.MinValue, DateTime.MaxValue);
+            Log[] allLogs = LogsDB.Self.GetLogsForUserForPeriodSeparate(Guid.Empty, DateTime.MinValue, DateTime.MaxValue);
             List<ProductivityReport.ReportResult> results = new List<ProductivityReport.ReportResult>();
             foreach (var log in allLogs)
             {

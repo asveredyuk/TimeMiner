@@ -34,7 +34,7 @@ namespace TimeMiner.Master.Settings
         private SettingsContainer()
         {
             
-            db = MasterDB.Settings.Database;
+            db = SettingsDB.Self.Database;
             appsCollection = db.GetCollection<ApplicationDescriptor>(APPS_LIST_COL_NAME);
             baseProfileReferences = db.GetCollection<ProfileApplicationRelevance>(PROFILE_COL_PREFIX + "base");
         }

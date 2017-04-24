@@ -11,16 +11,34 @@ namespace TimeMiner.Master.Database
 {
     public class CacheDB
     {
+        
         public static string DB_PATH = "cache.db";
+
+        /// <summary>
+        /// Lock, to prevent multiple initialization
+        /// </summary>
+        private static readonly object _lock = new object();
+
+        /// <summary>
+        /// Singleton instance
+        /// </summary>
         private static CacheDB self;
 
+        /// <summary>
+        /// Singleton instance
+        /// </summary>
         public static CacheDB Self
         {
             get
             {
-                if(self == null)
-                    self = new CacheDB();
-                return self;
+                lock (_lock)
+                {
+                    if (self == null)
+                    {
+                        self = new CacheDB();
+                    }
+                    return self;
+                }
             }
         }
 
@@ -47,6 +65,16 @@ namespace TimeMiner.Master.Database
         {
             var item = new ReportResultCacheItem(fileMD5, profileMd5, typeof(T).GUID, report);
             col.Upsert(item);
+        }
+
+        public void ClearAndShrink()
+        {
+            var cacheAll = col.FindAll().ToList();
+            foreach (var item in cacheAll)
+            {
+                col.Delete(item.Id);
+            }
+            db.Shrink();
         }
     }
 }

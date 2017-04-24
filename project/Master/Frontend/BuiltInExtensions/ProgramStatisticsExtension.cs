@@ -47,7 +47,7 @@ namespace TimeMiner.Master.Frontend.BuiltInExtensions
         public void HandlOverallProdApi(HttpListenerRequest req, HttpListenerResponse resp)
         {
             StatRequestData reqData = ParseStatRequestDataAndLocalize(req);
-            Log[] logs = MasterDB.Logs.GetLogsForUserForPeriodSeparate(Guid.Empty, reqData.Begin, reqData.End);
+            Log[] logs = LogsDB.Self.GetLogsForUserForPeriodSeparate(Guid.Empty, reqData.Begin, reqData.End);
             Log log;
             if(logs.Length > 1)
                 throw new NotImplementedException("More than one log is not supported");
@@ -69,7 +69,7 @@ namespace TimeMiner.Master.Frontend.BuiltInExtensions
         public void HandleOverallProdPerDayApi(HttpListenerRequest req, HttpListenerResponse resp)
         {
             StatRequestData reqData = ParseStatRequestDataAndLocalize(req);
-            Log[] logs = MasterDB.Logs.GetLogsForUserForPeriodSeparate(Guid.Empty, reqData.Begin, reqData.End);
+            Log[] logs = LogsDB.Self.GetLogsForUserForPeriodSeparate(Guid.Empty, reqData.Begin, reqData.End);
             List<object> results = new List<object>();
             //List<ProductivityReport.ReportResult> reportResults = new List<ProductivityReport.ReportResult>();
             foreach (var log in logs)
@@ -104,7 +104,7 @@ namespace TimeMiner.Master.Frontend.BuiltInExtensions
             StatRequestData reqData = ParseStatRequestDataAndLocalize(req);
             Stopwatch w2 = Stopwatch.StartNew();
             //temporarly solved by local time
-            Log log = MasterDB.Logs.GetLogRecordsForUserForPeriod(Guid.Empty, reqData.Begin,reqData.End);
+            Log log = LogsDB.Self.GetLogRecordsForUserForPeriod(Guid.Empty, reqData.Begin,reqData.End);
             Console.WriteLine("Number of records:" + log.Records.Length);
             w2.Stop();
             Console.Out.WriteLine($"Log loading elapsed {w2.ElapsedMilliseconds}ms");
