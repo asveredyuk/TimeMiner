@@ -11,23 +11,28 @@ var ApiBoundary = {
         this.runned = false;
         var that = this;
         setTimeout(function () {
-            alert("Failed to connect to server. Press ok to try again");
+            var res = confirm(JSON.stringify(that.erroredCalls[0].xhr));
+            if(res == false) {
+                that.erroredCalls = [];
+                return;//do not try to do anything
+            }
+            //alert("Failed to connect to server. Press ok to try again");
             var calls = that.erroredCalls;
             that.erroredCalls = [];
             for(var i = 0; i < calls.length; i++)
             {
                 var call = calls[i];
                 call.func.apply(that,call.args);
-                //callFunc.apply(this, args);
             }
             that.runned = true;
         },1);
 
     },
-    whenError : function (callFunc, args) {
+    whenError : function (callFunc, args, xhr) {
         var call = {
             func: callFunc,
-            args: args
+            args: args,
+            xhr : xhr
         };
         this.erroredCalls.push(call);
         if(this.runned)
@@ -100,6 +105,43 @@ var ApiBoundary = {
             callback(obj);
         }).fail(function () {
             ApiBoundary.whenError(ApiBoundary.loadUnknownAppsList, apiCallArgs);
+        });
+    },
+    //users
+    loadUsersList : function(callback){
+        var apiCallArgs = arguments;
+        $.ajax({
+            url: "/api/config/users/gettable",
+            type: 'GET'
+        }).done(function (msg) {
+            var obj = JSON.parse(msg);
+            callback(obj);
+        }).fail(function () {
+            ApiBoundary.whenError(ApiBoundary.loadUsersList, apiCallArgs);
+        });
+    },
+    addUser : function(data, callback){
+        var apiCallArgs = arguments;
+        $.ajax({
+            url: "/api/config/users/add",
+            type: 'POST',
+            data: data
+        }).done(function () {
+            callback();
+        }).fail(function (xhr) {
+            ApiBoundary.whenError(ApiBoundary.addUser, apiCallArgs, xhr);
+        });
+    },
+    deleteUser : function (data, callback) {
+        var apiCallArgs = arguments;
+        $.ajax({
+            url: "/api/config/users/delete",
+            type: 'POST',
+            data: data
+        }).done(function () {
+            callback();
+        }).fail(function (xhr) {
+            ApiBoundary.whenError(ApiBoundary.deleteUser, apiCallArgs, xhr);
         });
     }
 };

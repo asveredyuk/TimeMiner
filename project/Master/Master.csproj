@@ -90,6 +90,7 @@
     <Compile Include="Frontend\Authorization.cs" />
     <Compile Include="Frontend\BuiltInExtensions\ApplicationListExtension.cs" />
     <Compile Include="Frontend\BuiltInExtensions\ProgramStatisticsExtension.cs" />
+    <Compile Include="Frontend\BuiltInExtensions\UserManagementExtension.cs" />
     <Compile Include="Frontend\FrontendPageMenuItem.cs" />
     <Compile Include="Frontend\Plugins\ApiPathAttribute.cs" />
     <Compile Include="Frontend\Plugins\MenuItemAttribute.cs" />
@@ -103,6 +104,7 @@
     <Compile Include="Frontend\Plugins\HandlerPathAttribute.cs" />
     <Compile Include="Frontend\ResponseMaker.cs" />
     <Compile Include="Frontend\FrontendPageMenu.cs" />
+    <Compile Include="Settings\UserInfo.cs" />
     <Compile Include="Util.cs" />
     <Compile Include="IResourceContainer.cs" />
     <Compile Include="Settings\ApplicationDescriptor.cs" />

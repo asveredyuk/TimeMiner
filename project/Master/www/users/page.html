@@ -1,0 +1,115 @@
+<div class="ui container">
+    <div class="ui center aligned grid" style="margin-top: 10px">
+        <div class="column">
+            <h1>User Management</h1>
+        </div>
+    </div>
+    <div class="ui two grid">
+        <div class="twelve wide column">
+            <div class="ui left floated small primary labeled icon button addUserBtn">
+                <i class="plus icon"></i> Add user
+            </div>
+        </div>
+        <!--<div class="four wide column">-->
+            <!--<div class="ui fluid icon input">-->
+                <!--<input type="text" id="tableSearchInput" placeholder="Search...">-->
+                <!--<i class="search icon"></i>-->
+            <!--</div>-->
+        <!--</div>-->
+    </div>
+
+    <table class="ui celled striped table">
+        <thead>
+        <tr>
+            <th class="four wide">Name</th>
+            <th class="four wide">Surname</th>
+            <th class="eight wide">Id</th>
+            <th class=""></th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr>
+            <td colspan="5">
+                <div class="ui basic segment" style="height: 200px">
+                    <div class="ui massive active loader"></div>
+                </div>
+            </td>
+        </tr>
+        </tbody>
+        <tfoot class="full-width">
+        <tr>
+            <th colspan="4">
+                <div class="ui right floated small primary labeled icon button addUserBtn" >
+                    <i class="plus icon"></i> Add user
+                </div>
+            </th>
+        </tr>
+        </tfoot>
+    </table>
+    <div class="ui small modal" id="addUserModal">
+        <div class="header">Add user</div>
+        <div class="content">
+            <div class="ui form">
+                <div class="field">
+                    <label>Name</label>
+                    <input name="Name" placeholder="John" type="text">
+                </div>
+                <div class="field">
+                    <label>Surname</label>
+                    <input name="Surname" placeholder="Black" type="text">
+                </div>
+                <div class="field">
+                    <label>Id</label>
+                    <input name="Id" placeholder="leave empty to generate new id" type="text">
+                </div>
+                <div class="ui error message"></div>
+
+            </div>
+            <!--<div class="ui form">-->
+                <!--<div class="field">-->
+                    <!--<label>{{Type}} name</label>-->
+                    <!--<input name="AppName" placeholder="Example {{type}}" type="text">-->
+                <!--</div>-->
+                <!--{{#if isapplication}}-->
+                <!--<div class="field">-->
+                    <!--<label>Process name</label>-->
+                    <!--&lt;!&ndash;<input name="proc-name" placeholder="example.exe" type="text">&ndash;&gt;-->
+                    <!--<div class="ui right labeled input">-->
+
+                        <!--<input name="ProcName" placeholder="may contain * and ? mask symbols" type="text">-->
+                        <!--<div class="ui label">-->
+                            <!--.exe-->
+                        <!--</div>-->
+                    <!--</div>-->
+                <!--</div>-->
+                <!--{{#else}}-->
+                <!--<div class="field">-->
+                    <!--<label>Domain name</label>-->
+                    <!--&lt;!&ndash;<input name="proc-name" placeholder="example.exe" type="text">&ndash;&gt;-->
+                    <!--<input name="DomainName" placeholder="Example app" type="text">-->
+
+                <!--</div>-->
+                <!--{{/if}}-->
+                <!--<div class="field">-->
+                    <!--<label>{{Type}} type</label>-->
+                    <!--&lt;!&ndash;<input name="proc-name" placeholder="example.exe" type="text">&ndash;&gt;-->
+                    <!--<select class="ui dropdown" name="Type">-->
+                        <!--<option value="">Select type</option>-->
+                        <!--<option value="0">Good</option>-->
+                        <!--<option value="1">Neutral</option>-->
+                        <!--<option value="2">Bad</option>-->
+                    <!--</select>-->
+                <!--</div>-->
+                <!--<div class="ui error message"></div>-->
+            <!--</div>-->
+
+        </div>
+        <div class="actions">
+            <div class="ui negative deny button">Cancel</div>
+            <div class="ui positive approve right labeled icon button">
+                <i class="plus icon"></i>Add
+            </div>
+        </div>
+    </div>
+
+</div>

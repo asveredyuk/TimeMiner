@@ -9,7 +9,7 @@ namespace TimeMiner.Master.Frontend
     /// <summary>
     /// Allows to make composition of pages
     /// </summary>
-    class HandlerPageDescriptor
+    public class HandlerPageDescriptor
     {
         /// <summary>
         /// Page of descriptor with keys to replace with another pagebuilders

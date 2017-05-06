@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using LiteDB;
+using TimeMiner.Master.Settings;
 
 namespace TimeMiner.Master.Database
 {
@@ -53,8 +54,43 @@ namespace TimeMiner.Master.Database
         internal SettingsDB()
         {
             db = new LiteDatabase(DB_PATH);
+            users = db.GetCollection<UserInfo>("users");
         }
-        
+
+        #region Users
+
+        private LiteCollection<UserInfo> users;
+        public IReadOnlyList<UserInfo> GetAllUsers()
+        {
+            return users.FindAll().ToList();
+        }
+
+//        public void AddNewUser(UserInfo user)
+//        {
+//            users.Insert(user);
+//        }
+//
+//        public void UpdateUser(UserInfo user)
+//        {
+//            users.Update(user);
+//        }
+        public void UpaserUser(UserInfo user)
+        {
+            users.Upsert(user);
+        }
+
+        public void RemoveUser(Guid id)
+        {
+            users.Delete(id);
+        }
+
+        public UserInfo GetUserById(Guid id)
+        {
+            return users.FindById(id);
+        }
+
+        #endregion
+
 
     }
 }
