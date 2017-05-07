@@ -1,16 +1,18 @@
 /**
  * Created by ALEX on 07.05.2017.
  */
+var roka;
 function UserSelector(ctxt)
 {
+    roka = ctxt;
     var that = this;
     this.context = ctxt;
-
     ctxt.dropdown(
         {
             fullTextSearch : true,
             onChange : function(value, text, $choice){
-                StatController.userId(value);
+                if(value != StatController.userId())
+                    StatController.userId(value);
             }
         }
     );
@@ -23,6 +25,15 @@ function UserSelector(ctxt)
             var item = $(template(value));
             placement.append(item);
         });
+        ctxt.dropdown('refresh');
+        ctxt.dropdown('set selected',StatController.userId());
+
     });
 
+    //TODO: think if it is really needed
+    // StatController.onUserIdChanged.add(function (value) {
+    //     if(ctxt.dropdown('get value') != value) {
+    //         ctxt.dropdown("set selected", value);
+    //     }
+    // });
 }
