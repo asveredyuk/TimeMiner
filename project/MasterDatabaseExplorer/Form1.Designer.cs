@@ -31,20 +31,19 @@
             this.lbStatus = new System.Windows.Forms.Label();
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabPage2 = new System.Windows.Forms.TabPage();
-            this.numExcelExportUserId = new System.Windows.Forms.NumericUpDown();
             this.label1 = new System.Windows.Forms.Label();
             this.btExcelExport = new System.Windows.Forms.Button();
             this.btImportOldLog = new System.Windows.Forms.Button();
+            this.btCountPerDay = new System.Windows.Forms.Button();
             this.btLogStat = new System.Windows.Forms.Button();
             this.btClearDb = new System.Windows.Forms.Button();
             this.tabPage1 = new System.Windows.Forms.TabPage();
             this.btImportAppsList = new System.Windows.Forms.Button();
             this.btClearApps = new System.Windows.Forms.Button();
             this.btTest = new System.Windows.Forms.Button();
-            this.btCountPerDay = new System.Windows.Forms.Button();
+            this.userIdTb = new System.Windows.Forms.TextBox();
             this.tabControl1.SuspendLayout();
             this.tabPage2.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.numExcelExportUserId)).BeginInit();
             this.tabPage1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -73,7 +72,7 @@
             // 
             // tabPage2
             // 
-            this.tabPage2.Controls.Add(this.numExcelExportUserId);
+            this.tabPage2.Controls.Add(this.userIdTb);
             this.tabPage2.Controls.Add(this.label1);
             this.tabPage2.Controls.Add(this.btExcelExport);
             this.tabPage2.Controls.Add(this.btImportOldLog);
@@ -87,18 +86,6 @@
             this.tabPage2.TabIndex = 1;
             this.tabPage2.Text = "Logs";
             this.tabPage2.UseVisualStyleBackColor = true;
-            // 
-            // numExcelExportUserId
-            // 
-            this.numExcelExportUserId.Location = new System.Drawing.Point(182, 14);
-            this.numExcelExportUserId.Maximum = new decimal(new int[] {
-            10000,
-            0,
-            0,
-            0});
-            this.numExcelExportUserId.Name = "numExcelExportUserId";
-            this.numExcelExportUserId.Size = new System.Drawing.Size(120, 20);
-            this.numExcelExportUserId.TabIndex = 5;
             // 
             // label1
             // 
@@ -128,6 +115,16 @@
             this.btImportOldLog.Text = "Import old log";
             this.btImportOldLog.UseVisualStyleBackColor = true;
             this.btImportOldLog.Click += new System.EventHandler(this.btImportOldLog_Click);
+            // 
+            // btCountPerDay
+            // 
+            this.btCountPerDay.Location = new System.Drawing.Point(7, 178);
+            this.btCountPerDay.Name = "btCountPerDay";
+            this.btCountPerDay.Size = new System.Drawing.Size(113, 30);
+            this.btCountPerDay.TabIndex = 0;
+            this.btCountPerDay.Text = "Count per day ";
+            this.btCountPerDay.UseVisualStyleBackColor = true;
+            this.btCountPerDay.Click += new System.EventHandler(this.btCountPerDay_Click);
             // 
             // btLogStat
             // 
@@ -191,15 +188,12 @@
             this.btTest.UseVisualStyleBackColor = true;
             this.btTest.Click += new System.EventHandler(this.btTest_Click);
             // 
-            // btCountPerDay
+            // userIdTb
             // 
-            this.btCountPerDay.Location = new System.Drawing.Point(7, 178);
-            this.btCountPerDay.Name = "btCountPerDay";
-            this.btCountPerDay.Size = new System.Drawing.Size(113, 30);
-            this.btCountPerDay.TabIndex = 0;
-            this.btCountPerDay.Text = "Count per day ";
-            this.btCountPerDay.UseVisualStyleBackColor = true;
-            this.btCountPerDay.Click += new System.EventHandler(this.btCountPerDay_Click);
+            this.userIdTb.Location = new System.Drawing.Point(197, 13);
+            this.userIdTb.Name = "userIdTb";
+            this.userIdTb.Size = new System.Drawing.Size(321, 20);
+            this.userIdTb.TabIndex = 5;
             // 
             // Form1
             // 
@@ -215,7 +209,6 @@
             this.tabControl1.ResumeLayout(false);
             this.tabPage2.ResumeLayout(false);
             this.tabPage2.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.numExcelExportUserId)).EndInit();
             this.tabPage1.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
@@ -233,10 +226,10 @@
         private System.Windows.Forms.Button btImportAppsList;
         private System.Windows.Forms.Button btExcelExport;
         private System.Windows.Forms.Label label1;
-        private System.Windows.Forms.NumericUpDown numExcelExportUserId;
         private System.Windows.Forms.Button btLogStat;
         private System.Windows.Forms.Button btTest;
         private System.Windows.Forms.Button btCountPerDay;
+        private System.Windows.Forms.TextBox userIdTb;
     }
 }
 

@@ -34,6 +34,7 @@ namespace MasterDatabaseExplorer
 
         private void Form1_Load(object sender, EventArgs e)
         {
+            userIdTb.Text = Guid.Empty.ToString();
             LogsDB.LOGS_DIR = @"C:\dev\TimeMiner\project\Master\bin\Debug\Logs";
             //LogsDB.LOG_DB_PATH = @"C:\dev\TimeMiner\project\Master\bin\Debug\logstorage.db";
             SettingsDB.DB_PATH = @"C:\dev\TimeMiner\project\Master\bin\Debug\settings.db";
@@ -52,7 +53,6 @@ namespace MasterDatabaseExplorer
 
         private void btExcelExport_Click(object sender, EventArgs e)
         {
-            int userId = (int)numExcelExportUserId.Value;
             Corutine corut = new Corutine(this, ExportToExcelCorut(Guid.Empty));
             SimpleProgressForm form = new SimpleProgressForm(corut)
             {
@@ -180,7 +180,12 @@ namespace MasterDatabaseExplorer
         private void btImportOldLog_Click(object sender, EventArgs e)
         {
             //int userId = (int) numExcelExportUserId.Value;
-            Guid userId = Guid.Empty;
+            Guid userId;
+            if (!Guid.TryParse(userIdTb.Text, out userId))
+            {
+                MessageBox.Show("Wrong user id (GUID)");
+                return;
+            }
             OpenFileDialog d = new OpenFileDialog();
             d.Multiselect = true;
             var res = d.ShowDialog();
