@@ -128,7 +128,6 @@ namespace TimeMiner.Master.Frontend.BuiltInExtensions
             }
             SettingsContainer.Self.RemoveAppAnRelevances(id);
             resp.Close();
-
         }
         [ApiPath("apps/addapp")]
         public void AddApp(HttpListenerRequest req, HttpListenerResponse resp)

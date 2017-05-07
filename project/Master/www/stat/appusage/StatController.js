@@ -19,7 +19,7 @@ function StatController()
 {
     //current interval
     var interval = {};
-
+    var userId = "00000000-0000-0000-0000-000000000000";
     var onIntervalChanged = $.Callbacks();
     //event, raised when value changed
     this.onIntervalChanged = onIntervalChanged;
@@ -33,6 +33,9 @@ function StatController()
         }
         return interval;
     };
+    this.userId = function () {
+        return userId;
+    }
 }
 //singleton XD
 StatController = new StatController();

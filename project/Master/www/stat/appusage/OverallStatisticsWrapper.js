@@ -23,10 +23,12 @@ function OverallStatisticsWrapper($context)
         },
         200
     );
-    that.reloadStats = function(arg)
+    that.reloadStats = function()
     {
+        var interval = StatController.interval();
+        var userId = StatController.userId();
         loadingApplier.apply();
-        ApiBoundary.loadOverallStats(arg, function (res) {
+        ApiBoundary.loadOverallStats(interval, userId, function (res) {
             loadingApplier.disapply();
             that.totalStatVal.html(CommonUtils.stringifyDurationExtended(moment.duration(res.TotalTime,'seconds')));
             that.distractionsStatVal.html(CommonUtils.stringifyDurationExtended(moment.duration(res.DistractionsTime,'seconds')));

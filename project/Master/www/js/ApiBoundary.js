@@ -41,10 +41,11 @@ var ApiBoundary = {
             this.retryCalls();
         }
     },
-    loadOverallStats : function (statInterval, callback) {
+    loadOverallStats : function (statInterval,userId, callback) {
         var jobj = {
             Begin : statInterval.from,
-            End : statInterval.to
+            End : statInterval.to,
+            UserId : userId
         };
         var json = JSON.stringify(jobj);
         var apiCallArgs = arguments;
@@ -59,10 +60,11 @@ var ApiBoundary = {
             ApiBoundary.whenError(ApiBoundary.loadOverallStats, apiCallArgs);
         });
     },
-    loadProgramUsageStats : function (statInterval, callback) {
+    loadProgramUsageStats : function (statInterval, userId, callback) {
         var jobj = {
             Begin : statInterval.from,
-            End : statInterval.to
+            End : statInterval.to,
+            UserId : userId
         };
         var json = JSON.stringify(jobj);
         var apiCallArgs = arguments;
@@ -77,10 +79,11 @@ var ApiBoundary = {
             ApiBoundary.whenError(ApiBoundary.loadProgramUsageStats, apiCallArgs);
         });
     },
-    loadOverallStatsSeparate : function(statInterval, callback) {
+    loadOverallStatsSeparate : function(statInterval, userId, callback) {
         var jobj = {
             Begin: statInterval.from,
-            End: statInterval.to
+            End: statInterval.to,
+            UserId:userId
         };
         var json = JSON.stringify(jobj);
         var apiCallArgs = arguments;
@@ -96,7 +99,6 @@ var ApiBoundary = {
         });
     },
     loadUnknownAppsList : function (callback) {
-        var apiCallArgs = arguments;
         $.ajax({
             url: "/api/apps/unknown",
             type: 'GET'

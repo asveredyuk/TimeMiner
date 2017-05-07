@@ -156,6 +156,7 @@ namespace TimeMiner.Master
         /// <param name="userid"></param>
         /// <param name="cacheResults">Should read results be cached or not</param>
         /// <returns></returns>
+        [Obsolete("Database is large, do not try to load it all")]
         public List<LogRecord> GetAllRecordsForUser(Guid userid, bool cacheResults = true)
         {
             //TODO: filter by user
@@ -181,7 +182,8 @@ namespace TimeMiner.Master
             List<CachedStorage> neededStorages;
             lock (storages0)
             {
-                var needed = storages0.Where(t => t.Descriptor.CheckInterceptionWithPeriod(timeFrom, timeTo));
+                var forThisUser = storages0.Where(t => t.Descriptor.UserId == userId);
+                var needed = forThisUser.Where(t => t.Descriptor.CheckInterceptionWithPeriod(timeFrom, timeTo));
                 neededStorages = needed.ToList();
             }
             var inPeriod = neededStorages.Select(
@@ -207,12 +209,12 @@ namespace TimeMiner.Master
         /// <summary>
         /// Get log for user for given period
         /// </summary>
-        /// <param name="userid"></param>
+        /// <param name="userId"></param>
         /// <param name="timeFrom"></param>
         /// <param name="timeTo"></param>
         /// <param name="cacheResults"></param>
         /// <returns></returns>
-        public Log GetLogRecordsForUserForPeriod(Guid userid, DateTime timeFrom, DateTime timeTo,
+        public Log GetLogRecordsForUserForPeriod(Guid userId, DateTime timeFrom, DateTime timeTo,
             bool cacheResults = true)
         {
             timeFrom = ConvertDatetime(timeFrom);
@@ -221,7 +223,8 @@ namespace TimeMiner.Master
             List<CachedStorage> neededStorages;
             lock (storages0)
             {
-                var needed = storages0.Where(t => t.Descriptor.CheckInterceptionWithPeriod(timeFrom, timeTo));
+                var forThisUser = storages0.Where(t => t.Descriptor.UserId == userId);
+                var needed = forThisUser.Where(t => t.Descriptor.CheckInterceptionWithPeriod(timeFrom, timeTo));
                 neededStorages = needed.ToList();
             }
             var all = neededStorages.Select(t => t.GetRecords(cacheResults)).SelectMany(t => t);

@@ -7,6 +7,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using TimeMiner.Core;
 using TimeMiner.Master.Analysis;
 using TimeMiner.Master.Frontend.Plugins;
@@ -23,31 +24,22 @@ namespace TimeMiner.Master.Frontend.BuiltInExtensions
         [HandlerPath("stat")]
         public HandlerPageDescriptor Handle(HttpListenerRequest req, HttpListenerResponse resp)
         {
-            /*List<LogRecord> records = MasterDB.Logs.GetAllRecordsForUser(0);
-            Dictionary<string,int> programs = new Dictionary<string, int>();
-            foreach (var rec in records)
-            {
-                if (!programs.ContainsKey(rec.Process.ProcessName))
-                {
-                    programs[rec.Process.ProcessName] = 0;
-                }
-                programs[rec.Process.ProcessName]++;
-            }
-            string pg = "";
-            foreach (var p in programs.OrderByDescending(p=>p.Value))
-            {
-                pg += p.Key + ":" + p.Value + "s<br>";
-            }
-            return new HandlerPageDescriptor(pg);*/
-            var res = new HandlerPageDescriptor(WWWRes.GetString("stat/appusage/tablepage.html"), WWWRes.GetString("stat/appusage/tablehead.html"));
+            var head = WWWRes.GetString("stat/appusage/tablehead.html");
+            var page = WWWRes.GetString("stat/appusage/tablepage.html");
+            var res = new HandlerPageDescriptor(page,head);
             return res;
         }
 
         [ApiPath("stat/overall_productivity")]
-        public void HandlOverallProdApi(HttpListenerRequest req, HttpListenerResponse resp)
+        public void ApiOverallProd(HttpListenerRequest req, HttpListenerResponse resp)
         {
             StatRequestData reqData = ParseStatRequestDataAndLocalize(req);
-            Log[] logs = LogsDB.Self.GetLogsForUserForPeriodSeparate(Guid.Empty, reqData.Begin, reqData.End);
+            if (reqData == null)
+            {
+                WriteStringAndClose(resp,"Wrong request data",400);
+                return;
+            }
+            Log[] logs = LogsDB.Self.GetLogsForUserForPeriodSeparate(reqData.UserId, reqData.Begin, reqData.End);
             Log log;
             if(logs.Length > 1)
                 throw new NotImplementedException("More than one log is not supported");
@@ -66,10 +58,15 @@ namespace TimeMiner.Master.Frontend.BuiltInExtensions
         }
 
         [ApiPath("stat/overall_prod_per_day")]
-        public void HandleOverallProdPerDayApi(HttpListenerRequest req, HttpListenerResponse resp)
+        public void ApiOverallProdPerDay(HttpListenerRequest req, HttpListenerResponse resp)
         {
             StatRequestData reqData = ParseStatRequestDataAndLocalize(req);
-            Log[] logs = LogsDB.Self.GetLogsForUserForPeriodSeparate(Guid.Empty, reqData.Begin, reqData.End);
+            if (reqData == null)
+            {
+                WriteStringAndClose(resp, "Wrong request data",400);
+                return;
+            }
+            Log[] logs = LogsDB.Self.GetLogsForUserForPeriodSeparate(reqData.UserId, reqData.Begin, reqData.End);
             List<object> results = new List<object>();
             //List<ProductivityReport.ReportResult> reportResults = new List<ProductivityReport.ReportResult>();
             foreach (var log in logs)
@@ -85,26 +82,40 @@ namespace TimeMiner.Master.Frontend.BuiltInExtensions
                 };
                 results.Add(wrap);
             }
-            
-
             WriteObjectJsonAndClose(resp,results);
         }
-      
+        /// <summary>
+        /// Parse statistics request data and localize time
+        /// </summary>
+        /// <param name="req"></param>
+        /// <returns></returns>
         private StatRequestData ParseStatRequestDataAndLocalize(HttpListenerRequest req)
         {
-            string postString = ReadPostString(req);
-            StatRequestData reqData = JsonConvert.DeserializeObject<StatRequestData>(postString);            
-            reqData.Localize();
-            return reqData;
+            try
+            {
+                string postString = ReadPostString(req);
+                StatRequestData reqData = JsonConvert.DeserializeObject<StatRequestData>(postString);
+                reqData.Localize();
+                return reqData;
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                return null;
+            }
         }
         [ApiPath("stat/appusage")]
-        public void HandleApi(HttpListenerRequest req, HttpListenerResponse resp)
+        public void ApiAppsUsage(HttpListenerRequest req, HttpListenerResponse resp)
         {
-            string path = SkipApiAndRoot(req.Url.AbsolutePath);
             StatRequestData reqData = ParseStatRequestDataAndLocalize(req);
+            if (reqData == null)
+            {
+                WriteStringAndClose(resp, "Wrong request data", 400);
+                return;
+            }
             Stopwatch w2 = Stopwatch.StartNew();
             //temporarly solved by local time
-            Log log = LogsDB.Self.GetLogRecordsForUserForPeriod(Guid.Empty, reqData.Begin,reqData.End);
+            Log log = LogsDB.Self.GetLogRecordsForUserForPeriod(reqData.UserId, reqData.Begin,reqData.End);
             Console.WriteLine("Number of records:" + log.Records.Length);
             w2.Stop();
             Console.Out.WriteLine($"Log loading elapsed {w2.ElapsedMilliseconds}ms");
@@ -128,7 +139,7 @@ namespace TimeMiner.Master.Frontend.BuiltInExtensions
         {
             public DateTime Begin { get; set; }
             public DateTime End { get; set; }
-
+            public Guid UserId { get; set; }
             public void Localize()
             {
                 Begin = Begin.ToLocalTime();

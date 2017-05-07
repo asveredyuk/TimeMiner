@@ -53,9 +53,11 @@ function TableWrapper(ctxt) {
         },
         200
     );
-    this.reloadTable = function (arg) {
+    this.reloadTable = function () {
+        var interval = StatController.interval();
+        var userId = StatController.userId();
         loadingApplier.apply();
-        ApiBoundary.loadProgramUsageStats(arg, function (arr) {
+        ApiBoundary.loadProgramUsageStats(interval, userId, function (arr) {
             $.ajax("/stat/appusage/tablerow.hbs")
                 .done(function (tpl) {
                     loadingApplier.disapply();

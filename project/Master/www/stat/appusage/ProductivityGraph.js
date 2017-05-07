@@ -106,7 +106,10 @@ function ProductivityGraph(domElement)
         }
         console.log("point pos not found!")
     };
-    StatController.onIntervalChanged.add(function (interval) {
+    this.onChange = function()
+    {
+        var interval = StatController.interval();
+        var userId = StatController.userId();
         var intervalCenter = moment((interval.from + interval.to)/2);
         var monthBegin = moment(intervalCenter).startOf('month');
         var monthEnd = moment(intervalCenter).endOf('month');
@@ -117,7 +120,7 @@ function ProductivityGraph(domElement)
             that.nowInterval = newInterval;
 
             loadingApplier.apply();
-            ApiBoundary.loadOverallStatsSeparate(newInterval, function (data) {
+            ApiBoundary.loadOverallStatsSeparate(newInterval,userId, function (data) {
                 loadingApplier.disapply();
                 //in data we ba have not all monthes
                 var arrData = [];
@@ -155,8 +158,8 @@ function ProductivityGraph(domElement)
             })
         }
         that.movePoint(moment(interval.from).startOf('day'));
-
-    });
+    };
+    StatController.onIntervalChanged.add(this.onChange);
     $(window).resize(function () {
         var wNew = $context.width();
         var hNew = $context.height();
