@@ -72,9 +72,7 @@ function TableWrapper(ctxt) {
             }
         );
     };
-    StatController.onIntervalChanged.add(function (arg) {
-        that.reloadTable(arg);
-    });
+    StatController.onAnyChanged.add(this.reloadTable);
 }
 $(document).ready(function () {
     var selector = new PeriodSelector($('#selector'));
@@ -82,5 +80,6 @@ $(document).ready(function () {
     var wrapper = new TableWrapper($(".statTable"));
     var ostat = new OverallStatisticsWrapper($(".ostat"));
     var prodGraph = new ProductivityGraph($("#prodGraph").get(0));
+    var userSelector = new UserSelector($("#userselect"));
     StatController.interval(new StatInterval(moment()));
 });

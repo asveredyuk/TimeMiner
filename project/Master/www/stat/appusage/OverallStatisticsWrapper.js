@@ -35,8 +35,10 @@ function OverallStatisticsWrapper($context)
             that.productiveStatVal.html(CommonUtils.stringifyDurationExtended(moment.duration(res.ProductiveTime,'seconds')));
         });
     };
-    StatController.onIntervalChanged.add(function (arg) {
-        that.reloadStats(arg);
-    });
+    StatController.onAnyChanged.add(that.reloadStats);
+    //StatController.onIntervalChanged.add(that.reloadStats);
+    //StatController.onUserIdChanged.add(that.reloadStats);
+
+
 
 }

@@ -1,36 +1,64 @@
 <div class="ui container">
-    <div class="ui container">
-        <div class="ui left floated basic compact segment" id="selector">
-            <div class="ui basic icon buttons">
-                <button class="ui button dateSelectorBtPrev" title="Previous day">
-                    <i class="left chevron icon"></i>
-                </button>
-                <button class="ui button dateSelectorBt" title="Select day on calendar">
-                    00.00.00
-                </button>
-                <button class="ui button dateSelectorBtNext" title="Next day">
-                    <i class="right chevron icon"></i>
-                </button>
-            </div>
-            <div class="ui special popup dateSelectPopup">
-                <div class="header" style="margin-bottom: 5px">Select date</div>
-                <div class="dateSelectDatePicker" style="margin-bottom: 10px"></div>
-                <button class="ui right floated primary button dateSelectorApplyPickerBt">
-                    Apply
-                </button>
+    <div class="ui grid centered">
+        <div class="three wide column">
+            <div class="ui basic compact segment" id="selector">
+                <div class="ui basic icon buttons">
+                    <button class="ui button dateSelectorBtPrev" title="Previous day">
+                        <i class="left chevron icon"></i>
+                    </button>
+                    <button class="ui button dateSelectorBt" title="Select day on calendar">
+                        00.00.00
+                    </button>
+                    <button class="ui button dateSelectorBtNext" title="Next day">
+                        <i class="right chevron icon"></i>
+                    </button>
+                </div>
+                <div class="ui special popup dateSelectPopup">
+                    <div class="header" style="margin-bottom: 5px">Select date</div>
+                    <div class="dateSelectDatePicker" style="margin-bottom: 10px"></div>
+                    <button class="ui right floated primary button dateSelectorApplyPickerBt">
+                        Apply
+                    </button>
+                </div>
             </div>
         </div>
-        <div class="ui basic compact segment"  id="monthSelector">
-            <div class="ui basic icon buttons">
-                <button class="ui button dateSelectorBtPrev" title="Previous month">
-                    <i class="left chevron icon"></i>
-                </button>
-                <button class="ui button dateSelectorBt" style="width: 130px">
-                    January
-                </button>
-                <button class="ui button dateSelectorBtNext" title="Next month">
-                    <i class="right chevron icon"></i>
-                </button>
+        <div class="four wide column">
+            <div class="ui basic compact segment" id="monthSelector">
+                <div class="ui basic icon buttons">
+                    <button class="ui button dateSelectorBtPrev" title="Previous month">
+                        <i class="left chevron icon"></i>
+                    </button>
+                    <button class="ui button dateSelectorBt" style="width: 130px">
+                        January
+                    </button>
+                    <button class="ui button dateSelectorBtNext" title="Next month">
+                        <i class="right chevron icon"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+        <div class="nine wide column">
+            <div class="ui basic compact right floated segment">
+                <div class="ui basic buttons">
+                    <div class="ui dropdown labeled icon basic button" id="userselect">
+                        <i class="filter icon"></i>
+                        <span class="text">Filter by user</span>
+                        <div class="menu">
+                            <div class="ui icon search input">
+                                <i class="search icon"></i>
+                                <input placeholder="Search tags..." type="text">
+                            </div>
+                            <div class="divider"></div>
+                            <div class="header">
+                                <i class="users icon"></i>
+                                Users
+                            </div>
+                            <div class="scrolling menu contentPlacement">
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>

@@ -114,10 +114,11 @@ function ProductivityGraph(domElement)
         var monthBegin = moment(intervalCenter).startOf('month');
         var monthEnd = moment(intervalCenter).endOf('month');
         var newInterval = new StatInterval(monthBegin, monthEnd);
-        if(typeof that.nowInterval == 'undefined' || that.nowInterval.valueOf() != newInterval.valueOf())
+        if(typeof that.nowInterval == 'undefined' || that.nowInterval.valueOf() != newInterval.valueOf() || typeof that.nowUser == 'undefined' || that.nowUser != userId)
         {
             //month interval changed
             that.nowInterval = newInterval;
+            that.nowUser = userId;
 
             loadingApplier.apply();
             ApiBoundary.loadOverallStatsSeparate(newInterval,userId, function (data) {
@@ -159,7 +160,7 @@ function ProductivityGraph(domElement)
         }
         that.movePoint(moment(interval.from).startOf('day'));
     };
-    StatController.onIntervalChanged.add(this.onChange);
+    StatController.onAnyChanged.add(this.onChange);
     $(window).resize(function () {
         var wNew = $context.width();
         var hNew = $context.height();
