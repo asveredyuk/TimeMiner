@@ -75,8 +75,9 @@
     <Compile Include="Analysis\BaseReport.cs" />
     <Compile Include="Analysis\BaseReportResult.cs" />
     <Compile Include="Analysis\BaseReportResultCollection.cs" />
+    <Compile Include="Analysis\CompositeLog.cs" />
     <Compile Include="Analysis\ILog.cs" />
-    <Compile Include="Analysis\Log.cs" />
+    <Compile Include="Analysis\ArrayLog.cs" />
     <Compile Include="Analysis\SingleStorageLog.cs" />
     <Compile Include="Analysis\ProductivityReport.cs" />
     <Compile Include="Analysis\ProgramUsageReport.cs" />

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
 using System.Drawing;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -416,39 +417,31 @@ namespace MasterDatabaseExplorer
 
         private void btTest_Click(object sender, EventArgs e)
         {
-            /*Log log = Log.GetLog();
-            ProductivityReport report = new ProductivityReport(log);
-            var res = report.Calculate();
-            string json = JsonConvert.SerializeObject(res, Formatting.Indented);
-            MessageBox.Show(json);*/
-            ILog[] allLogs = LogsDB.Self.GetLogsForUserForPeriodSeparate(Guid.Empty, DateTime.MinValue, DateTime.MaxValue);
-            List<ProductivityReport.ReportResult> results = new List<ProductivityReport.ReportResult>();
-            foreach (var log in allLogs)
-            {
-                ProductivityReport rep = new ProductivityReport(log);
-                results.Add(rep.GetFromCacheOrCalculate());
-            }
-            Excel.Application app = new Excel.Application();
-            app.DisplayAlerts = false;
-            var book = app.Workbooks.Add(Type.Missing);
+            //clear database
+            /*btClearDb_Click(null,null);
 
-            Excel.Worksheet sheet = book.ActiveSheet;
+            DateTime dt = new DateTime(2017,5,8,0,0,0,0, DateTimeKind.Local);
 
-            sheet.Cells[1, 1] = "Date";
-            sheet.Cells[1, 2] = "Productive, s";
-            sheet.Cells[1, 3] = "Distractions, s";
-            sheet.Cells[1, 4] = "Total, s";
-            int pos = 2;
-            for (int i = 0; i < allLogs.Length; i++)
+            DateTime till = dt.AddDays(2).AddSeconds(-10);
+            int minutesInterval = 60*4;
+            while (dt < till)
             {
-                sheet.Cells[pos, 1] = allLogs[i].Date;
-                sheet.Cells[pos, 2] = results[i].ProductiveTime;
-                sheet.Cells[pos, 3] = results[i].DistractionsTime;
-                sheet.Cells[pos, 4] = results[i].TotalTime;
-                pos++;
-            }
-            app.Columns.AutoFit();
-            app.Visible = true;
+                LogRecord rec = makeRecord(dt);
+                LogsDB.Self.PutRecord(rec);
+                dt = dt.AddMinutes(minutesInterval);
+            }*/
+            LogRecord rec = makeRecord(new DateTime(2017, 5, 8, 9, 20, 0, DateTimeKind.Local));
+            LogsDB.Self.PutRecord(rec);
+            //ILog[] logs = LogsDB.Self.GetLogsForUserForPeriodPerStorage(Guid.Empty, DateTime.MinValue, DateTime.MaxValue);
+            DateTime timefrom = new DateTime(2017,5,8,9,0,0,DateTimeKind.Local);
+            DateTime timeto = new DateTime(2017, 8, 8, 9, 0, 1, DateTimeKind.Local);
+
+            ILog composite = LogsDB.Self.GetCompositeLog(Guid.Empty, timefrom, timeto);
+            ExportLogsToExcel(composite);
+            MessageBox.Show(composite.DataHash);
+            //ExportLogsToExcel(logs);
+
+            //MessageBox.Show(dt.ToUniversalTime().ToString());
             /*ApplicationIdentifierBase id = new WebsiteIdentifier() {Host = "vk.com"};
             ApplicationDescriptor desc = new ApplicationDescriptor("Вконтакте", id);
             ProfileApplicationRelevance rel = new ProfileApplicationRelevance(Relevance.bad,desc);
@@ -463,6 +456,53 @@ namespace MasterDatabaseExplorer
             //sites = sites.Where(t => (GetHost(t) == null)).ToArray();
             //File.WriteAllLines("sites.txt",sites);
 
+        }
+
+        private void ExportLogsToExcel(params ILog[] logs)
+        {
+            Excel.Application app = new Excel.Application();
+            app.DisplayAlerts = false;
+            var book = app.Workbooks.Add(Type.Missing);
+            Excel.Worksheet sheet = book.ActiveSheet;
+
+
+            for (int i = 0; i < logs.Length; i++)
+            {
+                ILog log = logs[i];
+                LogRecord[] records = log.Records;
+                DateTime[] datetimes = records.Select(t => t.Time).ToArray();
+
+                int pos = 1;
+                foreach (var time in datetimes)
+                {
+                    sheet.Cells[pos, i+1] = time.ToString();
+                    pos++;
+                }
+            }
+            app.Columns.AutoFit();
+            app.Visible = true;
+        }
+
+        private LogRecord makeRecord(DateTime time)
+        {
+            ProcessDescriptor pdesc = new ProcessDescriptor()
+            {
+                ProcessName = "test"
+            };
+            WindowDescriptor wdesc = new WindowDescriptor()
+            {
+                Title = "test"
+            };
+
+            LogRecord rec = new LogRecord()
+            {
+                Id = Guid.NewGuid(),
+                Process = pdesc,
+                Window = wdesc,
+                Time = time
+                //user id now is 0
+            };
+            return rec;
         }
         private string GetHost(string site)
         {

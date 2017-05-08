@@ -66,6 +66,25 @@ namespace TimeMiner.Master
                 return null;
             return uri.Host;
         }
+
+        /// <summary>
+        /// Get the DateTime, which is in the middle of given period
+        /// </summary>
+        /// <param name="dateFrom"></param>
+        /// <param name="dateTo"></param>
+        /// <returns></returns>
+        public static DateTime GetDateTimeMiddle(DateTime dateFrom, DateTime dateTo)
+        {
+            TimeSpan ts;
+            return GetDateTimeMiddle(dateFrom, dateTo, out ts);
+        }
+
+        public static DateTime GetDateTimeMiddle(DateTime dateFrom, DateTime dateTo, out TimeSpan length)
+        {
+            length = dateTo.Subtract(dateFrom);
+            return dateFrom.AddSeconds(length.TotalSeconds / 2);
+        }
+
         public static DateTime StartOfDay(this DateTime theDate)
         {
             return theDate.Date;
@@ -80,5 +99,25 @@ namespace TimeMiner.Master
         {
             return theDate == default(DateTime);
         }
+
+        public static DateTime StartOfMonth(this DateTime theDate)
+        {
+            return new DateTime(theDate.Year,theDate.Month,1, 0,0,0, theDate.Kind);
+        }
+
+        public static DateTime EndOfMonth(this DateTime theDate)
+        {
+            return theDate.StartOfMonth().AddMonths(1).AddSeconds(-1);
+        }
+
+//        public static DateTime StartOfMonth(this DateTime theDate, DateTimeKind kind)
+//        {
+//            return new DateTime(theDate.Year, theDate.Month, 1, 0, 0, 0, kind);
+//        }
+//
+//        public static DateTime EndOfMonth(this DateTime theDate, DateTimeKind kind)
+//        {
+//            return theDate.StartOfMonth(kind).AddMonths(1).AddSeconds(-1);
+//        }
     }
 }

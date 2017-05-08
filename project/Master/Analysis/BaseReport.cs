@@ -46,17 +46,19 @@ namespace TimeMiner.Master.Analysis
         /// Add result to cache
         /// </summary>
         /// <param name="result">Report result</param>
-        protected void CacheResult(T result)
+        protected void TryCacheResult(T result)
         {
             if (log.DataHash == null)
             {
-               throw new Exception("Tried to add to cache log without data hash");
+                return;
+               //throw new Exception("Tried to add to cache log without data hash");
                 //cannot cache this
                 //return;
             }
             if (log.Prof == null)
             {
-                throw new Exception("Tried to add to cache log without profile");
+                return;
+                //throw new Exception("Tried to add to cache log without profile");
                 //cannot cache this
                 //return;
             }

@@ -56,7 +56,7 @@ namespace TimeMiner.Master.Analysis
                 ProductiveTime = totalProductive,
                 DistractionsTime = totalDistractions
             };
-            CacheResult(result);
+            TryCacheResult(result);
             return result;
         }
     }

@@ -39,26 +39,27 @@ namespace TimeMiner.Master.Frontend.BuiltInExtensions
                 WriteStringAndClose(resp,"Wrong request data",400);
                 return;
             }
-            ILog[] logs = LogsDB.Self.GetLogsForUserForPeriodSeparate(reqData.UserId, reqData.Begin, reqData.End);
-            ILog log;
-            if (logs.Length > 1)
-            {
-                List<LogRecord> records = new List<LogRecord>();
-                foreach (var log1 in logs)
-                {
-                    records.AddRange(log1.Records);
-                }
-                log = new Log(records, logs[0].Prof, null);
-            }
-            else if (logs.Length < 1)
-            {
-                //make fake empty log
-                log = new Log(new List<LogRecord>(), null, null);
-            }
-            else
-            {
-                log = logs[0];
-            }
+            ILog log = LogsDB.Self.GetCompositeLog(reqData.UserId, reqData.Begin, reqData.End);
+//            ILog[] logs = LogsDB.Self.GetLogsForUserForPeriodPerStorage(reqData.UserId, reqData.Begin, reqData.End);
+//            ILog log;
+//            if (logs.Length > 1)
+//            {
+//                List<LogRecord> records = new List<LogRecord>();
+//                foreach (var log1 in logs)
+//                {
+//                    records.AddRange(log1.Records);
+//                }
+//                log = new Log(records, logs[0].Prof, null);
+//            }
+//            else if (logs.Length < 1)
+//            {
+//                //make fake empty log
+//                log = new Log(new List<LogRecord>(), null, null);
+//            }
+//            else
+//            {
+//                log = logs[0];
+//            }
             ProductivityReport rep = new ProductivityReport(log);
             var result = rep.GetFromCacheOrCalculate();
             WriteObjectJsonAndClose(resp,result);
@@ -73,7 +74,19 @@ namespace TimeMiner.Master.Frontend.BuiltInExtensions
                 WriteStringAndClose(resp, "Wrong request data",400);
                 return;
             }
-            ILog[] logs = LogsDB.Self.GetLogsForUserForPeriodSeparate(reqData.UserId, reqData.Begin, reqData.End);
+            if (reqData.Begin >= reqData.End)
+            {
+                WriteStringAndClose(resp, "Begin of interval must before end",400);
+                return;
+            }
+            TimeSpan reqSpan;
+            DateTime monthCenter = Util.GetDateTimeMiddle(reqData.Begin, reqData.End, out reqSpan);
+
+            //TODO: check if request length is too low
+            //TODO: remake this request to accept one datetime
+            //ILog[] logs = LogsDB.Self.GetLogsForUserForPeriodPerStorage(reqData.UserId, reqData.Begin, reqData.End);
+            //TODO: TIMEZONE IS HARDCODED!
+            ILog[] logs = LogsDB.Self.GetDayByDayLogsForMonth(reqData.UserId, monthCenter, 3);
             List<object> results = new List<object>();
             //List<ProductivityReport.ReportResult> reportResults = new List<ProductivityReport.ReportResult>();
             foreach (var log in logs)
@@ -121,7 +134,7 @@ namespace TimeMiner.Master.Frontend.BuiltInExtensions
             }
             Stopwatch w2 = Stopwatch.StartNew();
             //temporarly solved by local time
-            ILog log = LogsDB.Self.GetLogRecordsForUserForPeriod(reqData.UserId, reqData.Begin,reqData.End);
+            ILog log = LogsDB.Self.GetLogForUserForPeriod(reqData.UserId, reqData.Begin,reqData.End);
             Console.WriteLine("Number of records:" + log.Records.Length);
             w2.Stop();
             Console.Out.WriteLine($"Log loading elapsed {w2.ElapsedMilliseconds}ms");

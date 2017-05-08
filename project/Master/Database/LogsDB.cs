@@ -163,38 +163,83 @@ namespace TimeMiner.Master
                 return all.ToList();
             }
         }
+
+        public ILog[] GetDayByDayLogsForMonth(Guid userId, DateTime dateInMonth, int hoursTimezone)
+        {
+            //TODO: think about conversion
+            dateInMonth = ConvertDatetimeToStorage(dateInMonth);
+            DateTime startOfMonth = dateInMonth.StartOfMonth();
+            DateTime endOfMonth = dateInMonth.EndOfMonth();
+            //TODO: make single composite logs for given shift
+            List<ILog> logs = new List<ILog>();
+            DateTime current = startOfMonth.AddHours(12); //the center of the day
+            while (current < endOfMonth)
+            {
+                //all dates are in UTC
+                //so we add requested hours
+                ILog curLog = GetCompositeLog(userId, current.StartOfDay().AddHours(hoursTimezone), current.EndOfDay().AddHours(hoursTimezone));
+                logs.Add(curLog);
+                current = current.AddDays(1);
+            }
+            return logs.ToArray();
+        }
         /// <summary>
-        /// Get logs for user for given period. Logs are separated by storage
+        /// Get log for user for given period
         /// </summary>
         /// <param name="userId"></param>
         /// <param name="timeFrom"></param>
         /// <param name="timeTo"></param>
-        /// <param name="cacheResults"></param>
         /// <returns></returns>
-        public ILog[]  GetLogsForUserForPeriodSeparate(Guid userId, DateTime timeFrom, DateTime timeTo,
-            bool cacheResults = true)
+        [Obsolete("Use GetCompositeLog instead")]
+        public ILog GetLogForUserForPeriod(Guid userId, DateTime timeFrom, DateTime timeTo)
+        {
+            timeFrom = ConvertDatetimeToStorage(timeFrom);
+            timeTo = ConvertDatetimeToStorage(timeTo);
+            return GetCompositeLog(userId, timeFrom, timeTo);
+
+        }
+
+        /// <summary>
+        /// Make composite log for given user and period
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="timeFrom"></param>
+        /// <param name="timeTo"></param>
+        /// <returns></returns>
+        public ILog GetCompositeLog(Guid userId, DateTime timeFrom, DateTime timeTo)
+        {
+            //TODO: now the middle of given period is used as date. What can we do?
+            timeFrom = ConvertDatetimeToStorage(timeFrom);
+            timeTo = ConvertDatetimeToStorage(timeTo);
+            ILog[] stLogs = GetStorageLogsInterceptingWithInterval(userId, timeFrom, timeTo);
+            if (stLogs.Length == 0)
+            {
+                return ArrayLog.CrateEmpty(TMPMakeProfile(), Util.GetDateTimeMiddle(timeFrom, timeTo).Date);
+            }
+            ILog composite = new CompositeLog(stLogs, TMPMakeProfile(), timeFrom,timeTo, Util.GetDateTimeMiddle(timeFrom, timeTo).Date);
+            return composite;
+        }
+
+        private ILog[] GetStorageLogsInterceptingWithInterval(Guid userId, DateTime timeFrom, DateTime timeTo)
         {
             timeFrom = ConvertDatetimeToStorage(timeFrom);
             timeTo = ConvertDatetimeToStorage(timeTo);
             List<CachedStorage> neededStorages;
             lock (storages0)
             {
-                var forThisUser = storages0.Where(t => t.Descriptor.UserId == userId);
+                var forThisUser = storages0.Where(t => t.Descriptor.UserId == userId).OrderBy(t => t.Descriptor.Date);
                 var needed = forThisUser.Where(t => t.Descriptor.CheckInterceptionWithPeriod(timeFrom, timeTo));
                 neededStorages = needed.ToList();
             }
-            var inPeriod = neededStorages.Select(
-                t=>MakeLogFromStorageInPeriod(t,timeFrom,timeTo,cacheResults)
+            var logs = neededStorages.Select(
+                t => MakeLogFromStorage(t)
                 ).ToArray();
-            return inPeriod;
+            return logs;
         }
-
-        private ILog MakeLogFromStorageInPeriod(CachedStorage storage, DateTime timeFrom, DateTime timeTo,
-            bool cacheResults)
+        private ILog MakeLogFromStorage(CachedStorage storage)
         {
-            var recs =
-                storage.GetRecords(cacheResults).Where(q => Util.CheckDateInPeriod(q.Time, timeFrom, timeTo));
-            ILog log = new SingleStorageLog(recs,TMPMakeProfile(),storage.Descriptor.FileMD5, storage.Descriptor.Date);
+            var recs = storage.GetRecords();
+            ILog log = new SingleStorageLog(recs, TMPMakeProfile(), storage.Descriptor.FileMD5, storage.Descriptor.Date);
             return log;
         }
 
@@ -203,32 +248,7 @@ namespace TimeMiner.Master
             IndexedProfile prof = IndexedProfile.FromProfile(SettingsContainer.Self.GetBaseProfile());
             return prof;
         }
-        /// <summary>
-        /// Get log for user for given period
-        /// </summary>
-        /// <param name="userId"></param>
-        /// <param name="timeFrom"></param>
-        /// <param name="timeTo"></param>
-        /// <param name="cacheResults"></param>
-        /// <returns></returns>
-        public ILog GetLogRecordsForUserForPeriod(Guid userId, DateTime timeFrom, DateTime timeTo,
-            bool cacheResults = true)
-        {
-            timeFrom = ConvertDatetimeToStorage(timeFrom);
-            timeTo = ConvertDatetimeToStorage(timeTo);
-            //TODO: filter by user
-            List<CachedStorage> neededStorages;
-            lock (storages0)
-            {
-                var forThisUser = storages0.Where(t => t.Descriptor.UserId == userId);
-                var needed = forThisUser.Where(t => t.Descriptor.CheckInterceptionWithPeriod(timeFrom, timeTo));
-                neededStorages = needed.ToList();
-            }
-            var all = neededStorages.Select(t => t.GetRecords(cacheResults)).SelectMany(t => t);
-            var inPeriod = all.Where(t => Util.CheckDateInPeriod(t.Time, timeFrom, timeTo));
-            ILog log = new Log(inPeriod.ToArray(),TMPMakeProfile(),null);
-            return log;
-        }
+        
         /// <summary>
         /// Clears cache of all cached storages
         /// </summary>
@@ -242,7 +262,7 @@ namespace TimeMiner.Master
 
         private DateTime ConvertDatetimeToStorage(DateTime dt)
         {
-            return dt.ToLocalTime();
+            return dt.ToUniversalTime();
         }
 
     }
