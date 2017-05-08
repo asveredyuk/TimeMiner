@@ -13,10 +13,10 @@ namespace TimeMiner.Master.Cache
     {
         public string Id
         {
-            get { return FileHash + ReportTypeGuid.ToString() + ProfileHash; }
+            get { return DataHash + ReportTypeGuid.ToString() + ProfileHash; }
         }
         [BsonIndex]
-        public string FileHash { get; set; }
+        public string DataHash { get; set; }
         [BsonIndex]
         public string ProfileHash { get; set; }
         [BsonIndex]
@@ -27,9 +27,9 @@ namespace TimeMiner.Master.Cache
         {
         }
 
-        public ReportResultCacheItem(string fileHash, string profileHash, Guid reportTypeGuid, BaseReportResult result)
+        public ReportResultCacheItem(string dataHash, string profileHash, Guid reportTypeGuid, BaseReportResult result)
         {
-            FileHash = fileHash;
+            DataHash = dataHash;
             ProfileHash = profileHash;
             ReportTypeGuid = reportTypeGuid;
             Result = result;

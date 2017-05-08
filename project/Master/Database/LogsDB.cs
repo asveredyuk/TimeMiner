@@ -194,7 +194,7 @@ namespace TimeMiner.Master
         {
             var recs =
                 storage.GetRecords(cacheResults).Where(q => Util.CheckDateInPeriod(q.Time, timeFrom, timeTo));
-            Log log = new Log(recs,TMPMakeProfile(),storage.Descriptor);
+            Log log = new Log(recs,TMPMakeProfile(),storage.Descriptor.FileMD5);
             return log;
         }
 

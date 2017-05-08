@@ -56,11 +56,7 @@ namespace TimeMiner.Master.Analysis
                 ProductiveTime = totalProductive,
                 DistractionsTime = totalDistractions
             };
-            //this report is cached!
-            if (log.StorageDescriptor != null)
-            {
-                CacheResult(result);
-            }
+            CacheResult(result);
             return result;
         }
     }

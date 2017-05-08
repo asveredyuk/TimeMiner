@@ -25,25 +25,24 @@ namespace TimeMiner.Master.Analysis
             }
         }
 
-        public StorageDescriptor StorageDescriptor { get; }
+        public string DataHash { get; }
 
         public DateTime Date
         {
             get
             {
-                if (StorageDescriptor != null)
-                    return StorageDescriptor.Date;
                 if (Records.Length == 0)
                     throw new Exception("empty log, no datetime");
                 return Records[0].Time.Date;
             }
         }
         
-        public Log(IEnumerable<LogRecord> recordsSource, IndexedProfile prof, StorageDescriptor desc)
+        public Log(IEnumerable<LogRecord> recordsSource, IndexedProfile prof, string dataHash)
         {
             this.recordsSource = recordsSource;
             this.Prof = prof;
-            this.StorageDescriptor = desc;
+            this.DataHash = dataHash;
+
         }
 
         public Dictionary<Relevance, int> GetRelevanceTimes()
