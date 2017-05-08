@@ -92,7 +92,7 @@ namespace TimeMiner.Master.Analysis
         }
 
         public Params Parameters { get; }
-        public UnknownIdentificationReport(Log log) : base(log)
+        public UnknownIdentificationReport(ILog log) : base(log)
         {
             Parameters = new Params();
         }

@@ -171,7 +171,7 @@ namespace TimeMiner.Master
         /// <param name="timeTo"></param>
         /// <param name="cacheResults"></param>
         /// <returns></returns>
-        public Log[]  GetLogsForUserForPeriodSeparate(Guid userId, DateTime timeFrom, DateTime timeTo,
+        public ILog[]  GetLogsForUserForPeriodSeparate(Guid userId, DateTime timeFrom, DateTime timeTo,
             bool cacheResults = true)
         {
             timeFrom = ConvertDatetimeToStorage(timeFrom);
@@ -189,12 +189,12 @@ namespace TimeMiner.Master
             return inPeriod;
         }
 
-        private Log MakeLogFromStorageInPeriod(CachedStorage storage, DateTime timeFrom, DateTime timeTo,
+        private ILog MakeLogFromStorageInPeriod(CachedStorage storage, DateTime timeFrom, DateTime timeTo,
             bool cacheResults)
         {
             var recs =
                 storage.GetRecords(cacheResults).Where(q => Util.CheckDateInPeriod(q.Time, timeFrom, timeTo));
-            Log log = new Log(recs,TMPMakeProfile(),storage.Descriptor.FileMD5);
+            ILog log = new SingleStorageLog(recs,TMPMakeProfile(),storage.Descriptor.FileMD5, storage.Descriptor.Date);
             return log;
         }
 
@@ -211,7 +211,7 @@ namespace TimeMiner.Master
         /// <param name="timeTo"></param>
         /// <param name="cacheResults"></param>
         /// <returns></returns>
-        public Log GetLogRecordsForUserForPeriod(Guid userId, DateTime timeFrom, DateTime timeTo,
+        public ILog GetLogRecordsForUserForPeriod(Guid userId, DateTime timeFrom, DateTime timeTo,
             bool cacheResults = true)
         {
             timeFrom = ConvertDatetimeToStorage(timeFrom);
@@ -226,7 +226,7 @@ namespace TimeMiner.Master
             }
             var all = neededStorages.Select(t => t.GetRecords(cacheResults)).SelectMany(t => t);
             var inPeriod = all.Where(t => Util.CheckDateInPeriod(t.Time, timeFrom, timeTo));
-            Log log = new Log(inPeriod.ToArray(),TMPMakeProfile(),null);
+            ILog log = new Log(inPeriod.ToArray(),TMPMakeProfile(),null);
             return log;
         }
         /// <summary>

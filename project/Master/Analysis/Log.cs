@@ -9,7 +9,7 @@ using TimeMiner.Master.Settings;
 
 namespace TimeMiner.Master.Analysis
 {
-    public class Log
+    public class Log : ILog
     {
         private IEnumerable<LogRecord> recordsSource;
         private LogRecord[] records;
@@ -26,11 +26,13 @@ namespace TimeMiner.Master.Analysis
         }
 
         public string DataHash { get; }
-
+        private DateTime date;
         public DateTime Date
         {
             get
             {
+                if (!date.IsDefault())
+                    return date;
                 if (Records.Length == 0)
                     throw new Exception("empty log, no datetime");
                 return Records[0].Time.Date;
@@ -42,7 +44,11 @@ namespace TimeMiner.Master.Analysis
             this.recordsSource = recordsSource;
             this.Prof = prof;
             this.DataHash = dataHash;
+        }
 
+        public Log(IEnumerable<LogRecord> recordsSource, IndexedProfile prof, string dataHash, DateTime date) : this(recordsSource,prof,dataHash)
+        {
+            this.date = date;
         }
 
         public Dictionary<Relevance, int> GetRelevanceTimes()

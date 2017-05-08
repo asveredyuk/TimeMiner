@@ -14,9 +14,9 @@ namespace TimeMiner.Master.Analysis
     /// <typeparam name="T">Type of report result</typeparam>
     public abstract class BaseReport<T> where T:BaseReportResult
     {
-        protected Log log;
+        protected ILog log;
 
-        protected BaseReport(Log log)
+        protected BaseReport(ILog log)
         {
             this.log = log;
         }

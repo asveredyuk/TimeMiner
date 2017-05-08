@@ -75,5 +75,10 @@ namespace TimeMiner.Master
         {
             return theDate.Date.AddDays(1).AddTicks(-1);
         }
+
+        public static bool IsDefault(this DateTime theDate)
+        {
+            return theDate == default(DateTime);
+        }
     }
 }

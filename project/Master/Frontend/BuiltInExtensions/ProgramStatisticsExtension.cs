@@ -39,8 +39,8 @@ namespace TimeMiner.Master.Frontend.BuiltInExtensions
                 WriteStringAndClose(resp,"Wrong request data",400);
                 return;
             }
-            Log[] logs = LogsDB.Self.GetLogsForUserForPeriodSeparate(reqData.UserId, reqData.Begin, reqData.End);
-            Log log;
+            ILog[] logs = LogsDB.Self.GetLogsForUserForPeriodSeparate(reqData.UserId, reqData.Begin, reqData.End);
+            ILog log;
             if (logs.Length > 1)
             {
                 List<LogRecord> records = new List<LogRecord>();
@@ -73,7 +73,7 @@ namespace TimeMiner.Master.Frontend.BuiltInExtensions
                 WriteStringAndClose(resp, "Wrong request data",400);
                 return;
             }
-            Log[] logs = LogsDB.Self.GetLogsForUserForPeriodSeparate(reqData.UserId, reqData.Begin, reqData.End);
+            ILog[] logs = LogsDB.Self.GetLogsForUserForPeriodSeparate(reqData.UserId, reqData.Begin, reqData.End);
             List<object> results = new List<object>();
             //List<ProductivityReport.ReportResult> reportResults = new List<ProductivityReport.ReportResult>();
             foreach (var log in logs)
@@ -121,7 +121,7 @@ namespace TimeMiner.Master.Frontend.BuiltInExtensions
             }
             Stopwatch w2 = Stopwatch.StartNew();
             //temporarly solved by local time
-            Log log = LogsDB.Self.GetLogRecordsForUserForPeriod(reqData.UserId, reqData.Begin,reqData.End);
+            ILog log = LogsDB.Self.GetLogRecordsForUserForPeriod(reqData.UserId, reqData.Begin,reqData.End);
             Console.WriteLine("Number of records:" + log.Records.Length);
             w2.Stop();
             Console.Out.WriteLine($"Log loading elapsed {w2.ElapsedMilliseconds}ms");

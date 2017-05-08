@@ -37,7 +37,7 @@ namespace TimeMiner.Master.Analysis
         /// Create new report
         /// </summary>
         /// <param name="log">log to analyze</param>
-        public ActiveReport(Log log):base(log)
+        public ActiveReport(ILog log):base(log)
         {
         }
 

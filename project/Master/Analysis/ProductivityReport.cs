@@ -35,7 +35,7 @@ namespace TimeMiner.Master.Analysis
         /// Crete new productivity report
         /// </summary>
         /// <param name="log">Log to analyze</param>
-        public ProductivityReport(Log log):base(log)
+        public ProductivityReport(ILog log):base(log)
         {
         }
 

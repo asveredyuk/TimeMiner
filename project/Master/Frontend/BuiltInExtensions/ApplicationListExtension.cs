@@ -186,7 +186,7 @@ namespace TimeMiner.Master.Frontend.BuiltInExtensions
         [ApiPath("apps/unknown")]
         public void GetUnknownApps(HttpListenerRequest req, HttpListenerResponse resp)
         {
-            Log log = LogsDB.Self.GetLogRecordsForUserForPeriod(Guid.Empty, new DateTime(2017, 4, 1),
+            ILog log = LogsDB.Self.GetLogRecordsForUserForPeriod(Guid.Empty, new DateTime(2017, 4, 1),
                 new DateTime(2017, 4, 15));
             UnknownIdentificationReport report = new UnknownIdentificationReport(log);
             var result = report.Calculate().Items;

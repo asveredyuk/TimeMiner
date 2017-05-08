@@ -103,7 +103,7 @@ namespace TimeMiner.Master.Analysis
 
         private Dictionary<AppDesc, int> spentTimes;
         public Params Parameters { get; }
-        public ProgramUsageReport(Log log):base(log)
+        public ProgramUsageReport(ILog log):base(log)
         {
             Parameters = new Params();
         }
