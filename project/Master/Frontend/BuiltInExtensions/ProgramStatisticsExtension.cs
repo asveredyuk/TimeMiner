@@ -41,9 +41,16 @@ namespace TimeMiner.Master.Frontend.BuiltInExtensions
             }
             Log[] logs = LogsDB.Self.GetLogsForUserForPeriodSeparate(reqData.UserId, reqData.Begin, reqData.End);
             Log log;
-            if(logs.Length > 1)
-                throw new NotImplementedException("More than one log is not supported");
-            if (logs.Length < 1)
+            if (logs.Length > 1)
+            {
+                List<LogRecord> records = new List<LogRecord>();
+                foreach (var log1 in logs)
+                {
+                    records.AddRange(log1.Records);
+                }
+                log = new Log(records, logs[0].Prof, null);
+            }
+            else if (logs.Length < 1)
             {
                 //make fake empty log
                 log = new Log(new List<LogRecord>(), null, null);
@@ -95,7 +102,6 @@ namespace TimeMiner.Master.Frontend.BuiltInExtensions
             {
                 string postString = ReadPostString(req);
                 StatRequestData reqData = JsonConvert.DeserializeObject<StatRequestData>(postString);
-                reqData.Localize();
                 return reqData;
             }
             catch (Exception e)
@@ -140,11 +146,6 @@ namespace TimeMiner.Master.Frontend.BuiltInExtensions
             public DateTime Begin { get; set; }
             public DateTime End { get; set; }
             public Guid UserId { get; set; }
-            public void Localize()
-            {
-                Begin = Begin.ToLocalTime();
-                End = End.ToLocalTime();
-            }
         }
         
     }

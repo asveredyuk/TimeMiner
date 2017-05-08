@@ -104,8 +104,7 @@ namespace TimeMiner.Master
         /// <param name="rec"></param>
         public void PutRecord(LogRecord rec)
         {
-            //convert time to local
-            rec.Time = rec.Time.ToLocalTime();
+            rec.Time = ConvertDatetimeToStorage(rec.Time);
             //put record to concrete storage
             CachedStorage storage = FindStorageForRecord(rec);
             if (storage == null)
@@ -128,9 +127,7 @@ namespace TimeMiner.Master
 
             foreach (var logRecord in recs)
             {
-                //For now, all logs are stored in local time
-                logRecord.Time = logRecord.Time.ToLocalTime();
-
+                logRecord.Time = ConvertDatetimeToStorage(logRecord.Time);
                 CachedStorage storage = FindStorageForRecord(logRecord);
                 if (storage == null)
                 {
@@ -174,11 +171,11 @@ namespace TimeMiner.Master
         /// <param name="timeTo"></param>
         /// <param name="cacheResults"></param>
         /// <returns></returns>
-        public Log[] GetLogsForUserForPeriodSeparate(Guid userId, DateTime timeFrom, DateTime timeTo,
+        public Log[]  GetLogsForUserForPeriodSeparate(Guid userId, DateTime timeFrom, DateTime timeTo,
             bool cacheResults = true)
         {
-            timeFrom = ConvertDatetime(timeFrom);
-            timeTo = ConvertDatetime(timeTo);
+            timeFrom = ConvertDatetimeToStorage(timeFrom);
+            timeTo = ConvertDatetimeToStorage(timeTo);
             List<CachedStorage> neededStorages;
             lock (storages0)
             {
@@ -217,8 +214,8 @@ namespace TimeMiner.Master
         public Log GetLogRecordsForUserForPeriod(Guid userId, DateTime timeFrom, DateTime timeTo,
             bool cacheResults = true)
         {
-            timeFrom = ConvertDatetime(timeFrom);
-            timeTo = ConvertDatetime(timeTo);
+            timeFrom = ConvertDatetimeToStorage(timeFrom);
+            timeTo = ConvertDatetimeToStorage(timeTo);
             //TODO: filter by user
             List<CachedStorage> neededStorages;
             lock (storages0)
@@ -243,7 +240,7 @@ namespace TimeMiner.Master
             }
         }
 
-        private DateTime ConvertDatetime(DateTime dt)
+        private DateTime ConvertDatetimeToStorage(DateTime dt)
         {
             return dt.ToLocalTime();
         }
