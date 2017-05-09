@@ -78,8 +78,7 @@ namespace TimeMiner.Master.Frontend
             if (handler != null)
             {
                 handler(req, resp);
-                if(resp.OutputStream.CanWrite)
-                    resp.OutputStream.Close();
+                resp.Close();
             }
             else
             {
