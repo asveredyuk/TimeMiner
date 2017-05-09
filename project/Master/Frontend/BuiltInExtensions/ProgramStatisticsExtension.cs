@@ -10,18 +10,21 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using TimeMiner.Core;
 using TimeMiner.Master.Analysis;
+using TimeMiner.Master.Database;
 using TimeMiner.Master.Frontend.Plugins;
+using TimeMiner.Master.Settings;
 
 namespace TimeMiner.Master.Frontend.BuiltInExtensions
 {
+    [MenuItem("Statistics", "stat")]
     class ProgramStatisticsExtension : FrontendServerExtensionBase
     {
         public ProgramStatisticsExtension()
         {
             //MenuItems.Add(new FrontendPageMenuItem("Statistics","/stat"));
         }
-        [MenuItem("Statistics","stat")]
-        [HandlerPath("stat")]
+        [MenuItem("Detailed statistics", "stat/stat")]
+        [HandlerPath("stat/details")]
         public HandlerPageDescriptor Handle(HttpListenerRequest req, HttpListenerResponse resp)
         {
             var head = WWWRes.GetString("stat/appusage/tablehead.html");
@@ -153,13 +156,64 @@ namespace TimeMiner.Master.Frontend.BuiltInExtensions
             Console.Out.WriteLine($"Analyze elapsed {w.ElapsedMilliseconds}ms"); 
             
         }
+        #region user table
+        [MenuItem("Table of users", "stat/usertable")]
+        [HandlerPath("stat/usertable")]
+        public HandlerPageDescriptor Usertable(HttpListenerRequest req, HttpListenerResponse resp)
+        {
+            var head = WWWRes.GetString("stat/usertable/head.html");
+            var page = WWWRes.GetString("stat/usertable/page.html");
+            var res = new HandlerPageDescriptor(page, head);
+            return res;
+        }
 
+        [ApiPath("stat/getusertable")]
+        public void GetUserTable(HttpListenerRequest req, HttpListenerResponse resp)
+        {
+            var json = ReadPostString(req);
+            //TODO: may fall here
+            var period = JsonConvert.DeserializeObject<Period>(json);
+            if (period.Begin.IsDefault() || period.End.IsDefault())
+            {
+                WriteStringAndClose(resp, "No dates",400);
+                return;
+            }
+            //get all users
+            var users = SettingsDB.Self.GetAllUsers();
+            Dictionary<UserInfo, BaseReportResult> results = new Dictionary<UserInfo, BaseReportResult>();
+            foreach (var userInfo in users)
+            {
+                var logForUser = LogsDB.Self.GetCompositeLog(userInfo.Id, period.Begin, period.End);
+                var prodRep = new ProductivityReport(logForUser);
+                var res = prodRep.GetFromCacheOrCalculate();
+                results[userInfo] = res;
+            }
+            //TODO: bad code, refactor
+            List<object> objects = results.Select(t => new
+            {
+                user = t.Key,
+                report = t.Value
+            })
+            .Cast<object>().ToList();
+            string result = JsonConvert.SerializeObject(objects, Formatting.Indented);
+            WriteStringAndClose(resp,result);
+
+        }
+
+        #endregion
         private class StatRequestData
         {
             public DateTime Begin { get; set; }
             public DateTime End { get; set; }
             public Guid UserId { get; set; }
         }
+
+        private class Period
+        {
+            public DateTime Begin { get; set; }
+            public DateTime End { get; set; }
+        }
+
         
     }
 }

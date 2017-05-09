@@ -145,5 +145,24 @@ var ApiBoundary = {
         }).fail(function (xhr) {
             ApiBoundary.whenError(ApiBoundary.deleteUser, apiCallArgs, xhr);
         });
+    },
+    getOverallUsersStats : function(interval, callback)
+    {
+        var jobj = {
+            Begin : interval.from,
+            End : interval.to
+        };
+        var json = JSON.stringify(jobj);
+        var apiCallArgs = arguments;
+        $.ajax({
+            url: "/api/stat/getusertable",
+            type: 'POST',
+            data: json
+        }).done(function (msg) {
+            var arr = JSON.parse(msg);
+            callback(arr);
+        }).fail(function () {
+            ApiBoundary.whenError(ApiBoundary.getOverallUsersStats(), apiCallArgs);
+        });
     }
 };

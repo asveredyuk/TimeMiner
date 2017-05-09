@@ -56,3 +56,17 @@ var ScrollControl = {
         $(window).scrollTop(this.nowScroll);
     }
 };
+function StatInterval(from, to)
+{
+    if(typeof to == 'undefined')
+    {
+        //one type argument
+        from = moment(from).startOf('day');
+        to = moment(from).endOf('day');
+    }
+    this.from = from;
+    this.to = to;
+    this.valueOf = function () {
+        return this.from + "-" + this.to;
+    }
+}

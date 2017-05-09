@@ -1,20 +1,7 @@
 /**
  * Created by ALEX on 15.04.2017.
  */
-function StatInterval(from, to)
-{
-    if(typeof to == 'undefined')
-    {
-        //one type argument
-        from = moment(from).startOf('day');
-        to = moment(from).endOf('day');
-    }
-    this.from = from;
-    this.to = to;
-    this.valueOf = function () {
-        return this.from + "-" + this.to;
-    }
-}
+
 function _StatController()
 {
     //current interval
