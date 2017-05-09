@@ -31,6 +31,9 @@
             this.lbStatus = new System.Windows.Forms.Label();
             this.tabControl1 = new System.Windows.Forms.TabControl();
             this.tabPage2 = new System.Windows.Forms.TabPage();
+            this.numberTimeShift = new System.Windows.Forms.NumericUpDown();
+            this.userIdTb = new System.Windows.Forms.TextBox();
+            this.label2 = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
             this.btExcelExport = new System.Windows.Forms.Button();
             this.btImportOldLog = new System.Windows.Forms.Button();
@@ -41,9 +44,9 @@
             this.btImportAppsList = new System.Windows.Forms.Button();
             this.btClearApps = new System.Windows.Forms.Button();
             this.btTest = new System.Windows.Forms.Button();
-            this.userIdTb = new System.Windows.Forms.TextBox();
             this.tabControl1.SuspendLayout();
             this.tabPage2.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.numberTimeShift)).BeginInit();
             this.tabPage1.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -72,7 +75,9 @@
             // 
             // tabPage2
             // 
+            this.tabPage2.Controls.Add(this.numberTimeShift);
             this.tabPage2.Controls.Add(this.userIdTb);
+            this.tabPage2.Controls.Add(this.label2);
             this.tabPage2.Controls.Add(this.label1);
             this.tabPage2.Controls.Add(this.btExcelExport);
             this.tabPage2.Controls.Add(this.btImportOldLog);
@@ -87,10 +92,43 @@
             this.tabPage2.Text = "Logs";
             this.tabPage2.UseVisualStyleBackColor = true;
             // 
+            // numberTimeShift
+            // 
+            this.numberTimeShift.Location = new System.Drawing.Point(268, 147);
+            this.numberTimeShift.Maximum = new decimal(new int[] {
+            1000,
+            0,
+            0,
+            0});
+            this.numberTimeShift.Minimum = new decimal(new int[] {
+            1000,
+            0,
+            0,
+            -2147483648});
+            this.numberTimeShift.Name = "numberTimeShift";
+            this.numberTimeShift.Size = new System.Drawing.Size(101, 20);
+            this.numberTimeShift.TabIndex = 6;
+            // 
+            // userIdTb
+            // 
+            this.userIdTb.Location = new System.Drawing.Point(238, 121);
+            this.userIdTb.Name = "userIdTb";
+            this.userIdTb.Size = new System.Drawing.Size(321, 20);
+            this.userIdTb.TabIndex = 5;
+            // 
+            // label2
+            // 
+            this.label2.AutoSize = true;
+            this.label2.Location = new System.Drawing.Point(194, 149);
+            this.label2.Name = "label2";
+            this.label2.Size = new System.Drawing.Size(68, 13);
+            this.label2.TabIndex = 4;
+            this.label2.Text = "TimeShift hrs";
+            // 
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(138, 16);
+            this.label1.Location = new System.Drawing.Point(194, 124);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(38, 13);
             this.label1.TabIndex = 4;
@@ -188,13 +226,6 @@
             this.btTest.UseVisualStyleBackColor = true;
             this.btTest.Click += new System.EventHandler(this.btTest_Click);
             // 
-            // userIdTb
-            // 
-            this.userIdTb.Location = new System.Drawing.Point(197, 13);
-            this.userIdTb.Name = "userIdTb";
-            this.userIdTb.Size = new System.Drawing.Size(321, 20);
-            this.userIdTb.TabIndex = 5;
-            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -209,6 +240,7 @@
             this.tabControl1.ResumeLayout(false);
             this.tabPage2.ResumeLayout(false);
             this.tabPage2.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.numberTimeShift)).EndInit();
             this.tabPage1.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
@@ -230,6 +262,8 @@
         private System.Windows.Forms.Button btTest;
         private System.Windows.Forms.Button btCountPerDay;
         private System.Windows.Forms.TextBox userIdTb;
+        private System.Windows.Forms.NumericUpDown numberTimeShift;
+        private System.Windows.Forms.Label label2;
     }
 }
 

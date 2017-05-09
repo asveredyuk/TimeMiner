@@ -25,7 +25,7 @@ namespace MasterDatabaseExplorer
 {
     public partial class Form1 : Form
     {
-        private const int IMPORT_TIME_OFFSET_SECS = - 6 * 60 * 60;
+        private int LogImportTimeShift;
         LogsDB db;
         SettingsContainer settings;
         public Form1()
@@ -187,6 +187,7 @@ namespace MasterDatabaseExplorer
                 MessageBox.Show("Wrong user id (GUID)");
                 return;
             }
+            LogImportTimeShift = (int) numberTimeShift.Value*60*60;
             OpenFileDialog d = new OpenFileDialog();
             d.Multiselect = true;
             var res = d.ShowDialog();
@@ -277,7 +278,7 @@ namespace MasterDatabaseExplorer
             {
                 Title = ite.activeWindowTitle
             };
-            DateTime time = ConvertToDatetime(ite.time+IMPORT_TIME_OFFSET_SECS);
+            DateTime time = ConvertToDatetime(ite.time+LogImportTimeShift);
 
             LogRecord rec = new LogRecord()
             {
