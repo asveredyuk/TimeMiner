@@ -23,9 +23,9 @@ function RowWrapper(tBody, data, template) {
 
     tBody.append(this.row);
     this.postRowUpdate = function () {
-        var mom = moment.duration(this.data.SecondsSpent, 'seconds');
-        var res = CommonUtils.stringifyDurationExtended(mom);
-        this.row.find('.timeLabel').html(res);
+        // var mom = moment.duration(this.data.SecondsSpent, 'seconds');
+        // var res = CommonUtils.stringifyDurationExtended(mom);
+        // this.row.find('.timeLabel').html(res);
         var progressBar = this.row.find('.ui .progress');
         progressBar.progress({
             showActivity: false
