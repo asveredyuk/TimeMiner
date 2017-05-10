@@ -176,5 +176,41 @@ var ApiBoundary = {
         }).fail(function (xhr) {
             ApiBoundary.whenError(ApiBoundary.addApp, apiCallArgs, xhr);
         });
+    },
+    deleteApp : function (data, callback) {
+        var apiCallArgs = arguments;
+        $.ajax({
+            url: "/api/apps/rmapp",
+            type: 'POST',
+            data: data
+        }).done(function () {
+            callback();
+        }).fail(function (xhr) {
+            ApiBoundary.whenError(ApiBoundary.deleteApp, apiCallArgs, xhr);
+        });
+    },
+    updateApp : function (data, callback) {
+        var apiCallArgs = arguments;
+        $.ajax({
+            url: "/api/apps/updateapp",
+            type: 'POST',
+            data: data
+        }).done(function () {
+            callback();
+        }).fail(function (xhr) {
+            ApiBoundary.whenError(ApiBoundary.deleteApp, apiCallArgs, xhr);
+        });
+    },
+    getAppsList : function (type, callback) {
+        var apiCallArgs = arguments;
+        $.ajax({
+            url: "/api/apps/gettable/" + type,
+            type: 'GET'
+        }).done(function (msg) {
+            var obj = JSON.parse(msg);
+            callback(obj);
+        }).fail(function () {
+            ApiBoundary.whenError(ApiBoundary.getAppsList, apiCallArgs);
+        });
     }
 };

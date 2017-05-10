@@ -79,38 +79,25 @@ function RowWrapper(tBody, data, hbstemplate) {
     this.data = data;
     this.row = $(hbstemplate(data));
     tBody.append(this.row);
-    //row.css("background-color","red");
     //relevance change buttons
     this.buttonWrapper = new ButtonsWrapper(this.row.find(".mybuttons"), this);
     this.buttonWrapper.onValueChanged = function (val, callback) {
         that.sending = true;
         data.Rel = val;
-        /*setTimeout(function () {
-
-
-        },(Math.random() + 0.5)*1000);*/
-        $.post("/api/apps/updateapp",JSON.stringify(that.data),function () {
-            console.log("Value changed to " + val);
+        var json = JSON.stringify(that.data);
+        ApiBoundary.updateApp(json,function () {
             that.sending = false;
-            callback(/*Math.random() < 0.8*/true);
+            callback(true);
         });
     };
     var rmbutton = this.row.find('.rmbutton');
     rmbutton.click(function () {
         rmbutton.addClass('loading');
-        $.post('/api/apps/rmapp',JSON.stringify({Id:that.data.App.Id}),function (res) {
+        var json = JSON.stringify({Id:that.data.App.Id});
+        ApiBoundary.deleteApp(json, function () {
             that.row.remove();
-            //tableWrapper.reloadTable();
-        })
+        });
     });
-    // this.setVisibility = function(visibility)
-    // {
-    //     if(visibility)
-    //         this.row.show();
-    //     else
-    //         this.row.hide();
-    // }
-
 }
 function TableWrapper(ctxt)
 {
@@ -122,27 +109,21 @@ function TableWrapper(ctxt)
         ScrollControl.rememberPos();
         this.tbody.empty();
         this.tbody.append(this.loader);
-        $.ajax("/api/apps/gettable/" + type)
-            .done(function (msg) {
-                $.ajax("/apps/table/tablerow.hbs")
-                    .done(function (tpl) {
-                        var arr = JSON.parse(msg);
-                        that.loader.detach();
-                        var template = Handlebars.compile(tpl);
-                        $.each(arr, function (key, value) {
-                            //var res = Mustache.render(template,value);
-                            //var row = tbody.append(res);
-                            var r = new RowWrapper(that.tbody,value,template);
+        ApiBoundary.getAppsList(type, function (arr) {
+            $.ajax("/apps/table/tablerow.hbs")
+                .done(function (tpl) {
+                    that.loader.detach();
+                    var template = Handlebars.compile(tpl);
+                    $.each(arr, function (key, value) {
+                        //var res = Mustache.render(template,value);
+                        //var row = tbody.append(res);
+                        var r = new RowWrapper(that.tbody,value,template);
 
-                        });
-                        that.doSearch(that.lastSearch);
-                        ScrollControl.restoreScroll();
                     });
-            })
-            .fail(function () {
-                //set message that failed to load
-                console.log("failed to load data");
-            });
+                    that.doSearch(that.lastSearch);
+                    ScrollControl.restoreScroll();
+                });
+        });
     };
     this.doSearch = function(searchValue){
         this.lastSearch = searchValue;
@@ -285,7 +266,7 @@ function MakeAddApp()
             var data = $form.form('get values');
             var json = JSON.stringify(data);
             addAppModal.find('.actions .approve').addClass('loading');
-            $.post("/api/apps/addapp", json, function () {
+            ApiBoundary.addApp(json, function () {
                 addAppModal.modal('hide');
                 //todo:reshow hiding icon
                 tableWrapper.reloadTable();
