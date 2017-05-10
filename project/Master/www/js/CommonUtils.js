@@ -70,3 +70,35 @@ function StatInterval(from, to)
         return this.from + "-" + this.to;
     }
 }
+function DynamicPopup($ctxt, setupFunc){
+    var that = this;
+    this.context = $ctxt;
+    setupFunc.call(this);
+    this.bindAndShow = function ($item, callback) {
+        this.item = $item;
+        this.callback = callback;
+        $item.popup({
+            popup:$ctxt,
+            on:'manual'
+        });
+        $item.popup('hide all');
+        $item.popup('show');
+    };
+    this.unbindAndHide = function(){
+        this.item.popup('hide all');
+        this.item = null;
+        this.callback = null;
+    };
+    this.switch = function ($item, callback) {
+        if(this.item == $item) {
+            this.unbindAndHide();
+        }
+        else {
+            this.bindAndShow($item,callback);
+        }
+    };
+    //in setup func:
+    //this - dynamic popup object
+    //this.callback - callback function when it was shown
+    //this.context - jquery element of popup
+}

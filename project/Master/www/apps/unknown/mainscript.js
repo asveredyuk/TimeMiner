@@ -1,3 +1,4 @@
+var AddPopup;
 function RowWrapper($tBody, data, template){
     var that = this;
     this.data = data;
@@ -16,6 +17,52 @@ function RowWrapper($tBody, data, template){
             progressBar.find('.progress').remove();
         //progressBar.addClass();
     };
+    var addButton =this.row.find('.addbutton');
+    var popupclass = '.addAppPopup';
+    addButton.click(function () {
+        AddPopup.switch(addButton, function (type) {
+            AddPopup.unbindAndHide();
+            var data = {
+                AppName : that.data.Identifier,
+                Type:type
+            };
+            switch(that.data.Type){
+                case 'process':
+                    data.ProcName = that.data.Identifier;
+                    break;
+                case 'site':
+                    data.DomainName = that.data.Identifier;
+                    break;
+                default:
+                    alert('error with this app');
+                    return;
+            }
+            var json = JSON.stringify(data);
+            addButton.addClass('loading');
+            ApiBoundary.addApp(json, function () {
+                addButton.removeClass('loading');
+                addButton.addClass('disabled');
+                addButton.html('<i class="checkmark icon"></i>');
+            });
+        });
+        // var identifier = that.data.Identifier;
+        // var action = {
+        //     action:'add',
+        //     identifier:identifier
+        // };
+        // Cookies.set('action', JSON.stringify(action));
+        // switch(that.data.Type){
+        //     case 'process':
+        //         window.location.href = '/config/apps';
+        //         break;
+        //     case 'site':
+        //         window.location.href = '/config/sites';
+        //         break;
+        //     default:
+        //         alert('error with this app');
+        //         break;
+        // }
+    });
     this.postRowUpdate();
 }
 function TableWrapper($ctxt){
@@ -33,7 +80,6 @@ function TableWrapper($ctxt){
                     $.each(arr, function (key, value) {
                         //var res = Mustache.render(template,value);
                         //var row = tbody.append(res);
-                        console.log("a");
                         var r = new RowWrapper(that.tbody, value, template);
                     });
                 });
@@ -41,6 +87,21 @@ function TableWrapper($ctxt){
     }
 }
 $(document).ready(function () {
+    AddPopup = new DynamicPopup($('.addAppPopup'), function () {
+        var that = this;
+        var goodbt = that.context.find('.addGoodBt');
+        var neutralBt = that.context.find('.addNeutralBt');
+        var badBt = that.context.find('.addBadBt');
+        goodbt.click(function () {
+            that.callback(0);
+        });
+        neutralBt.click(function () {
+            that.callback(1);
+        });
+        badBt.click(function () {
+            that.callback(2);
+        });
+    });
     var wrapper = new TableWrapper($(".maintable"));
     wrapper.loadTable();
 });

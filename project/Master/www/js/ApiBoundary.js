@@ -164,5 +164,17 @@ var ApiBoundary = {
         }).fail(function () {
             ApiBoundary.whenError(ApiBoundary.getOverallUsersStats(), apiCallArgs);
         });
+    },
+    addApp : function (data, callback) {
+        var apiCallArgs = arguments;
+        $.ajax({
+            url: "/api/apps/addapp",
+            type: 'POST',
+            data: data
+        }).done(function () {
+            callback();
+        }).fail(function (xhr) {
+            ApiBoundary.whenError(ApiBoundary.addApp, apiCallArgs, xhr);
+        });
     }
 };
