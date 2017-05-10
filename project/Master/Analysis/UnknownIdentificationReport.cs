@@ -149,11 +149,18 @@ namespace TimeMiner.Master.Analysis
                     //this app is unknown
                     var url = logRecord.GetMetaString("url");
                     string domain = Util.GetHostFromUrl(url);
-                    if (domain == "")
+                    string process = logRecord.Process.ProcessName;
+                    if (string.IsNullOrEmpty(domain))
                     {
                         domain = null;
                     }
-                    Descriptor desc = new Descriptor(logRecord.Process.ProcessName,domain);
+                    else
+                    {
+                        //domain is acceptable, remove process (it does not matter, which browser is used)
+                        process = null;
+                    }
+
+                    Descriptor desc = new Descriptor(process,domain);
                     if (!times.ContainsKey(desc))
                     {
                         times[desc] = 0;
