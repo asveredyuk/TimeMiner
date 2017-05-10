@@ -23,7 +23,7 @@ function TableWrapper(ctxt){
         200
     );
     this.reloadTable = function () {
-        var interval = new StatInterval(moment("1-5-2017"),moment("10-5-2017"));
+        var interval = UsertableController.interval();
         loadingApplier.apply();
         ApiBoundary.getOverallUsersStats(interval, function (arr) {
                 $.ajax("/stat/usertable/tablerow.hbs")
@@ -40,8 +40,12 @@ function TableWrapper(ctxt){
             }
         );
     };
+    UsertableController.onIntervalChanged.add(this.reloadTable);
 }
 $(document).ready(function () {
     var table = new TableWrapper($('#statTable'));
-    table.reloadTable();
+    var intervalPicker = new UsertableIntervalPicker($('#intervalFrom'),$('#intervalTo'));
+    var nowInterval = new StatInterval(moment().startOf('day'), moment().endOf('day'));
+    UsertableController.interval(nowInterval);
+
 });
