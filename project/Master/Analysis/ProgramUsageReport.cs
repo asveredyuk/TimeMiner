@@ -84,7 +84,7 @@ namespace TimeMiner.Master.Analysis
 
         public class ReportResult : BaseReportResultCollection<ReportItem>
         {
-            public override ReportItem[] Items { get; }
+            public override ReportItem[] Items { get; set; }
 
             public ReportResult(ReportItem[] items)
             {

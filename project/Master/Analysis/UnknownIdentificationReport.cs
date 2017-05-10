@@ -4,6 +4,7 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Navigation;
 using TimeMiner.Core;
 
 namespace TimeMiner.Master.Analysis
@@ -56,33 +57,69 @@ namespace TimeMiner.Master.Analysis
             public string Type { get; set; }
             public int SecondsSpent { get; set; }
             public int Percent { get; set; }
+            public Descriptor Descriptor { get; set; }
 
             public ReportItem() { }
-            public ReportItem(string identifier, string type, int secondsSpent)
+            public ReportItem(string identifier, string type, int secondsSpent, Descriptor desc)
             {
                 Identifier = identifier;
                 Type = type;
                 SecondsSpent = secondsSpent;
+                Descriptor = desc;
             }
 
-            public static ReportItem MakeSite(string url, int timeSpent)
+            public static ReportItem MakeItemFromDescriptor(Descriptor desc, int secondsSpent)
             {
-                return new ReportItem(url, "site",timeSpent);
-            }
-
-            public static ReportItem MakeProcess(string procName, int timeSpent)
-            {
-                return new ReportItem(procName,"process", timeSpent);
+                if (desc.Domain == null)
+                {
+                    //this is process
+                    return new ReportItem(desc.ProcessName, "process", secondsSpent, desc);
+                }
+                else
+                {
+                    return new ReportItem(desc.Domain, "site", secondsSpent, desc);
+                }
             }
         }
 
         public class ReportResult : BaseReportResultCollection<ReportItem>
         {
-            public override ReportItem[] Items { get; }
+            public override ReportItem[] Items { get; set; }
 
+            public ReportResult() { }
             public ReportResult(ReportItem[] items)
             {
                 Items = items;
+            }
+
+            public static ReportResult Merge(IEnumerable<ReportResult> results)
+            {
+                Dictionary<Descriptor, int> dict = new Dictionary<Descriptor, int>();
+                var allItems = results.SelectMany(t => t.Items);
+                foreach (var item in allItems)
+                {
+                    if (!dict.ContainsKey(item.Descriptor))
+                        dict[item.Descriptor] = 0;
+                    dict[item.Descriptor] += item.SecondsSpent;
+                }
+                var pairs = dict.OrderByDescending(t => t.Value);
+                List<ReportItem> newItems = new List<ReportItem>();
+                foreach (var pair in pairs)
+                {
+                    newItems.Add(ReportItem.MakeItemFromDescriptor(pair.Key, pair.Value));
+                }
+                ReportItem[] arr = newItems.ToArray();
+                RecalculatePercentages(arr);
+                return new ReportResult(arr);
+            }
+
+            public static void RecalculatePercentages(ReportItem[] items)
+            {
+                int total = items.Sum(t => t.SecondsSpent);
+                foreach (var reportItem in items)
+                {
+                    reportItem.Percent = reportItem.SecondsSpent * 100 / total;
+                }
             }
         }
 
@@ -128,25 +165,14 @@ namespace TimeMiner.Master.Analysis
             List<ReportItem> items = new List<ReportItem>();
             foreach (var keyValuePair in orderedPairs)
             {
-                if (keyValuePair.Key.Domain == null)
-                {
-                    //this is app
-                    items.Add(ReportItem.MakeProcess(keyValuePair.Key.ProcessName, keyValuePair.Value));
-                }
-                else
-                {
-                    items.Add(ReportItem.MakeSite(keyValuePair.Key.Domain, keyValuePair.Value));
-                }
+                items.Add(ReportItem.MakeItemFromDescriptor(keyValuePair.Key,keyValuePair.Value));
             }
+            ReportItem[] resArr = items.ToArray();
             //fill percents
-            int total = items.Sum(t => t.SecondsSpent);
-            foreach (var reportItem in items)
-            {
-                reportItem.Percent = reportItem.SecondsSpent * 100 / total;
-            }
+            ReportResult.RecalculatePercentages(resArr);
 
-            var result = new ReportResult(items.ToArray());
-            //cache result?
+            var result = new ReportResult(resArr);
+            TryCacheResult(result);
             return result;
 
         }

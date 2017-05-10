@@ -219,8 +219,14 @@ namespace TimeMiner.Master
             ILog composite = new CompositeLog(stLogs, TMPMakeProfile(), timeFrom,timeTo, Util.GetDateTimeMiddle(timeFrom, timeTo).Date);
             return composite;
         }
-
-        private ILog[] GetStorageLogsInterceptingWithInterval(Guid userId, DateTime timeFrom, DateTime timeTo)
+        /// <summary>
+        /// Get all logs for user, that intercept with given interval. Logs are storage-based
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="timeFrom"></param>
+        /// <param name="timeTo"></param>
+        /// <returns></returns>
+        public ILog[] GetStorageLogsInterceptingWithInterval(Guid userId, DateTime timeFrom, DateTime timeTo)
         {
             timeFrom = ConvertDatetimeToStorage(timeFrom);
             timeTo = ConvertDatetimeToStorage(timeTo);

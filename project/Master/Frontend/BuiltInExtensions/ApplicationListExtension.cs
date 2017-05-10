@@ -12,6 +12,7 @@ using Mustache;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using TimeMiner.Master.Analysis;
+using TimeMiner.Master.Database;
 using TimeMiner.Master.Frontend.Plugins;
 using TimeMiner.Master.Settings;
 using TimeMiner.Master.Settings.ApplicationIdentifiers;
@@ -186,11 +187,25 @@ namespace TimeMiner.Master.Frontend.BuiltInExtensions
         [ApiPath("apps/unknown")]
         public void GetUnknownApps(HttpListenerRequest req, HttpListenerResponse resp)
         {
-            ILog log = LogsDB.Self.GetLogForUserForPeriod(Guid.Empty, new DateTime(2017, 4, 1),
-                new DateTime(2017, 4, 15));
-            UnknownIdentificationReport report = new UnknownIdentificationReport(log);
-            var result = report.Calculate().Items;
-            WriteObjectJsonAndClose(resp,result);
+            //ILog log = LogsDB.Self.GetLogForUserForPeriod(Guid.Empty, new DateTime(2017, 4, 1),
+              //  new DateTime(2017, 4, 15));
+            UserInfo[] users = SettingsDB.Self.GetAllUsers().ToArray();
+            List<ILog> allLogs = new List<ILog>();
+            foreach (var userInfo in users)
+            {
+                ILog[] logs = LogsDB.Self.GetStorageLogsInterceptingWithInterval(userInfo.Id, DateTime.MinValue,
+                    DateTime.MaxValue);
+                allLogs.AddRange(logs);
+            }
+            List<UnknownIdentificationReport.ReportResult> results = new List<UnknownIdentificationReport.ReportResult>();
+            foreach (var log in allLogs)
+            {
+                UnknownIdentificationReport report = new UnknownIdentificationReport(log);
+                var result = report.GetFromCacheOrCalculate();
+                results.Add(result);
+            }
+            var resultingReport = UnknownIdentificationReport.ReportResult.Merge(results);
+            WriteObjectJsonAndClose(resp,resultingReport.Items);
         }
         
       /*  /// <summary>

@@ -12,6 +12,6 @@ namespace TimeMiner.Master.Analysis
     /// <typeparam name="T"></typeparam>
     public abstract class BaseReportResultCollection<T> : BaseReportResult
     {
-        public abstract T[] Items { get; }
+        public abstract T[] Items { get; set; }
     }
 }
