@@ -5,6 +5,7 @@ using System.Linq;
 using System.Net;
 using System.Text;
 using System.Threading.Tasks;
+using System.Web;
 
 namespace TimeMiner.Master.Frontend
 {
@@ -143,17 +144,17 @@ namespace TimeMiner.Master.Frontend
         /// <param name="resp">Response</param>
         private void HandleRequest(HttpListenerRequest req, HttpListenerResponse resp)
         {
-            //always return file data
             string path = req.Url.PathAndQuery;
+            //handling started
             Console.WriteLine(path);
-            /*if (path == "/")
-                path = "/index.html";*/
+
             path = path.TrimStart('/');
 
             byte[] fileData = resources.GetResource(path);
             if (fileData != null)
             {
                 //this is resource query
+                resp.ContentType = MimeMapping.GetMimeMapping(path);
                 resp.OutputStream.Write(fileData,0,fileData.Length);
                 resp.OutputStream.Close();
             }
@@ -169,35 +170,9 @@ namespace TimeMiner.Master.Frontend
                     //this is web interface request
                     responseMaker.OnRequest(req,resp);
                 }
-                /*resp.StatusCode = 404;
-                byte[] page404 = Page404;
-                if (page404 != null)
-                {
-                    resp.OutputStream.Write(page404,0,page404.Length);
-                }
-                resp.OutputStream.Close();*/
             }
+            //handling ended
             Console.WriteLine(path + ":A");
-            /*StreamWriter sw = new StreamWriter(resp.OutputStream);
-            sw.WriteLine(req.Url.PathAndQuery);
-            sw.Close();*/
-        }
-
-        /// <summary>
-        /// Get 404 page from resources if it exists
-        /// </summary>
-        private byte[] Page404
-        {
-            get
-            {
-                byte[] data = resources.GetResource("404.html");
-                /*if (resources.TryGetValue("404.html",out data))
-                {
-                    return data;
-                }
-                return null;*/
-                return data;
-            }
         }
 
         
