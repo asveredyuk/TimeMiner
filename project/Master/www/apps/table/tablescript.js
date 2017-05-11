@@ -110,19 +110,18 @@ function TableWrapper(ctxt)
         this.tbody.empty();
         this.tbody.append(this.loader);
         ApiBoundary.getAppsList(type, function (arr) {
-            $.ajax("/apps/table/tablerow.hbs")
-                .done(function (tpl) {
-                    that.loader.detach();
-                    var template = Handlebars.compile(tpl);
-                    $.each(arr, function (key, value) {
-                        //var res = Mustache.render(template,value);
-                        //var row = tbody.append(res);
-                        var r = new RowWrapper(that.tbody,value,template);
+            ApiBoundary.loadFrontendFile('/apps/table/tablerow.hbs', function (tpl) {
+                that.loader.detach();
+                var template = Handlebars.compile(tpl);
+                $.each(arr, function (key, value) {
+                    //var res = Mustache.render(template,value);
+                    //var row = tbody.append(res);
+                    var r = new RowWrapper(that.tbody,value,template);
 
-                    });
-                    that.doSearch(that.lastSearch);
-                    ScrollControl.restoreScroll();
                 });
+                that.doSearch(that.lastSearch);
+                ScrollControl.restoreScroll();
+            });
         });
     };
     this.doSearch = function(searchValue){

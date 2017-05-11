@@ -58,19 +58,17 @@ function TableWrapper(ctxt) {
         var userId = StatController.userId();
         loadingApplier.apply();
         ApiBoundary.loadProgramUsageStats(interval, userId, function (arr) {
-            $.ajax("/stat/appusage/tablerow.hbs")
-                .done(function (tpl) {
-                    loadingApplier.disapply();
-                    var template = Handlebars.compile(tpl);
-                    //Mustache.parse(template);
-                    $.each(arr, function (key, value) {
-                        //var res = Mustache.render(template,value);
-                        //var row = tbody.append(res);
-                        var r = new RowWrapper(that.tbody, value, template);
-                    });
+            ApiBoundary.loadFrontendFile("/stat/appusage/tablerow.hbs", function (tpl) {
+                loadingApplier.disapply();
+                var template = Handlebars.compile(tpl);
+                //Mustache.parse(template);
+                $.each(arr, function (key, value) {
+                    //var res = Mustache.render(template,value);
+                    //var row = tbody.append(res);
+                    var r = new RowWrapper(that.tbody, value, template);
                 });
-            }
-        );
+            });
+        });
     };
     StatController.onAnyChanged.add(this.reloadTable);
 }

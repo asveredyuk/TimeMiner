@@ -26,14 +26,14 @@ function TableWrapper(ctxt)
         this.tbody.empty();
         this.tbody.append(this.loader);
         ApiBoundary.loadUsersList(function (data) {
-            $.ajax("/users/tablerow.hbs").done(function (tpl) {
+            ApiBoundary.loadFrontendFile("/users/tablerow.hbs", function (tpl) {
                 that.loader.detach();
                 var template = Handlebars.compile(tpl);
                 $.each(data, function (key, value) {
                     var r = new RowWrapper(that.tbody, value, template);
                 })
-            })
-        })
+            });
+        });
     }
 }
 function MakeModal()

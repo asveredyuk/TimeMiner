@@ -212,5 +212,16 @@ var ApiBoundary = {
         }).fail(function () {
             ApiBoundary.whenError(ApiBoundary.getAppsList, apiCallArgs);
         });
+    },
+    loadFrontendFile: function (path, callback) {
+        var apiCallArgs = arguments;
+        $.ajax({
+            url: path,
+            type: 'GET'
+        }).done(function (msg) {
+            callback(msg);
+        }).fail(function () {
+            ApiBoundary.whenError(ApiBoundary.loadFrontendFile, apiCallArgs);
+        });
     }
 };

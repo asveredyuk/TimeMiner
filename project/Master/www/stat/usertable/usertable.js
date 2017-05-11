@@ -26,19 +26,17 @@ function TableWrapper(ctxt){
         var interval = UsertableController.interval();
         loadingApplier.apply();
         ApiBoundary.getOverallUsersStats(interval, function (arr) {
-                $.ajax("/stat/usertable/tablerow.hbs")
-                    .done(function (tpl) {
-                        loadingApplier.disapply();
-                        var template = Handlebars.compile(tpl);
-                        //Mustache.parse(template);
-                        $.each(arr, function (key, value) {
-                            //var res = Mustache.render(template,value);
-                            //var row = tbody.append(res);
-                            var r = new RowWrapper(that.tbody, value, template);
-                        });
-                    });
-            }
-        );
+            ApiBoundary.loadFrontendFile("/stat/usertable/tablerow.hbs", function (tpl) {
+                loadingApplier.disapply();
+                var template = Handlebars.compile(tpl);
+                //Mustache.parse(template);
+                $.each(arr, function (key, value) {
+                    //var res = Mustache.render(template,value);
+                    //var row = tbody.append(res);
+                    var r = new RowWrapper(that.tbody, value, template);
+                });
+            });
+        });
     };
     UsertableController.onIntervalChanged.add(this.reloadTable);
 }

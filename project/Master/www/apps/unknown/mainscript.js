@@ -72,17 +72,16 @@ function TableWrapper($ctxt){
 
     this.loadTable = function(){
         ApiBoundary.loadUnknownAppsList(function (arr) {
-            $.ajax("/apps/unknown/tablerow.hbs")
-                .done(function (tpl) {
-                    var template = Handlebars.compile(tpl);
-                    that.loader.detach();
-                    that.tbody.empty();
-                    $.each(arr, function (key, value) {
-                        //var res = Mustache.render(template,value);
-                        //var row = tbody.append(res);
-                        var r = new RowWrapper(that.tbody, value, template);
-                    });
+            ApiBoundary.loadFrontendFile("/apps/unknown/tablerow.hbs", function (tpl) {
+                var template = Handlebars.compile(tpl);
+                that.loader.detach();
+                that.tbody.empty();
+                $.each(arr, function (key, value) {
+                    //var res = Mustache.render(template,value);
+                    //var row = tbody.append(res);
+                    var r = new RowWrapper(that.tbody, value, template);
                 });
+            });
         })
     }
 }
