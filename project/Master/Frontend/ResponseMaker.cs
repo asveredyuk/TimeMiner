@@ -36,7 +36,7 @@ namespace TimeMiner.Master.Frontend
                 }
                 return;
             }
-            HandlerPageDescriptor hbu = handler(req, resp);
+            HandlerPageDescriptor hbu = handler.Handler(req, resp);
             if (hbu == null)
             {
                 Console.Out.WriteLine("No page builder returned from handler");
@@ -77,7 +77,7 @@ namespace TimeMiner.Master.Frontend
             var handler = FrontendExtensionLoader.Self.GetApiRequestHandler(q);
             if (handler != null)
             {
-                handler(req, resp);
+                handler.Handler(req, resp);
                 resp.Close();
             }
             else

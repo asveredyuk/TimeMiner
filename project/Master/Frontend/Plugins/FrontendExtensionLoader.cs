@@ -5,6 +5,7 @@ using System.Net;
 using System.Reflection;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Controls;
 using TimeMiner.Master.Frontend.Plugins;
 
 namespace TimeMiner.Master.Frontend
@@ -41,6 +42,16 @@ namespace TimeMiner.Master.Frontend
         /// <param name="req">Listener request</param>
         /// <param name="resp">Listener response</param>
         public delegate void OnApiRequestHandler(HttpListenerRequest req, HttpListenerResponse resp);
+
+        public class HandlerMethodDescriptor<T>
+        {
+            public T Handler { get; }
+
+            public HandlerMethodDescriptor(T handler)
+            {
+                Handler = handler;
+            }
+        }
         /// <summary>
         /// List of loaded extensions
         /// </summary>
@@ -59,11 +70,11 @@ namespace TimeMiner.Master.Frontend
         /// <summary>
         /// Dictinary [path]->[request handler]
         /// </summary>
-        private Dictionary<string, OnRequestHandler> _requestHandlers;
+        private Dictionary<string, HandlerMethodDescriptor<OnRequestHandler>> _requestHandlers;
         /// <summary>
         /// Dictionary [path]->[api handler]
         /// </summary>
-        private Dictionary<string, OnApiRequestHandler> _apiHandlers;
+        private Dictionary<string, HandlerMethodDescriptor<OnApiRequestHandler>> _apiHandlers;
         /// <summary>
         /// List of loaded assemblies
         /// </summary>
@@ -72,8 +83,8 @@ namespace TimeMiner.Master.Frontend
         {
             _extensions = new List<FrontendServerExtensionBase>();
             loadedAssemblies = new List<Assembly>();
-            _requestHandlers = new Dictionary<string, OnRequestHandler>();
-            _apiHandlers = new Dictionary<string, OnApiRequestHandler>();
+            _requestHandlers = new Dictionary<string, HandlerMethodDescriptor<OnRequestHandler>>();
+            _apiHandlers = new Dictionary<string, HandlerMethodDescriptor<OnApiRequestHandler>>();
             Init();
         }
         /// <summary>
@@ -91,7 +102,7 @@ namespace TimeMiner.Master.Frontend
         /// </summary>
         /// <param name="path"></param>
         /// <returns>Handler or null</returns>
-        public OnRequestHandler GetRequestHandler(string path)
+        public HandlerMethodDescriptor<OnRequestHandler> GetRequestHandler(string path)
         {
             return GetItemFromDictWithPath(path, _requestHandlers);
         }
@@ -100,7 +111,7 @@ namespace TimeMiner.Master.Frontend
         /// </summary>
         /// <param name="path"></param>
         /// <returns></returns>
-        public OnApiRequestHandler GetApiRequestHandler(string path)
+        public HandlerMethodDescriptor<OnApiRequestHandler> GetApiRequestHandler(string path)
         {
             return GetItemFromDictWithPath(path, _apiHandlers);
         }
@@ -180,7 +191,8 @@ namespace TimeMiner.Master.Frontend
                         {
                             foreach (var attr in attrs)
                             {
-                                AddHandler(attr.path,h);
+                                var desc = new HandlerMethodDescriptor<OnRequestHandler>(h);
+                                AddHandler(attr.path,desc);
                             }
                         }
                         else
@@ -197,7 +209,8 @@ namespace TimeMiner.Master.Frontend
                         {
                             foreach (var attr in apiAttrs)
                             {
-                                AddApiHandler(attr.path, h);
+                                var desc = new HandlerMethodDescriptor<OnApiRequestHandler>(h);
+                                AddApiHandler(attr.path, desc);
                             }
                         }
                         else
@@ -214,7 +227,7 @@ namespace TimeMiner.Master.Frontend
         /// </summary>
         /// <param name="key"></param>
         /// <param name="h"></param>
-        private void AddHandler(string key, OnRequestHandler h)
+        private void AddHandler(string key, HandlerMethodDescriptor<OnRequestHandler> h)
         {
             if (key == "api")
             {
@@ -233,7 +246,7 @@ namespace TimeMiner.Master.Frontend
         /// </summary>
         /// <param name="key"></param>
         /// <param name="h"></param>
-        private void AddApiHandler(string key, OnApiRequestHandler h)
+        private void AddApiHandler(string key, HandlerMethodDescriptor<OnApiRequestHandler> h)
         {
             if (_apiHandlers.ContainsKey(key))
             {
