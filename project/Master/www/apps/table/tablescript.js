@@ -282,10 +282,24 @@ function MakeAddApp()
 function MakeTableSearch(callback)
 {
     var $search = $("#tableSearchInput");
+    var searchIcon = $search.parent().find('.search.icon');
+    var removeIcon = $search.parent().find('.remove.icon');
+    removeIcon.click(function () {
+        $search.val('');
+        $search.keyup();
+    });
     var waitTimer;
     $search.keyup(function () {
         clearTimeout(waitTimer);
         var text = $(this).val();
+        if(text.length > 0) {
+            searchIcon.hide();
+            removeIcon.show();
+        }
+        else {
+            searchIcon.show();
+            removeIcon.hide();
+        }
         waitTimer= setTimeout(function () {
             callback(text);
         },100);
