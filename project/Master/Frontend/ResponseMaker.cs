@@ -1,4 +1,5 @@
 ﻿using System;
+using System.CodeDom;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -36,6 +37,18 @@ namespace TimeMiner.Master.Frontend
                 }
                 return;
             }
+            if (!handler.IsPublic && !CheckAuth(req, resp, handler))
+            {
+                //Access denied!
+                resp.StatusCode = 403;
+
+                using (var sw = new StreamWriter(resp.OutputStream))
+                {
+                    sw.Write("403 - forbidden");
+                }
+                resp.Close();
+                return;
+            }
             HandlerPageDescriptor hbu = handler.Handler(req, resp);
             if (hbu == null)
             {
@@ -52,6 +65,28 @@ namespace TimeMiner.Master.Frontend
                 sw.Write(res);
                 sw.Close();
             }
+        }
+
+        public bool CheckAuth<T>(HttpListenerRequest req, HttpListenerResponse resp,
+            FrontendExtensionLoader.HandlerMethodDescriptor<T> handler)
+        {
+            //public requests do not need any auth
+            if (handler.IsPublic)
+                return true;
+            //check if there is a cookie
+            var cookie = req.Cookies["auth_token"];
+            if (cookie != null)
+            {
+                // for now, valid token is 'MasterToken';
+                return cookie.Value == "MasterToken";
+            }
+            //check if there is a header
+            var header = req.Headers["X-Auth-Token"];
+            if (header != null)
+            {
+                return header == "MasterToken";
+            }
+            return false;
 
         }
 
@@ -72,23 +107,33 @@ namespace TimeMiner.Master.Frontend
                 throw new Exception($"{q} is not api path, but api request handler was called");
             }
             //remove api part
-            q = q.Substring(q.IndexOf("/")+1,q.Length - q.IndexOf("/")-1);
-            //check if there is no only root
+            q = q.Substring(q.IndexOf("/") + 1, q.Length - q.IndexOf("/") - 1);
             var handler = FrontendExtensionLoader.Self.GetApiRequestHandler(q);
-            if (handler != null)
-            {
-                handler.Handler(req, resp);
-                resp.Close();
-            }
-            else
+            if (handler == null)
             {
                 resp.StatusCode = 404;
                 using (StreamWriter sw = new StreamWriter(resp.OutputStream))
                 {
-                    sw.Write("404, no such query");
+                    sw.Write("404, not found");
                     sw.Close();
                 }
+                return;
             }
+
+            if (!handler.IsPublic && !CheckAuth(req, resp, handler))
+            {
+                //Access denied!
+                resp.StatusCode = 403;
+
+                using (var sw = new StreamWriter(resp.OutputStream))
+                {
+                    sw.Write("403 - forbidden");
+                }
+                resp.Close();
+                return;
+            }
+            handler.Handler(req, resp);
+            resp.Close();
         }
 
         private string CompilePage(HandlerPageDescriptor hdesc)

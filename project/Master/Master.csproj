@@ -98,6 +98,7 @@
     <Compile Include="Frontend\FrontendPageMenuItem.cs" />
     <Compile Include="Frontend\Plugins\ApiPathAttribute.cs" />
     <Compile Include="Frontend\Plugins\MenuItemAttribute.cs" />
+    <Compile Include="Frontend\Plugins\PublicHandlerAttribute.cs" />
     <Compile Include="Frontend\TemplatePageDescriptor.cs" />
     <Compile Include="Frontend\Plugins\FrontendExtensionLoader.cs" />
     <Compile Include="Frontend\FrontendServer.cs" />

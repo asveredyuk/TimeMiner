@@ -4,6 +4,8 @@ using System.Linq;
 using System.Net;
 using System.Text;
 using System.Threading.Tasks;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using TimeMiner.Master.Frontend.Plugins;
 
 namespace TimeMiner.Master.Frontend.BuiltInExtensions
@@ -13,12 +15,48 @@ namespace TimeMiner.Master.Frontend.BuiltInExtensions
     {
         public LoginExtension()
         {
-            //MenuItems.Add(new FrontendPageMenuItem("Login") {Path = "/login"});
         }
+        [PublicHandler]
         [HandlerPath("login")]
         public HandlerPageDescriptor Handle(HttpListenerRequest req, HttpListenerResponse resp)
         {
-            return new HandlerPageDescriptor("login!");
+            var page = WWWRes.GetString("login/page.html");
+            WriteStringAndClose(resp, page);
+            //page is written by handler, no descriptor
+            return null;
+        }
+        [PublicHandler]
+        [ApiPath("login/gettoken")]
+        public void Validate(HttpListenerRequest req, HttpListenerResponse resp)
+        {
+            var post = ReadPostString(req);
+            var jobj = JObject.Parse(post);
+            if (jobj["Login"] == null || jobj["Password"] == null)
+            {
+                WriteStringAndClose(resp, "no login or password",400);
+                return;
+            }
+            string login = jobj["Login"].Value<string>();
+            string password = jobj["Password"].Value<string>();
+            if (login == "admin" && password == "qwerty")
+            {
+                var res = new
+                {
+                    Token = "MasterToken"
+                };
+
+                var json = JsonConvert.SerializeObject(res);
+                WriteStringAndClose(resp, json);
+            }
+            else
+            {
+                var res = new
+                {
+                    Error = "Wrong login or password"
+                };
+                var json = JsonConvert.SerializeObject(res);
+                WriteStringAndClose(resp, json);
+            }
         }
 
         

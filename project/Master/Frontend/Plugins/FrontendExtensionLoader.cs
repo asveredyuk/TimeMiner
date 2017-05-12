@@ -46,6 +46,7 @@ namespace TimeMiner.Master.Frontend
         public class HandlerMethodDescriptor<T>
         {
             public T Handler { get; }
+            public bool IsPublic { get; set; }
 
             public HandlerMethodDescriptor(T handler)
             {
@@ -192,6 +193,7 @@ namespace TimeMiner.Master.Frontend
                             foreach (var attr in attrs)
                             {
                                 var desc = new HandlerMethodDescriptor<OnRequestHandler>(h);
+                                ParseExtraParamsForMethod(desc, methodInfo);
                                 AddHandler(attr.path,desc);
                             }
                         }
@@ -210,6 +212,7 @@ namespace TimeMiner.Master.Frontend
                             foreach (var attr in apiAttrs)
                             {
                                 var desc = new HandlerMethodDescriptor<OnApiRequestHandler>(h);
+                                ParseExtraParamsForMethod(desc, methodInfo);
                                 AddApiHandler(attr.path, desc);
                             }
                         }
@@ -220,6 +223,14 @@ namespace TimeMiner.Master.Frontend
                     }
                 }
 
+            }
+        }
+
+        private void ParseExtraParamsForMethod<T>(HandlerMethodDescriptor<T> descriptor, MethodInfo info)
+        {
+            if (info.GetCustomAttributes<PublicHandlerAttribute>().Any())
+            {
+                descriptor.IsPublic = true;
             }
         }
         /// <summary>
