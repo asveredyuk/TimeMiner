@@ -25,11 +25,51 @@
     <script src="/js/ApiBoundary.js"></script>
     <script src="/login/login.js"></script>
     <title>Title</title>
+    <style>
+        body {
+            background-color: #DFDFDF;
+        }
+        body > .grid {
+            height: 100%;
+        }
+        .image {
+            margin-top: -100px;
+        }
+        .column {
+            max-width: 450px;
+        }
+    </style>
 </head>
 <body>
-<input placeholder="login" name="login" type="text" id="loginInput"/>
-<input placeholder="password" name="password" type="password" id="passwordInput"/>
-<button id="submitBt">Submit</button>
+<div class="ui middle aligned center aligned grid">
+    <div class="column">
 
+        <form class="ui large form">
+            <div class="ui stacked segment">
+                <h2 class="ui blue header">
+                    Log in
+                </h2>
+                <div class="field">
+                    <div class="ui big left icon input">
+                        <i class="user icon"></i>
+                        <input type="text" name="login" placeholder="Login">
+                    </div>
+                </div>
+                <div class="field">
+                    <div class="ui big left icon input">
+                        <i class="lock icon"></i>
+                        <input type="password" name="password" placeholder="Password">
+                    </div>
+                </div>
+                <div class="ui error message"></div>
+                <div class="ui fluid massive blue button">Login</div>
+            </div>
+        </form>
+
+        <div class="ui message">
+            Having troubles? <a href="#">Reset instuctions</a>
+        </div>
+    </div>
+</div>
 </body>
 </html>
