@@ -14,13 +14,16 @@ namespace TimeMiner.Master.Frontend
     class ResponseMaker
     {
         const string TEMPLATE_FILE_NAME = "template.html";
+        private const string TOP_MENU_FILE_NAME = "top_menu/top_menu.html";
         private IResourceContainer res;
         private Generator mustacheGenerator;
+        private string topMenuHtml;
         public ResponseMaker(IResourceContainer resources)
         {
             this.res = resources;
             var mustacheCompiler = new FormatCompiler();
             mustacheGenerator = mustacheCompiler.Compile(res.GetString(TEMPLATE_FILE_NAME));
+            topMenuHtml = res.GetString(TOP_MENU_FILE_NAME);
         }
 
         public void OnRequest(HttpListenerRequest req, HttpListenerResponse resp)
@@ -140,7 +143,7 @@ namespace TimeMiner.Master.Frontend
         private string CompilePage(HandlerPageDescriptor hdesc)
         {
             var menu = FrontendExtensionLoader.Self.Menu;
-            TemplatePageDescriptor de = new TemplatePageDescriptor(hdesc, menu);
+            TemplatePageDescriptor de = new TemplatePageDescriptor(hdesc, menu, topMenuHtml);
             return mustacheGenerator.Render(de);
         }
     }

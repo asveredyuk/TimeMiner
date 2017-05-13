@@ -11,7 +11,7 @@ namespace TimeMiner.Master.Frontend
     /// </summary>
     class TemplatePageDescriptor
     {
-        
+
         #region properties for mustache
 
         public string Page
@@ -24,17 +24,23 @@ namespace TimeMiner.Master.Frontend
             get { return desc.Head; }
         }
 
+        public string TopMenu
+        {
+            get { return topMenu; }
+        }
+
         public FrontendPageMenu Menu { get; private set; }
         #endregion
         private HandlerPageDescriptor desc;
+        private string topMenu;
 
-        public TemplatePageDescriptor(HandlerPageDescriptor desc, FrontendPageMenu menu)
+        public TemplatePageDescriptor(HandlerPageDescriptor desc, FrontendPageMenu menu, string topMenu)
         {
             this.desc = desc;
             Menu = menu;
-            //Menu = new List<FrontendPageMenuItem>();
+            this.topMenu = topMenu;
         }
 
-        
+
     }
 }
