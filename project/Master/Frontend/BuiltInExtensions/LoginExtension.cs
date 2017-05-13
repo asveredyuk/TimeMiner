@@ -38,11 +38,13 @@ namespace TimeMiner.Master.Frontend.BuiltInExtensions
             }
             string login = jobj["Login"].Value<string>();
             string password = jobj["Password"].Value<string>();
-            if (login == "admin" && password == "qwerty")
+            string token = Authorization.Self.Authorize(login, password);
+            if (token!=null)
             {
+                
                 var res = new
                 {
-                    Token = "MasterToken"
+                    Token = token
                 };
 
                 var json = JsonConvert.SerializeObject(res);

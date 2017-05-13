@@ -122,5 +122,21 @@ namespace TimeMiner.Master.Frontend
             string json = JsonConvert.SerializeObject(o, Formatting.Indented);
             WriteStringAndClose(resp,json,code);
         }
+        public static string GetTokenFromRequest(HttpListenerRequest req)
+        {
+            var cookie = req.Cookies["auth_token"];
+            if (cookie != null)
+            {
+                // for now, valid token is 'MasterToken';
+                return cookie.Value;
+            }
+            //check if there is a header
+            var header = req.Headers["X-Auth-Token"];
+            if (header != null)
+            {
+                return header;
+            }
+            return null;
+        }
     }
 }

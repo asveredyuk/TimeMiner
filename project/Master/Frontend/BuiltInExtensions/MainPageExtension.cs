@@ -20,9 +20,18 @@ namespace TimeMiner.Master.Frontend.BuiltInExtensions
             ite.InnerItems.Add(new FrontendPageMenuItem("Yandex", "http://yandex.ru"));
             MenuItems.Add(ite);*/
         }
+        [PublicHandler]
         [HandlerPath("")]
         public HandlerPageDescriptor Handle(HttpListenerRequest req, HttpListenerResponse resp)
         {
+            string token = GetTokenFromRequest(req);
+            bool authorized = Authorization.Self.ValidateToken(token);
+            if (!authorized)
+            {
+                resp.Redirect("/login");
+                resp.Close();
+                return null;
+            }
             return new HandlerPageDescriptor("ThisIsMainPage");
         }
 

@@ -40,12 +40,14 @@ namespace TimeMiner.Master.Frontend
             if (!handler.IsPublic && !CheckAuth(req, resp, handler))
             {
                 //Access denied!
-                resp.StatusCode = 403;
-
+                //Redirect to login page
+                resp.Redirect("/login");
+                //set 403 error
+                /*resp.StatusCode = 403;
                 using (var sw = new StreamWriter(resp.OutputStream))
                 {
                     sw.Write("403 - forbidden");
-                }
+                }*/
                 resp.Close();
                 return;
             }
@@ -53,10 +55,7 @@ namespace TimeMiner.Master.Frontend
             if (hbu == null)
             {
                 Console.Out.WriteLine("No page builder returned from handler");
-                if (resp.OutputStream.CanWrite)
-                {
-                    resp.OutputStream.Close();
-                }
+                resp.Close();
                 return;
             }
             string res = CompilePage(hbu);
@@ -74,19 +73,21 @@ namespace TimeMiner.Master.Frontend
             if (handler.IsPublic)
                 return true;
             //check if there is a cookie
-            var cookie = req.Cookies["auth_token"];
-            if (cookie != null)
-            {
-                // for now, valid token is 'MasterToken';
-                return cookie.Value == "MasterToken";
-            }
-            //check if there is a header
-            var header = req.Headers["X-Auth-Token"];
-            if (header != null)
-            {
-                return header == "MasterToken";
-            }
-            return false;
+            string token = FrontendServerExtensionBase.GetTokenFromRequest(req);
+            return Authorization.Self.ValidateToken(token);
+//            var cookie = req.Cookies["auth_token"];
+//            if (cookie != null)
+//            {
+//                // for now, valid token is 'MasterToken';
+//                return cookie.Value == "MasterToken";
+//            }
+//            //check if there is a header
+//            var header = req.Headers["X-Auth-Token"];
+//            if (header != null)
+//            {
+//                return header == "MasterToken";
+//            }
+//            return false;
 
         }
 

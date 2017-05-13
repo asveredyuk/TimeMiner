@@ -119,6 +119,7 @@ namespace TimeMiner.Master.Frontend
             {
                 try
                 {
+
                     if (resp.OutputStream.CanWrite)
                     {
                         //responce was not closed
