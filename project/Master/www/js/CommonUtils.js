@@ -14,7 +14,7 @@ var CommonUtils = {
         //TODO: think about days
         var durationStr = '';
         //var days = dur.asDays();
-        var hours = dur.hours();
+        var hours = Math.floor(dur.asHours());
         var minutes = dur.minutes();
         var seconds = dur.seconds();
         var res = '';
