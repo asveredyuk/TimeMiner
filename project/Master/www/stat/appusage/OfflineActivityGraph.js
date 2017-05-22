@@ -1,7 +1,7 @@
 /**
  * Created by ALEX on 20.05.2017.
  */
-function TasksGraph(domElement){
+function OfflineActivityGraph(domElement){
     var that = this;
     var BOTTOM_LABELS_H = 28;
     var LEFT_RIGHT_EMPTY = 30;
@@ -23,27 +23,18 @@ function TasksGraph(domElement){
     function GenerateLog(){
         //make fake log for now
         var per1 = {
-            from:mktime(12.02),
-            to:mktime(14.32),
-            name:"Writing documents"
+            from:mktime(15.14),
+            to:mktime(15.66),
+            name:"Break",
+            type:0
         };
         var per2 = {
-            from:mktime(14.32),
-            to:mktime(15.14),
-            name:"Coding"
+            from:mktime(16.10),
+            to:mktime(17),
+            name:"Work call",
+            type:1
         };
-        var per3 = {
-            from:mktime(17.10),
-            to:mktime(20.12),
-            name:"Testing"
-        };
-        var per4 = {
-            from:mktime(20.12),
-            to:mktime(23.45),
-            name:"Making presentation"
-        };
-
-        return [per1,per2,per3,per4];
+        return [per1,per2];
     }
     this.redraw = function(){
         draw.clear();
@@ -52,8 +43,11 @@ function TasksGraph(domElement){
         var data = GenerateLog();
         //suppose, it is properly ordered
         //TODO: use first and last log for this, not dates in periods
-        var start = data[0].from;
-        var end= data[data.length-1].to;
+        //var start = data[0].from;
+        //var end= data[data.length-1].to;
+        var start = mktime(12.02);
+        var end = mktime(23.45);
+
         //total period length
         var periodLengthMs = end.diff(start);
         //pixels per one ms
@@ -62,10 +56,11 @@ function TasksGraph(domElement){
         var group = draw.group().move(LEFT_RIGHT_EMPTY,0);
         var times = [];
         var vals = [];
+        var colors = ['#db2828','#21ba45'];
         $.each(data, function (key, value) {
             var fromMs = value.from.diff(start);
             var lenms = value.to.diff(value.from);
-            var rect = group.rect(lenms*pixPerMs-INNER_MARGIN*2,that.barsH).move(fromMs*pixPerMs+INNER_MARGIN,0).attr({fill:'#2185d0'});
+            var rect = group.rect(lenms*pixPerMs-INNER_MARGIN*2,that.barsH).move(fromMs*pixPerMs+INNER_MARGIN,0).attr({fill:colors[value.type]});
             var text = group.plain(value.name);
             text.font({
                 family:   'Helvetica',
@@ -100,7 +95,7 @@ function TasksGraph(domElement){
             timesGroup.line(curPos,-10,curPos,0).stroke({color:'#CCC', width:2});
         }
     };
-    
+
 
     $(window).resize(function () {
         var wNew = $context.width();

@@ -19,21 +19,18 @@ namespace TimeMiner.Slave
 
         public override KeyValuePair<string, byte[]> Extract(Process process, IntPtr wHandle)
         {
-            string url = GetUrlChrome(wHandle);
+            string url = GetUrlBrowser(wHandle);
             byte[] arr = Encoding.UTF8.GetBytes(url);
             return new KeyValuePair<string, byte[]>(META_KEY,arr);
         }
 
-        private static string GetUrlChrome(IntPtr handle)
+        private static string GetUrlBrowser(IntPtr handle)
         {
-
             AutomationElement element = AutomationElement.FromHandle(handle);
             if (element == null)
                 return null;
-
             AutomationElement edit = element.FindFirst(TreeScope.Subtree,
                 new PropertyCondition(AutomationElement.ControlTypeProperty, ControlType.Edit));
-
             if (edit != null)
                 return ((ValuePattern)edit.GetCurrentPattern(ValuePattern.Pattern)).Current.Value;
             return null;
