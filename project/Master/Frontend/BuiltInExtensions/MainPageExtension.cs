@@ -32,9 +32,7 @@ namespace TimeMiner.Master.Frontend.BuiltInExtensions
                 resp.Close();
                 return null;
             }
-            return new HandlerPageDescriptor("ThisIsMainPage");
+            return new HandlerPageDescriptor("<h1>Welcome to TimeMiner</h1>");
         }
-
-        
     }
 }
