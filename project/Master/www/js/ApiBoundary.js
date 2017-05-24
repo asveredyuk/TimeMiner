@@ -11,7 +11,11 @@ var ApiBoundary = {
         this.runned = false;
         var that = this;
         setTimeout(function () {
-            var res = confirm(JSON.stringify(that.erroredCalls[0].xhr));
+            var errorString = JSON.stringify(that.erroredCalls[0].xhr);
+            if(typeof errorString == 'undefined' || errorString.length < 2)
+                errorString = "Server unavailable";
+            errorString+= "\nRetry?";
+            var res = confirm(errorString);
             if(res == false) {
                 that.erroredCalls = [];
                 return;//do not try to do anything
