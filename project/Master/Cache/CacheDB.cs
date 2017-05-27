@@ -50,20 +50,20 @@ namespace TimeMiner.Master.Database
             col = db.GetCollection<ReportResultCacheItem>("cache");
         }
 
-        public T FindReportInCache<T>(string dataMd5, string profileMd5) where T: BaseReportResult
+        public T FindReportInCache<T>(string dataMd5, string profileMd5, string paramsMd5) where T: BaseReportResult
         {
             Type t = typeof(T);
-            var item = FindItemInCache(dataMd5,profileMd5, t);
+            var item = FindItemInCache(dataMd5, profileMd5, paramsMd5, t);
             return item?.Result as T;
         }
-        public ReportResultCacheItem FindItemInCache(string dataMd5, string profileMd5, Type reportType)
+        public ReportResultCacheItem FindItemInCache(string dataMd5, string profileMd5, string paramsMd5, Type reportType)
         {
-            var item = col.FindOne(t => t.DataHash == dataMd5 && t.ProfileHash == profileMd5 && t.ReportTypeGuid == reportType.GUID);
+            var item = col.FindOne(t => t.DataHash == dataMd5 && t.ProfileHash == profileMd5 && t.ReportTypeGuid == reportType.GUID && t.ParametersHash == paramsMd5);
             return item;
         }
-        public void PutToCache<T>(T report, string dataMd5, string profileMd5) where T : BaseReportResult
+        public void PutToCache<T>(T report, string dataMd5, string profileMd5, string paramsMd5) where T : BaseReportResult
         {
-            var item = new ReportResultCacheItem(dataMd5, profileMd5, typeof(T).GUID, report);
+            var item = new ReportResultCacheItem(dataMd5, profileMd5, paramsMd5, typeof(T).GUID, report);
             col.Upsert(item);
         }
 

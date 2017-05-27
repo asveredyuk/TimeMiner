@@ -9,7 +9,7 @@ using TimeMiner.Master.Database;
 namespace TimeMiner.Master.Analysis
 {
     /// <summary>
-    /// Base class for all reports
+    /// Base class for all reports, use only if there is no parameters
     /// </summary>
     /// <typeparam name="T">Type of report result</typeparam>
     public abstract class BaseReport<T> where T:BaseReportResult
@@ -32,11 +32,11 @@ namespace TimeMiner.Master.Analysis
         /// </summary>
         /// <param name="d"></param>
         /// <returns></returns>
-        public T GetFromCacheOrCalculate()
+        public virtual T GetFromCacheOrCalculate()
         {
             T rep = null;
             if(log.DataHash!= null)
-                rep = CacheDB.Self.FindReportInCache<T>(log.DataHash, log.Prof.ComputeHash());
+                rep = CacheDB.Self.FindReportInCache<T>(log.DataHash, log.Prof.ComputeHash(), GetParamsHash());
             if (rep == null)
                 rep = Calculate();
             return rep;
@@ -46,7 +46,7 @@ namespace TimeMiner.Master.Analysis
         /// Add result to cache
         /// </summary>
         /// <param name="result">Report result</param>
-        protected void TryCacheResult(T result)
+        protected virtual void TryCacheResult(T result)
         {
             if (log.DataHash == null)
             {
@@ -62,7 +62,12 @@ namespace TimeMiner.Master.Analysis
                 //cannot cache this
                 //return;
             }
-            CacheDB.Self.PutToCache(result,log.DataHash, log.Prof.ComputeHash());
+            CacheDB.Self.PutToCache(result,log.DataHash, log.Prof.ComputeHash(), GetParamsHash());
+        }
+
+        protected virtual string GetParamsHash()
+        {
+            return "";
         }
     }
 }

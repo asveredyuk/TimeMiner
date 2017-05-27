@@ -185,7 +185,11 @@ namespace TimeMiner.Master.Database
                 }
             }
             //storage is not locked anymore
-            return results.OrderBy(t => t.Time);
+
+            foreach (var source in results.OrderBy(t=>t.Time))
+            {
+                yield return source;
+            }
         }
         /// <summary>
         /// Put new record to the storage

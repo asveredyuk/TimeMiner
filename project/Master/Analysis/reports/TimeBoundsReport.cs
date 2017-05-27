@@ -9,7 +9,7 @@ namespace TimeMiner.Master.Analysis.reports
     /// <summary>
     /// Report that helps to find bounds of active periods
     /// </summary>
-    public class TimeBoundsReport : BaseReport<TimeBoundsReport.ReportResult>
+    public class TimeBoundsReport : ParametrizedBaseReport<TimeBoundsReport.ReportResult, TimeBoundsReport.ReportParameters>
     {
         public class ReportItem
         {
@@ -46,25 +46,37 @@ namespace TimeMiner.Master.Analysis.reports
             }
         }
 
+        public class ReportParameters
+        {
+            /// <summary>
+            /// Periods with whole of less than given seconds will be merged to big one
+            /// </summary>
+            public int PeriodMergeIntervalSecs { get; set; } = 60 * 5;
+            /// <summary>
+            /// After merging, periods with lengths less than given will be removed
+            /// </summary>
+            public int PeriodIgnoreMinSecs { get; set; } = 60 * 5;
+        }
+
 
         public TimeBoundsReport(ILog log) : base(log)
         {
+            parameters = new ReportParameters();
         }
 
         public override ReportResult Calculate()
         {
-            const int MAX_RECORD_TIME_DELTA = 3;
             ActiveReport activeReport = new ActiveReport(log);
             var activeItems = activeReport.Calculate().Items;
-            List<ReportItem> result = new List<ReportItem>();
+            List<ReportItem> resultItems = new List<ReportItem>();
             var changing = GetChangingItems(activeItems).ToList();
             int firstActive = changing.FindIndex(t => t.IsActive);
             for (int i = firstActive; i < changing.Count-1; i+=2)
             {
-                result.Add(new ReportItem(changing[i].Rec.Time, changing[i+1].Rec.Time));
+                resultItems.Add(new ReportItem(changing[i].Rec.Time, changing[i+1].Rec.Time));
             }
-            result = new List<ReportItem>(MergePeriods(result, 60*5));
-            result = new List<ReportItem>(FilterPeriods(result, 60*5));
+            resultItems = new List<ReportItem>(MergePeriods(resultItems, parameters.PeriodMergeIntervalSecs));
+            resultItems = new List<ReportItem>(FilterPeriods(resultItems, parameters.PeriodIgnoreMinSecs));
 //            DateTime begin = default(DateTime);
 //            ActiveReport.ReportItem previous = null;
 //            foreach (var activity in activities)
@@ -92,7 +104,9 @@ namespace TimeMiner.Master.Analysis.reports
 //                }
 //                previous = activity;
 //            }
-            return new ReportResult(result.ToArray());
+            var result = new ReportResult(resultItems.ToArray());
+            TryCacheResult(result);
+            return result;
 //            List<ReportItem> items = new List<ReportItem>();
 //            items.Add(new ReportItem(DateTime.Now.StartOfDay().AddHours(9), DateTime.Now.StartOfDay().AddHours(10)));
 //            items.Add(new ReportItem(DateTime.Now.StartOfDay().AddHours(12), DateTime.Now.StartOfDay().AddHours(17)));

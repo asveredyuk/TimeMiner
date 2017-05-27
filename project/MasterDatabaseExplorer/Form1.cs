@@ -465,7 +465,9 @@ namespace MasterDatabaseExplorer
             Guid userid = Guid.Parse("e86daa6e-decd-47e1-9d01-cd8c99586b8d");
             ILog log = LogsDB.Self.GetCompositeLog(userid, begin, end);
             TimeBoundsReport report = new TimeBoundsReport(log);
-            var res = report.Calculate();
+            report.Parameters.PeriodMergeIntervalSecs = 60;
+            report.Parameters.PeriodIgnoreMinSecs = 60;
+            var res = report.GetFromCacheOrCalculate();
             TimeBoundsReport.ReportItem[] items = res.Items;
             Bitmap drawn = DrawBitmap(items);
             drawn.Save("test.png");
