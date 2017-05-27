@@ -72,7 +72,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="Analysis\ActiveReport.cs" />
+    <Compile Include="Analysis\reports\ActiveReport.cs" />
     <Compile Include="Analysis\BaseReport.cs" />
     <Compile Include="Analysis\BaseReportResult.cs" />
     <Compile Include="Analysis\BaseReportResultCollection.cs" />
@@ -80,9 +80,9 @@
     <Compile Include="Analysis\ILog.cs" />
     <Compile Include="Analysis\ArrayLog.cs" />
     <Compile Include="Analysis\SingleStorageLog.cs" />
-    <Compile Include="Analysis\ProductivityReport.cs" />
-    <Compile Include="Analysis\ProgramUsageReport.cs" />
-    <Compile Include="Analysis\UnknownIdentificationReport.cs" />
+    <Compile Include="Analysis\reports\ProductivityReport.cs" />
+    <Compile Include="Analysis\reports\ProgramUsageReport.cs" />
+    <Compile Include="Analysis\reports\UnknownIdentificationReport.cs" />
     <Compile Include="Cache\CacheDB.cs" />
     <Compile Include="Cache\ReportResultCacheItem.cs" />
     <Compile Include="Database\CachedStorage.cs" />
