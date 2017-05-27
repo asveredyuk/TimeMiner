@@ -253,6 +253,7 @@ namespace MasterDatabaseExplorer
                     {
                         rec.PutMetaString("url",ite.extraInfo);
                     }
+                    MakeFakeTask(rec);
                     if (prev != null)
                         rec.PreviusRecordId = prev.Id;
                     parsed.Add(rec);
@@ -272,6 +273,37 @@ namespace MasterDatabaseExplorer
             yield return new CorutineReportResult($"Failed : {failedCount}");
         }
 
+        void MakeFakeTask(LogRecord rec)
+        {
+            var hour = rec.Time.Hour;
+            string meta = null;
+            switch (hour)
+            {
+                case 8:
+                case 9:
+                case 10:
+                case 11:
+                case 12:
+                    meta = "Writing code";
+                    break;
+                case 15:
+                case 16:
+                case 17:
+                case 18:
+                    meta = "Debugging";
+                    break;
+                case 20:
+                case 21:
+                case 22:
+                case 23:
+                    meta = "Release";
+                    break;
+            }
+            if (meta != null)
+            {
+                rec.PutMetaString("task", meta);
+            }
+        }
         private LogRecord ToNewLogRecord(OldLogItem ite)
         {
             ProcessDescriptor pdesc = new ProcessDescriptor()
@@ -467,11 +499,16 @@ namespace MasterDatabaseExplorer
             TimeBoundsReport report = new TimeBoundsReport(log);
             report.Parameters.PeriodMergeIntervalSecs = 60;
             report.Parameters.PeriodIgnoreMinSecs = 60;
-            var res = report.GetFromCacheOrCalculate();
+            var res = report.Calculate();
             TimeBoundsReport.ReportItem[] items = res.Items;
             Bitmap drawn = DrawBitmap(items);
             drawn.Save("test.png");
             Process.Start("test.png");
+            foreach (var item in res.Items)
+            {
+                item.Begin = item.Begin.ToLocalTime();
+                item.End = item.End.ToLocalTime();
+            }
             string data = JsonConvert.SerializeObject(res, Formatting.Indented);
             File.WriteAllText("test.txt", data);
             Process.Start("test.txt");
@@ -484,15 +521,15 @@ namespace MasterDatabaseExplorer
             Bitmap bmp = new Bitmap(W, H);
             Graphics g = Graphics.FromImage(bmp);
             g.Clear(Color.White);
-            DateTime begin = items[0].Start;
+            DateTime begin = items[0].Begin;
             DateTime end = items[items.Length - 1].End;
             double totalSeconds = (end - begin).TotalSeconds;
             double ratio = W / totalSeconds;
             foreach (var reportItem in items)
             {
                 //get pos of begin
-                double pos = (reportItem.Start - begin).TotalSeconds * ratio;
-                double len = (reportItem.End - reportItem.Start).TotalSeconds * ratio;
+                double pos = (reportItem.Begin - begin).TotalSeconds * ratio;
+                double len = (reportItem.End - reportItem.Begin).TotalSeconds * ratio;
                 g.FillRectangle(Brushes.Red, (float)pos,0, (float)len,H);
             }
             g.Flush();

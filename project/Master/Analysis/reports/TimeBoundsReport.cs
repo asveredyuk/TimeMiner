@@ -16,21 +16,21 @@ namespace TimeMiner.Master.Analysis.reports
     {
         public class ReportItem
         {
-            public DateTime Start { get; set; }
+            public DateTime Begin { get; set; }
             public DateTime End { get; set; }
 
             public TimeSpan Length
             {
-                get { return End - Start; }
+                get { return End - Begin; }
             }
 
             public ReportItem()
             {
             }
 
-            public ReportItem(DateTime start, DateTime end)
+            public ReportItem(DateTime begin, DateTime end)
             {
-                Start = start;
+                Begin = begin;
                 End = end;
             }
         }
@@ -131,7 +131,7 @@ namespace TimeMiner.Master.Analysis.reports
                 while (itemsQueue.Count > 0)
                 {
                     ReportItem nextItem = itemsQueue.Peek();
-                    if ((nextItem.Start - item.End).TotalSeconds < maxSkipSeconds)
+                    if ((nextItem.Begin - item.End).TotalSeconds < maxSkipSeconds)
                     {
                         //this one is near, append it
                         item.End = nextItem.End;

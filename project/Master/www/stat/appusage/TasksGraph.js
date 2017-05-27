@@ -55,10 +55,18 @@ function TasksGraph(domElement){
 
         var rect = draw.rect(that.totalW, that.barsH).attr({fill:'#EEE'});
         var data = that.data;
+        if(data.length == 0)
+            return;//empty!
         //suppose, it is properly ordered
         //TODO: use first and last log for this, not dates in periods
-        var start = data[0].from;
-        var end= data[data.length-1].to;
+        var start = that.displayFrom;
+        var end = that.displayTo;
+        if(typeof start == 'undefined' || typeof end == 'undefined')
+        {
+            //recalculate according to the data
+            start = data[0].from;
+            end= data[data.length-1].to;
+        }
         //total period length
         var periodLengthMs = end.diff(start);
         //pixels per one ms
@@ -118,10 +126,24 @@ function TasksGraph(domElement){
         var interval = StatController.interval();
         var userid = StatController.userId();
         ApiBoundary.loadTaskStats(interval, userid, function (arr) {
-            PrepareData(arr);
-            that.data = arr;
-            that.recalculateSizes();
-            that.redraw();
+            ApiBoundary.loadActiveTimeBounds(interval,userid, function (boundsArr) {
+
+                PrepareData(arr);
+                that.data = arr;
+                if(boundsArr.length == 0)
+                {
+                    that.displayFrom = null;
+                    that.displayTo = null;
+                }
+                else
+                {
+                    that.displayFrom = moment(boundsArr[0].Begin);
+                    that.displayTo = moment(boundsArr[boundsArr.length-1].End);
+                }
+                that.recalculateSizes();
+                that.redraw();
+            });
+
         });
     };
     $(window).resize(function () {

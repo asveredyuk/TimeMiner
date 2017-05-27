@@ -213,10 +213,22 @@ namespace TimeMiner.Master.Frontend.BuiltInExtensions
             
             TasksReport treport = new TasksReport(log);
             var tres = treport.Calculate().Items;
-//            TimeBoundsReport breport = new TimeBoundsReport(log);
-//            var bres = breport.Calculate().Items;
-            string json = JsonConvert.SerializeObject(tres);
-            WriteStringAndClose(resp, json);
+            WriteObjectJsonAndClose(resp, tres);
+        }
+
+        [ApiPath("stat/activebounds")]
+        public void HandleActiveBounds(HttpListenerRequest req, HttpListenerResponse resp)
+        {
+            StatRequestData reqData = ParseStatRequestDataAndLocalize(req);
+            if (reqData == null)
+            {
+                WriteStringAndClose(resp, "Wrong request data", 400);
+                return;
+            }
+            ILog log = LogsDB.Self.GetCompositeLog(reqData.UserId, reqData.Begin, reqData.End);
+            TimeBoundsReport report = new TimeBoundsReport(log);
+            var res = report.GetFromCacheOrCalculate();
+            WriteObjectJsonAndClose(resp, res.Items);
         }
 
         #endregion

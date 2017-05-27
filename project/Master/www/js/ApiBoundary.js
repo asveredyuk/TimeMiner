@@ -228,6 +228,25 @@ var ApiBoundary = {
             ApiBoundary.whenError(ApiBoundary.loadFrontendFile, apiCallArgs);
         });
     },
+    loadActiveTimeBounds: function (statInterval, userId, callback) {
+        var jobj = {
+            Begin : statInterval.from,
+            End : statInterval.to,
+            UserId : userId
+        };
+        var json = JSON.stringify(jobj);
+        var apiCallArgs = arguments;
+        $.ajax({
+            url: "/api/stat/activebounds",
+            type: 'POST',
+            data: json
+        }).done(function (msg) {
+            var arr = JSON.parse(msg);
+            callback(arr);
+        }).fail(function () {
+            ApiBoundary.whenError(ApiBoundary.loadActiveTimeBounds, apiCallArgs);
+        });
+    },
     loadTaskStats : function (statInterval, userId, callback) {
         var jobj = {
             Begin : statInterval.from,

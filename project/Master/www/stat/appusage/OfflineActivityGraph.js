@@ -17,7 +17,7 @@ function OfflineActivityGraph(domElement){
 
     function mktime(hours) {
         //make time at given day at some hours
-        var day = moment().startOf('day').add(hours,'hours');
+        var day = moment().startOf('day').add(hours,'hours').add(-5,'days');
         return day;
     }
     function GenerateLog(){
@@ -41,13 +41,17 @@ function OfflineActivityGraph(domElement){
 
         var rect = draw.rect(that.totalW, that.barsH).attr({fill:'#EEE'});
         var data = GenerateLog();
+        if(data.length == 0)
+            return;//empty!
         //suppose, it is properly ordered
-        //TODO: use first and last log for this, not dates in periods
-        //var start = data[0].from;
-        //var end= data[data.length-1].to;
-        var start = mktime(12.02);
-        var end = mktime(23.45);
-
+        var start = that.displayFrom;
+        var end = that.displayTo;
+        if(start == null || end == null)
+        {
+            //recalculate according to the data
+            start = data[0].from;
+            end= data[data.length-1].to;
+        }
         //total period length
         var periodLengthMs = end.diff(start);
         //pixels per one ms
@@ -95,7 +99,30 @@ function OfflineActivityGraph(domElement){
             timesGroup.line(curPos,-10,curPos,0).stroke({color:'#CCC', width:2});
         }
     };
+    this.reloadStats = function () {
+        var interval = StatController.interval();
+        var userid = StatController.userId();
+        //ApiBoundary.loadTaskStats(interval, userid, function (arr) {
+            ApiBoundary.loadActiveTimeBounds(interval,userid, function (boundsArr) {
 
+                //PrepareData(arr);
+                //that.data = arr;
+                if(boundsArr.length == 0)
+                {
+                    that.displayFrom = null;
+                    that.displayTo = null;
+                }
+                else
+                {
+                    that.displayFrom = moment(boundsArr[0].Begin);
+                    that.displayTo = moment(boundsArr[boundsArr.length-1].End);
+                }
+                that.recalculateSizes();
+                that.redraw();
+            });
+
+        //});
+    };
 
     $(window).resize(function () {
         var wNew = $context.width();
@@ -106,6 +133,5 @@ function OfflineActivityGraph(domElement){
             that.redraw();
         }
     });
-    that.recalculateSizes();
-    that.redraw();
+    StatController.onAnyChanged.add(this.reloadStats);
 }
