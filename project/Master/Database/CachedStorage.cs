@@ -185,10 +185,7 @@ namespace TimeMiner.Master.Database
                 }
             }
             //storage is not locked anymore
-            foreach (var logRecord in results)
-            {
-                yield return logRecord;
-            }
+            return results.OrderBy(t => t.Time);
         }
         /// <summary>
         /// Put new record to the storage
