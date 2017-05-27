@@ -110,6 +110,20 @@ namespace TimeMiner.Master
             return theDate.StartOfMonth().AddMonths(1).AddSeconds(-1);
         }
 
+        public static DateTime Min(DateTime a, DateTime b)
+        {
+            if (b < a)
+                return b;
+            return a;
+        }
+
+        public static DateTime Max(DateTime a, DateTime b)
+        {
+            if (b > a)
+                return b;
+            return a;
+        }
+
 
         /// <summary>
         /// Sequently composes objects by some quality to arrays

@@ -210,20 +210,12 @@ namespace TimeMiner.Master.Frontend.BuiltInExtensions
                 return;
             }
             ILog log = LogsDB.Self.GetCompositeLog(reqData.UserId, reqData.Begin, reqData.End);
-            TimeBoundsReport report = new TimeBoundsReport(log);
-            var resultItems = report.GetFromCacheOrCalculate().Items;
-            List<object> res = new List<object>();
-            foreach (var resultItem in resultItems)
-            {
-                var cur = new
-                {
-                    Begin = resultItem.Start,
-                    End = resultItem.End,
-                    Name = "t"
-                };
-                res.Add(cur);
-            }
-            string json = JsonConvert.SerializeObject(res);
+            
+            TasksReport treport = new TasksReport(log);
+            var tres = treport.Calculate().Items;
+//            TimeBoundsReport breport = new TimeBoundsReport(log);
+//            var bres = breport.Calculate().Items;
+            string json = JsonConvert.SerializeObject(tres);
             WriteStringAndClose(resp, json);
         }
 
