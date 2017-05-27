@@ -40,7 +40,7 @@ namespace TimeMiner.Master.Frontend
          
         public string Authorize(string login, string password)
         {
-            if (login == "admin" && password == "qwerty")
+            if (login == "admin" && password == "admin")
             {
                 return "MasterToken";
             }
