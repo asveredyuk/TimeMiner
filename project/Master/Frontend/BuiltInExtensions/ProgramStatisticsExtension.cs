@@ -10,6 +10,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using TimeMiner.Core;
 using TimeMiner.Master.Analysis;
+using TimeMiner.Master.Analysis.reports;
 using TimeMiner.Master.Database;
 using TimeMiner.Master.Frontend.Plugins;
 using TimeMiner.Master.Settings;
@@ -197,7 +198,33 @@ namespace TimeMiner.Master.Frontend.BuiltInExtensions
             .Cast<object>().ToList();
             string result = JsonConvert.SerializeObject(objects, Formatting.Indented);
             WriteStringAndClose(resp,result);
+        }
 
+        [ApiPath("stat/taskstat")]
+        public void HandleTaskStat(HttpListenerRequest req, HttpListenerResponse resp)
+        {
+            StatRequestData reqData = ParseStatRequestDataAndLocalize(req);
+            if (reqData == null)
+            {
+                WriteStringAndClose(resp, "Wrong request data", 400);
+                return;
+            }
+            ILog log = LogsDB.Self.GetCompositeLog(reqData.UserId, reqData.Begin, reqData.End);
+            TimeBoundsReport report = new TimeBoundsReport(log);
+            var resultItems = report.GetFromCacheOrCalculate().Items;
+            List<object> res = new List<object>();
+            foreach (var resultItem in resultItems)
+            {
+                var cur = new
+                {
+                    Begin = resultItem.Start,
+                    End = resultItem.End,
+                    Name = "t"
+                };
+                res.Add(cur);
+            }
+            string json = JsonConvert.SerializeObject(res);
+            WriteStringAndClose(resp, json);
         }
 
         #endregion

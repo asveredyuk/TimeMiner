@@ -110,14 +110,77 @@ namespace TimeMiner.Master
             return theDate.StartOfMonth().AddMonths(1).AddSeconds(-1);
         }
 
-//        public static DateTime StartOfMonth(this DateTime theDate, DateTimeKind kind)
-//        {
-//            return new DateTime(theDate.Year, theDate.Month, 1, 0, 0, 0, kind);
-//        }
-//
-//        public static DateTime EndOfMonth(this DateTime theDate, DateTimeKind kind)
-//        {
-//            return theDate.StartOfMonth(kind).AddMonths(1).AddSeconds(-1);
-//        }
+
+        /// <summary>
+        /// Sequently composes objects by some quality to arrays
+        /// </summary>
+        /// <typeparam name="T">Type of item</typeparam>
+        /// <typeparam name="Q">Type of quality</typeparam>
+        /// <param name="items">Enumeration of items</param>
+        /// <param name="handler">Function to parse the quality</param>
+        /// <returns></returns>
+        public static IEnumerable<T[]> ComposeBy<T, Q>(this IEnumerable<T> items, Func<T, Q> handler)
+        {
+            //buffer list is used to store items
+            List<T> buffer = new List<T>();
+            foreach (var item in items)
+            {
+                if (buffer.Count == 0 || EqualityComparer<Q>.Default.Equals(handler(buffer[0]), handler(item)))
+                {
+                    //this item is the same as in buffer or first
+                    buffer.Add(item);
+                }
+                else
+                {
+                    //different item
+                    yield return buffer.ToArray();
+                    //adopt buffer to next items
+                    buffer.Clear();
+                    buffer.Add(item);
+                }
+            }
+            //return last array if exists
+            if (buffer.Count != 0)
+                yield return buffer.ToArray();
+        }
+        /// <summary>
+        /// Sequentially splits given collection by given rult
+        /// </summary>
+        /// <typeparam name="T">Type of items</typeparam>
+        /// <param name="items">Enumeration of items</param>
+        /// <param name="splittingRule">Splitting rule, when true -> split</param>
+        /// <returns></returns>
+        public static IEnumerable<T[]> SplitBy<T>(this IEnumerable<T> items, Func<T, T, bool> splittingRule)
+        {
+            List<T> buffer = new List<T>();
+            T prev = default(T);
+            foreach (var item in items)
+            {
+                if (buffer.Count == 0 || !splittingRule(prev, item))
+                {
+                    buffer.Add(item);
+                }
+                else
+                {
+                    //split
+                    yield return buffer.ToArray();
+                    buffer.Clear();
+                    buffer.Add(item);
+                }
+                prev = item;
+            }
+            if (buffer.Count > 0)
+                yield return buffer.ToArray();
+        }
+
+        //        public static DateTime StartOfMonth(this DateTime theDate, DateTimeKind kind)
+        //        {
+        //            return new DateTime(theDate.Year, theDate.Month, 1, 0, 0, 0, kind);
+        //        }
+        //
+        //        public static DateTime EndOfMonth(this DateTime theDate, DateTimeKind kind)
+        //        {
+        //            return theDate.StartOfMonth(kind).AddMonths(1).AddSeconds(-1);
+        //        }
     }
 }

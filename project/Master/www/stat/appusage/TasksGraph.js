@@ -20,36 +20,41 @@ function TasksGraph(domElement){
         var day = moment().startOf('day').add(hours,'hours');
         return day;
     }
-    function GenerateLog(){
+    function PrepareData(arr){
+        $.each(arr, function (index, value) {
+            value.from = moment(value.Begin);
+            value.to = moment(value.End);
+            value.name = value.Name;
+        });
         //make fake log for now
-        var per1 = {
-            from:mktime(12.02),
-            to:mktime(14.32),
-            name:"Writing documents"
-        };
-        var per2 = {
-            from:mktime(14.32),
-            to:mktime(15.14),
-            name:"Coding"
-        };
-        var per3 = {
-            from:mktime(17.10),
-            to:mktime(20.12),
-            name:"Testing"
-        };
-        var per4 = {
-            from:mktime(20.12),
-            to:mktime(23.45),
-            name:"Making presentation"
-        };
+        // var per1 = {
+        //     from:mktime(12.02),
+        //     to:mktime(14.32),
+        //     name:"Writing documents"
+        // };
+        // var per2 = {
+        //     from:mktime(14.32),
+        //     to:mktime(15.14),
+        //     name:"Coding"
+        // };
+        // var per3 = {
+        //     from:mktime(17.10),
+        //     to:mktime(20.12),
+        //     name:"Testing"
+        // };
+        // var per4 = {
+        //     from:mktime(20.12),
+        //     to:mktime(23.45),
+        //     name:"Making presentation"
+        // };
 
-        return [per1,per2,per3,per4];
+        // return [per1,per2,per3,per4];
     }
     this.redraw = function(){
         draw.clear();
 
         var rect = draw.rect(that.totalW, that.barsH).attr({fill:'#EEE'});
-        var data = GenerateLog();
+        var data = that.data;
         //suppose, it is properly ordered
         //TODO: use first and last log for this, not dates in periods
         var start = data[0].from;
@@ -61,6 +66,12 @@ function TasksGraph(domElement){
         //draw each task on timeline
         var group = draw.group().move(LEFT_RIGHT_EMPTY,0);
         var times = [];
+        //try to add first and the last time
+        if(data.length > 0)
+        {
+            times.push(data[0].from);
+            times.push(data[data.length-1].to);
+        }
         var vals = [];
         $.each(data, function (key, value) {
             var fromMs = value.from.diff(start);
@@ -74,18 +85,21 @@ function TasksGraph(domElement){
             });
             text.attr({ fill: '#FFF'});
             text.move(fromMs*pixPerMs + lenms*pixPerMs/2, that.barsH/2-8);
-            if($.inArray(value.from.valueOf(), vals)<0) {
-                times.push(value.from);
-                vals.push(value.from.valueOf());
-            }
-            if($.inArray(value.to.valueOf(),vals)<0) {
-                times.push(value.to);
-                vals.push(value.to.valueOf());
+            if(lenms > 1000*60*30) {
+                if ($.inArray(value.from.valueOf(), vals) < 0) {
+                    times.push(value.from);
+                    vals.push(value.from.valueOf());
+                }
+                if ($.inArray(value.to.valueOf(), vals) < 0) {
+                    times.push(value.to);
+                    vals.push(value.to.valueOf());
+                }
             }
         });
         //draw times
         var timesGroup = draw.group().move(LEFT_RIGHT_EMPTY,that.barsH+10);
         for(var i = 0; i < times.length; i++) {
+
             var curTime = times[i];
             var msFromStart = curTime.diff(start);
             var curPos = msFromStart*pixPerMs;
@@ -100,8 +114,16 @@ function TasksGraph(domElement){
             timesGroup.line(curPos,-10,curPos,0).stroke({color:'#CCC', width:2});
         }
     };
-    
-
+    this.reloadStats = function () {
+        var interval = StatController.interval();
+        var userid = StatController.userId();
+        ApiBoundary.loadTaskStats(interval, userid, function (arr) {
+            PrepareData(arr);
+            that.data = arr;
+            that.recalculateSizes();
+            that.redraw();
+        });
+    };
     $(window).resize(function () {
         var wNew = $context.width();
         var hNew = $context.height();
@@ -111,6 +133,7 @@ function TasksGraph(domElement){
             that.redraw();
         }
     });
-    that.recalculateSizes();
-    that.redraw();
+    StatController.onAnyChanged.add(this.reloadStats);
+    //that.recalculateSizes();
+    //that.redraw();
 }
