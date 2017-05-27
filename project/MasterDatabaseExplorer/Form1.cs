@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.Diagnostics;
 using System.Drawing;
 using System.Globalization;
 using System.IO;
@@ -16,6 +17,7 @@ using Newtonsoft.Json;
 using TimeMiner.Core;
 using TimeMiner.Master;
 using TimeMiner.Master.Analysis;
+using TimeMiner.Master.Analysis.reports;
 using TimeMiner.Master.Database;
 using TimeMiner.Master.Settings;
 using TimeMiner.Master.Settings.ApplicationIdentifiers;
@@ -244,6 +246,8 @@ namespace MasterDatabaseExplorer
                 {
                     OldLogItem ite = OldLogItem.FromCSVRow(line);
                     LogRecord rec = ToNewLogRecord(ite);
+                    if(rec.Process.ProcessName == "factorio")
+                        continue;
                     rec.UserId = userId;
                     if (ite.extraInfo != null && ite.extraInfo.Length > 2)
                     {
@@ -431,7 +435,7 @@ namespace MasterDatabaseExplorer
                 LogsDB.Self.PutRecord(rec);
                 dt = dt.AddMinutes(minutesInterval);
             }*/
-            LogRecord rec = makeRecord(new DateTime(2017, 5, 8, 9, 20, 0, DateTimeKind.Local));
+            /*LogRecord rec = makeRecord(new DateTime(2017, 5, 8, 9, 20, 0, DateTimeKind.Local));
             LogsDB.Self.PutRecord(rec);
             //ILog[] logs = LogsDB.Self.GetLogsForUserForPeriodPerStorage(Guid.Empty, DateTime.MinValue, DateTime.MaxValue);
             DateTime timefrom = new DateTime(2017,5,8,9,0,0,DateTimeKind.Local);
@@ -439,7 +443,7 @@ namespace MasterDatabaseExplorer
 
             ILog composite = LogsDB.Self.GetCompositeLog(Guid.Empty, timefrom, timeto);
             ExportLogsToExcel(composite);
-            MessageBox.Show(composite.DataHash);
+            MessageBox.Show(composite.DataHash);*/
             //ExportLogsToExcel(logs);
 
             //MessageBox.Show(dt.ToUniversalTime().ToString());
@@ -456,7 +460,41 @@ namespace MasterDatabaseExplorer
             MessageBox.Show(count.ToString());*/
             //sites = sites.Where(t => (GetHost(t) == null)).ToArray();
             //File.WriteAllLines("sites.txt",sites);
+            DateTime begin = new DateTime(2017,5,16,0,0,0, DateTimeKind.Local);
+            DateTime end = new DateTime(2017, 5, 16, 23, 59, 59, DateTimeKind.Local);
+            Guid userid = Guid.Parse("e86daa6e-decd-47e1-9d01-cd8c99586b8d");
+            ILog log = LogsDB.Self.GetCompositeLog(userid, begin, end);
+            TimeBoundsReport report = new TimeBoundsReport(log);
+            var res = report.Calculate();
+            TimeBoundsReport.ReportItem[] items = res.Items;
+            Bitmap drawn = DrawBitmap(items);
+            drawn.Save("test.png");
+            Process.Start("test.png");
+            string data = JsonConvert.SerializeObject(res, Formatting.Indented);
+            File.WriteAllText("test.txt", data);
+            Process.Start("test.txt");
+        }
 
+        private Bitmap DrawBitmap(TimeBoundsReport.ReportItem[] items)
+        {
+            const int W = 2000;
+            const int H = 100;
+            Bitmap bmp = new Bitmap(W, H);
+            Graphics g = Graphics.FromImage(bmp);
+            g.Clear(Color.White);
+            DateTime begin = items[0].Start;
+            DateTime end = items[items.Length - 1].End;
+            double totalSeconds = (end - begin).TotalSeconds;
+            double ratio = W / totalSeconds;
+            foreach (var reportItem in items)
+            {
+                //get pos of begin
+                double pos = (reportItem.Start - begin).TotalSeconds * ratio;
+                double len = (reportItem.End - reportItem.Start).TotalSeconds * ratio;
+                g.FillRectangle(Brushes.Red, (float)pos,0, (float)len,H);
+            }
+            g.Flush();
+            return bmp;
         }
 
         private void ExportLogsToExcel(params ILog[] logs)
