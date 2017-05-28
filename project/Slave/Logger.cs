@@ -220,8 +220,8 @@ namespace TimeMiner.Slave
                 MousePosition = new IntPoint(curPos.X, curPos.Y),
                 Keystrokes = keyboardHook.ActionsCount,
                 MouseButtonActions = mouseButtonsHook.ActionsCount,
-                MouseWheelActions = mouseWheelHook.ActionsCount
-                //user id is 0 for testing
+                MouseWheelActions = mouseWheelHook.ActionsCount,
+                UserId = ConfigManager.Self.UserId
             };
             //extract meta data
             ExtractMetaData(record,process,hWnd);

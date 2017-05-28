@@ -39,10 +39,11 @@ namespace TimeMiner.Slave
         /// Event, that happens when record was sent to master
         /// </summary>
         public event OnRecordSentHandler onRecordSent;
+
         /// <summary>
         /// Url to master
         /// </summary>
-        const string URL = "http://localhost:13000";
+        private readonly string URL = "http://" + ConfigManager.Self.Server;//"http://localhost:13000";
 
         private MasterBoundary()
         {
@@ -84,8 +85,11 @@ namespace TimeMiner.Slave
                         Console.WriteLine("-");
                         RaiseOnRecordSent(record);
                     }
-                    Console.WriteLine("Not sent!");
-                    Console.WriteLine("-");
+                    else
+                    {
+                        Console.WriteLine("Not sent!");
+                        Console.WriteLine("-");
+                    }
                     //log was not successfully sent
                 }
             }
