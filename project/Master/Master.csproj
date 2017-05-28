@@ -72,6 +72,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Analysis\ParametrizedBaseReport.cs" />
     <Compile Include="Analysis\reports\ActiveReport.cs" />
     <Compile Include="Analysis\BaseReport.cs" />
     <Compile Include="Analysis\BaseReportResult.cs" />
@@ -79,6 +80,9 @@
     <Compile Include="Analysis\CompositeLog.cs" />
     <Compile Include="Analysis\ILog.cs" />
     <Compile Include="Analysis\ArrayLog.cs" />
+    <Compile Include="Analysis\reports\OfflineActivityReport.cs" />
+    <Compile Include="Analysis\reports\TasksReport.cs" />
+    <Compile Include="Analysis\reports\TimeBoundsReport.cs" />
     <Compile Include="Analysis\SingleStorageLog.cs" />
     <Compile Include="Analysis\reports\ProductivityReport.cs" />
     <Compile Include="Analysis\reports\ProgramUsageReport.cs" />

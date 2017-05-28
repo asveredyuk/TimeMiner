@@ -23,7 +23,6 @@ namespace TimeMiner.Master.Frontend
             this.res = resources;
             var mustacheCompiler = new FormatCompiler();
             mustacheGenerator = mustacheCompiler.Compile(res.GetString(TEMPLATE_FILE_NAME));
-            topMenuHtml = res.GetString(TOP_MENU_FILE_NAME);
         }
 
         public void OnRequest(HttpListenerRequest req, HttpListenerResponse resp)
@@ -142,6 +141,7 @@ namespace TimeMiner.Master.Frontend
 
         private string CompilePage(HandlerPageDescriptor hdesc)
         {
+            topMenuHtml = res.GetString(TOP_MENU_FILE_NAME);
             var menu = FrontendExtensionLoader.Self.Menu;
             TemplatePageDescriptor de = new TemplatePageDescriptor(hdesc, menu, topMenuHtml);
             return mustacheGenerator.Render(de);

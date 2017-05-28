@@ -24,7 +24,7 @@ function TasksGraph(domElement){
         $.each(arr, function (index, value) {
             value.from = moment(value.Begin);
             value.to = moment(value.End);
-            value.name = value.Name;
+            value.name = value.Task.ShortName;
         });
         //make fake log for now
         // var per1 = {

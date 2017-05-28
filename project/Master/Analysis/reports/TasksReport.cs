@@ -3,6 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Media.Animation;
+using Newtonsoft.Json;
+using TimeMiner.Core.MetaInfoClasses;
 
 namespace TimeMiner.Master.Analysis.reports
 {
@@ -12,13 +15,13 @@ namespace TimeMiner.Master.Analysis.reports
         {
             public DateTime Begin { get; set; }
             public DateTime End { get; set; }
-            public string Name { get; set; }
+            public TaskDescription Task { get; set; }
 
-            public ReportItem(DateTime begin, DateTime end, string name)
+            public ReportItem(DateTime begin, DateTime end, TaskDescription task)
             {
                 Begin = begin;
                 End = end;
-                Name = name;
+                Task = task;
             }
 
             public ReportItem()
@@ -56,8 +59,9 @@ namespace TimeMiner.Master.Analysis.reports
                     continue;
                 DateTime begin = arr[0].Time;
                 DateTime end = arr[arr.Length - 1].Time;
-                string name = arr[0].GetMetaString("task");
-                results.Add(new ReportItem(begin,end,name));
+                var taskDesc = JsonConvert.DeserializeObject<TaskDescription>(arr[0].GetMetaString("task"));
+                //string name = arr[0].GetMetaString("task");
+                results.Add(new ReportItem(begin,end,taskDesc));
             }
             var res = new ReportResult(results.ToArray());
             TryCacheResult(res);

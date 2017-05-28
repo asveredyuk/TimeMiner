@@ -14,33 +14,20 @@ function OfflineActivityGraph(domElement){
         this.barsH = this.totalH-BOTTOM_LABELS_H ;
         this.barsW = this.totalW-LEFT_RIGHT_EMPTY*2;
     };
-
-    function mktime(hours) {
-        //make time at given day at some hours
-        var day = moment().startOf('day').add(hours,'hours').add(-5,'days');
-        return day;
-    }
-    function GenerateLog(){
-        //make fake log for now
-        var per1 = {
-            from:mktime(15.14),
-            to:mktime(15.66),
-            name:"Break",
-            type:0
-        };
-        var per2 = {
-            from:mktime(16.10),
-            to:mktime(17),
-            name:"Work call",
-            type:1
-        };
-        return [per1,per2];
+    function PrepareData(arr)
+    {
+        $.each(arr, function (index, value) {
+            value.from = moment(value.Begin);
+            value.to = moment(value.End);
+            value.name = value.ShortName;
+            value.type = value.Relevance*1;
+        })
     }
     this.redraw = function(){
         draw.clear();
 
         var rect = draw.rect(that.totalW, that.barsH).attr({fill:'#EEE'});
-        var data = GenerateLog();
+        var data = that.data;
         if(data.length == 0)
             return;//empty!
         //suppose, it is properly ordered
@@ -60,7 +47,7 @@ function OfflineActivityGraph(domElement){
         var group = draw.group().move(LEFT_RIGHT_EMPTY,0);
         var times = [];
         var vals = [];
-        var colors = ['#db2828','#21ba45'];
+        var colors = ['#21ba45', '#db2828'];
         $.each(data, function (key, value) {
             var fromMs = value.from.diff(start);
             var lenms = value.to.diff(value.from);
@@ -102,11 +89,11 @@ function OfflineActivityGraph(domElement){
     this.reloadStats = function () {
         var interval = StatController.interval();
         var userid = StatController.userId();
-        //ApiBoundary.loadTaskStats(interval, userid, function (arr) {
+        ApiBoundary.loadOfflineActivity(interval, userid, function (arr) {
             ApiBoundary.loadActiveTimeBounds(interval,userid, function (boundsArr) {
 
-                //PrepareData(arr);
-                //that.data = arr;
+                PrepareData(arr);
+                that.data = arr;
                 if(boundsArr.length == 0)
                 {
                     that.displayFrom = null;
@@ -121,7 +108,7 @@ function OfflineActivityGraph(domElement){
                 that.redraw();
             });
 
-        //});
+        });
     };
 
     $(window).resize(function () {

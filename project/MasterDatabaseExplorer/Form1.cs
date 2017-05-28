@@ -15,6 +15,7 @@ using CorutinesWorker.Corutines;
 using LiteDB;
 using Newtonsoft.Json;
 using TimeMiner.Core;
+using TimeMiner.Core.MetaInfoClasses;
 using TimeMiner.Master;
 using TimeMiner.Master.Analysis;
 using TimeMiner.Master.Analysis.reports;
@@ -275,8 +276,22 @@ namespace MasterDatabaseExplorer
 
         void MakeFakeTask(LogRecord rec)
         {
-            var hour = rec.Time.Hour;
-            string meta = null;
+            if (rec.Time.Second != 0)
+                return;
+            if (rec.Time.Day == 23 && rec.Time.Hour == 9 && rec.Time.Minute == 15 && rec.Time.Second == 0)
+            {
+                var offline = new OfflineActivity(rec.Time.AddHours(-1.1), rec.Time, "Break", "Went to take a cup of coffee", OfflineActivity.ActivityType.nonWork );
+                var json = JsonConvert.SerializeObject(offline);
+                rec.PutMetaString(OfflineActivity.TAG,json);
+            }
+            if (rec.Time.Day == 23 && rec.Time.Hour == 15 && rec.Time.Minute == 0 && rec.Time.Second == 0)
+            {
+                var offline = new OfflineActivity(rec.Time.AddHours(-2), rec.Time, "Work call", "Called a collegue about new trucks", OfflineActivity.ActivityType.work);
+                var json = JsonConvert.SerializeObject(offline);
+                rec.PutMetaString(OfflineActivity.TAG, json);
+            }
+                var hour = rec.Time.Hour;
+            string taskName = null;
             switch (hour)
             {
                 case 8:
@@ -284,24 +299,26 @@ namespace MasterDatabaseExplorer
                 case 10:
                 case 11:
                 case 12:
-                    meta = "Writing code";
+                    taskName = "Writing code";
                     break;
                 case 15:
                 case 16:
                 case 17:
                 case 18:
-                    meta = "Debugging";
+                    taskName = "Debugging";
                     break;
                 case 20:
                 case 21:
                 case 22:
                 case 23:
-                    meta = "Release";
+                    taskName = "Release";
                     break;
             }
-            if (meta != null)
+            if (taskName != null)
             {
-                rec.PutMetaString("task", meta);
+                var descriptor = new TaskDescription(taskName);
+                var json = JsonConvert.SerializeObject(descriptor);
+                rec.PutMetaString("task", json);
             }
         }
         private LogRecord ToNewLogRecord(OldLogItem ite)
