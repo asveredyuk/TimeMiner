@@ -284,5 +284,18 @@ var ApiBoundary = {
         }).fail(function () {
             ApiBoundary.whenError(ApiBoundary.loadOfflineActivity, apiCallArgs);
         });
-    }
+    },
+    getPluginsList : function (callback) {
+        var apiCallArgs = arguments;
+        $.ajax({
+            url: "/api/config/plugins/get",
+            type: 'GET'
+        }).done(function (msg) {
+            var obj = JSON.parse(msg);
+            callback(obj);
+        }).fail(function () {
+            ApiBoundary.whenError(ApiBoundary.getPluginsList, apiCallArgs);
+        });
+    },
+
 };

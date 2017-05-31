@@ -1,0 +1,35 @@
+<tr>
+    <td class="top aligned">
+        {{#if Title}}
+            {{Title}}
+        {{else}}
+            Plugin #{{Guid}}
+        {{/if}}
+    </td>
+    <td>
+        <div class="ui grid">
+            <div class="row">
+                <div class="column">
+                    {{#if Description}}
+                        {{Description}}
+                    {{else}}
+                        No description attached to the plugin
+                    {{/if}}
+                </div>
+            </div>
+            <div class="row">
+                <div class="four wide column">
+                    v{{Version}}
+                </div>
+                <div class="six wide column">
+                    {{#if Author}}
+                        {{Author}}
+                    {{/if}}
+                </div>
+                <div class="right aligned six wide column">
+                    <i class="link large trash icon"></i>
+                </div>
+            </div>
+        </div>
+    </td>
+</tr>
