@@ -76,25 +76,18 @@ namespace TimeMiner.Master.Frontend
         /// Dictionary [path]->[api handler]
         /// </summary>
         private Dictionary<string, HandlerMethodDescriptor<OnApiRequestHandler>> _apiHandlers;
-        /// <summary>
-        /// List of loaded assemblies
-        /// </summary>
-        private List<Assembly> loadedAssemblies;
         private FrontendExtensionLoader()
         {
             _extensions = new List<FrontendServerExtensionBase>();
-            loadedAssemblies = new List<Assembly>();
             _requestHandlers = new Dictionary<string, HandlerMethodDescriptor<OnRequestHandler>>();
             _apiHandlers = new Dictionary<string, HandlerMethodDescriptor<OnApiRequestHandler>>();
-            Init();
+            PluginRepository.Self.onAssembliesChanged += OnAssembliesChanged;
+            this.OnAssembliesChanged(PluginRepository.Self.GetAllAssemblies());
         }
-        /// <summary>
-        /// Initialize loader
-        /// </summary>
-        public void Init()
+
+        private void OnAssembliesChanged(List<Assembly> assemblies)
         {
-            LoadPlugins();
-            ParseExtensions();
+            ParseExtensions(assemblies);
             ParseHandlers();
             ParseMenu();
         }
@@ -151,19 +144,11 @@ namespace TimeMiner.Master.Frontend
             return null;
         }
         /// <summary>
-        /// Load plugins assemblies
-        /// </summary>
-        private void LoadPlugins()
-        {
-            //TODO: loading plugins if feature
-            loadedAssemblies.Add(Assembly.GetExecutingAssembly());//add master to list of assemblies
-        }
-        /// <summary>
         /// Parse extensions from loaded assemblies
         /// </summary>
-        private void ParseExtensions()
+        private void ParseExtensions(List<Assembly> asseblies)
         {
-            foreach (var assembly in loadedAssemblies)
+            foreach (var assembly in asseblies)
             {
                 foreach (var exType in GetHandlersFromAssembly(assembly))
                 {

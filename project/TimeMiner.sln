@@ -13,6 +13,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Master", "Master\Master.csp
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MasterDatabaseExplorer", "MasterDatabaseExplorer\MasterDatabaseExplorer.csproj", "{44CAE744-4A30-4813-A41B-A6A4EF639025}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestPlugin", "TestPlugin\TestPlugin.csproj", "{D21EFCAE-E71D-4790-BE6F-029546CE2E96}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,6 +41,10 @@ Global
 		{44CAE744-4A30-4813-A41B-A6A4EF639025}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{44CAE744-4A30-4813-A41B-A6A4EF639025}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{44CAE744-4A30-4813-A41B-A6A4EF639025}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D21EFCAE-E71D-4790-BE6F-029546CE2E96}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D21EFCAE-E71D-4790-BE6F-029546CE2E96}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D21EFCAE-E71D-4790-BE6F-029546CE2E96}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D21EFCAE-E71D-4790-BE6F-029546CE2E96}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

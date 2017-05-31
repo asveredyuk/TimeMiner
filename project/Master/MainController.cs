@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using TimeMiner.Core;
 using TimeMiner.Master.Frontend;
+using TimeMiner.Master.Frontend.Plugins;
 
 namespace TimeMiner.Master
 {
@@ -44,6 +45,7 @@ namespace TimeMiner.Master
         /// </summary>
         public void OnStartup()
         {
+            PluginRepository.Self.Init();
             slaveServer.Start();
             frontendServer.Start();
         }
