@@ -3,6 +3,17 @@ function RowWrapper(tbody, data, template){
     this.data = data;
     this.row = $(template(data));
     tbody.append(this.row);
+    var uninstallBt = this.row.find('.uninstallBt');
+    var uninstallProgress = this.row.find('.uninstallBtProgress');
+    uninstallBt.click(function () {
+        uninstallBt.hide();
+        uninstallProgress.show();
+        ApiBoundary.uninstallPlugin(that.data.Guid, function () {
+            //uninstallBt.show();
+            //uninstallProgress.hide();
+            window.location.reload();
+        });
+    });
 }
 function TableWrapper(ctxt)
 {

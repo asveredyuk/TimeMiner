@@ -10,6 +10,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Markup;
+using Newtonsoft.Json.Linq;
 using TimeMiner.Master.Frontend.Plugins;
 
 namespace TimeMiner.Master.Frontend.BuiltInExtensions
@@ -70,6 +71,24 @@ namespace TimeMiner.Master.Frontend.BuiltInExtensions
                 };
             }
             WriteObjectJsonAndClose(resp, response);
+        }
+        [PublicHandler]
+        [ApiPath("config/plugins/uninstall")]
+        public void UninstallPlugin(HttpListenerRequest req, HttpListenerResponse resp)
+        {
+            var json = ReadPostString(req);
+            var jobj = JObject.Parse(json);
+            Guid guid;
+            if (jobj["Guid"] == null || !Guid.TryParse(jobj["Guid"].Value<string>(), out guid))
+            {
+                WriteStringAndClose(resp, "No guid or it is invalid", 400);
+                return;
+            }
+            var res = PluginRepository.Self.TryUninstallAssembly(guid);
+            if (!res)
+            {
+                CloseWithCode(resp, 500);
+            }
         }
     }
 }

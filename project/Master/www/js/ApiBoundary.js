@@ -309,6 +309,22 @@ var ApiBoundary = {
         }).fail(function () {
             ApiBoundary.whenError(ApiBoundary.uploadInstallPlugin, apiCallArgs);
         });
+    },
+    uninstallPlugin: function (guid, callback) {
+        var obj = {
+            Guid : guid
+        };
+        var json = JSON.stringify(obj);
+        var apiCallArgs = arguments;
+        $.ajax({
+            url: "/api/config/plugins/uninstall",
+            type: 'POST',
+            data: json
+        }).done(function () {
+            callback();
+        }).fail(function () {
+            ApiBoundary.whenError(ApiBoundary.uninstallPlugin, apiCallArgs);
+        });
     }
 
 };

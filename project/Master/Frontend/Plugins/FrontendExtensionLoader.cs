@@ -87,6 +87,11 @@ namespace TimeMiner.Master.Frontend
 
         private void OnAssembliesChanged(List<Assembly> assemblies)
         {
+            //remove existing extensions and their handlers
+            _extensions.Clear();
+            _requestHandlers.Clear();
+            _apiHandlers.Clear();
+
             ParseExtensions(assemblies);
             ParseHandlers();
             ParseMenu();
