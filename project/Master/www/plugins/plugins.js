@@ -34,7 +34,44 @@ function TableWrapper(ctxt)
         });
     }
 }
+function InstallBtWrapper(ctxt, fakeInput)
+{
+    ctxt.click(function () {
+        fakeInput.click();
+    });
+    fakeInput.change(function () {
+        ctxt.addClass('loading');
+        var file = fakeInput.get(0).files[0];
+        if(file.name.substring(file.name.length - 4) != '.dll')
+        {
+            alert('Error: this is not dll file!');
+            ctxt.removeClass('loading');
+            return;
+        }
+        var reader = new FileReader();
+        reader.readAsBinaryString(file);
+        reader.onload = function () {
+            var res = btoa(reader.result);
+            ApiBoundary.uploadInstallPlugin(res, function (msg) {
+                if(typeof msg.Error != 'undefined')
+                {
+                    ctxt.removeClass('loading');
+                    alert("Failed to install, " + msg.Error);
+                }
+                else
+                {
+                    window.location.reload();
+                }
+            });
+        };
+        reader.onerror = function (error) {
+            ctxt.removeClass('loading');
+            alert('Error: ', error);
+        };
+    });
+}
 $(document).ready(function () {
     var table = new TableWrapper($('#pluginsTable'));
+    var installBt = new InstallBtWrapper($('#pluginInstall'), $('#pluginInstallFakeFile'));
     table.reloadTable();
 });

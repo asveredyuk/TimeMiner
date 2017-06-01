@@ -297,5 +297,18 @@ var ApiBoundary = {
             ApiBoundary.whenError(ApiBoundary.getPluginsList, apiCallArgs);
         });
     },
+    uploadInstallPlugin: function (base64, callback) {
+        var apiCallArgs = arguments;
+        $.ajax({
+            url: "/api/config/plugins/install",
+            type: 'POST',
+            data: base64
+        }).done(function (msg) {
+            var obj = JSON.parse(msg);
+            callback(obj);
+        }).fail(function () {
+            ApiBoundary.whenError(ApiBoundary.uploadInstallPlugin, apiCallArgs);
+        });
+    }
 
 };

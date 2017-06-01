@@ -1,11 +1,15 @@
 ﻿using System;
+using System.CodeDom;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
+using System.Windows.Markup;
 using TimeMiner.Master.Frontend.Plugins;
 
 namespace TimeMiner.Master.Frontend.BuiltInExtensions
@@ -42,6 +46,30 @@ namespace TimeMiner.Master.Frontend.BuiltInExtensions
                 res.Add(descriptor);
             }
             WriteObjectJsonAndClose(resp, res);
+        }
+        [PublicHandler]
+        [ApiPath("config/plugins/install")]
+        public void InstallPlugin(HttpListenerRequest req, HttpListenerResponse resp)
+        {
+            var base64 = ReadPostString(req);
+            var data = Convert.FromBase64String(base64);
+            bool result = PluginRepository.Self.TryInstallAssembly(data);
+            object response = null;
+            if (result)
+            {
+                response = new
+                {
+                    Success = "success"
+                };
+            }
+            else
+            {
+                response = new
+                {
+                    Error = "failed to add plugin"
+                };
+            }
+            WriteObjectJsonAndClose(resp, response);
         }
     }
 }
