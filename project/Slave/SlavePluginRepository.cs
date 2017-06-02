@@ -42,6 +42,8 @@ namespace TimeMiner.Slave
         public async Task SyncWithServer()
         {
             PluginDescriptor[] newDescriptors = await MasterBoundary.Self.GetPluginDescriptors();
+            if (newDescriptors == null)
+                return; //failed to connect to server or other problems
             //Delete uninstalled and outdated elements
             List<KeyValuePair<Assembly, PluginDescriptor>> descriptors = GetDescriptors().ToList();
             foreach (var p in descriptors)

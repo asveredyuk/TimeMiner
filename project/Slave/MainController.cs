@@ -38,6 +38,8 @@ namespace TimeMiner.Slave
         /// Boundary to communicate with master
         /// </summary>
         private MasterBoundary boundary;
+
+        private TrayView trayView;
         private MainController()
         {
             //Initialize plugin repository
@@ -48,6 +50,8 @@ namespace TimeMiner.Slave
             db = SlaveDB.Self;
             logger = Logger.Self;
             boundary = MasterBoundary.Self;
+            trayView = new TrayView();
+
             logger.onLogRecord += delegate (LogRecord record)
             {
                 //when recort is captured
