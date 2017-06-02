@@ -90,7 +90,7 @@ namespace TimeMiner.Master.Frontend.BuiltInExtensions
             //TODO: remake this request to accept one datetime
             //ILog[] logs = LogsDB.Self.GetLogsForUserForPeriodPerStorage(reqData.UserId, reqData.Begin, reqData.End);
             //TODO: TIMEZONE IS HARDCODED!
-            ILog[] logs = LogsDB.Self.GetDayByDayLogsForMonth(reqData.UserId, monthCenter, 3);
+            ILog[] logs = LogsDB.Self.GetDayByDayLogsForMonth(reqData.UserId, monthCenter, -3);
             List<object> results = new List<object>();
             //List<ProductivityReport.ReportResult> reportResults = new List<ProductivityReport.ReportResult>();
             foreach (var log in logs)
