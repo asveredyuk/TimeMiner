@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -73,10 +74,26 @@ namespace TimeMiner.Slave
             mouseButtonsHook = new MouseButtonsHook();
             mouseWheelHook = new MouseWheelHook();
             keyboardHook = new KeyboardHook();
-            metaExtractors = new List<MetaExtractor>(new []
+            InitExtractors();
+            SlavePluginRepository.Self.onAssembliesChanged += OnAssembliesChanged;
+        }
+
+        private void OnAssembliesChanged()
+        {
+            InitExtractors();
+        }
+        /// <summary>
+        /// Get extractors from loaded assemblies
+        /// </summary>
+        private void InitExtractors()
+        {
+            List<MetaExtractor> extractors = new List<MetaExtractor>();
+            foreach (var exType in SlavePluginRepository.Self.GetInstantiatableTypesDerivedFrom<MetaExtractor>())
             {
-                new BrowserUrlExtractor()
-            });
+                MetaExtractor ex = (MetaExtractor)Activator.CreateInstance(exType);
+                extractors.Add(ex);
+            }
+            metaExtractors = extractors;
         }
         /// <summary>
         /// Destructor

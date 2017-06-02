@@ -15,6 +15,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MasterDatabaseExplorer", "M
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestPlugin", "TestPlugin\TestPlugin.csproj", "{D21EFCAE-E71D-4790-BE6F-029546CE2E96}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SlaveTestPlugin", "SlaveTestPlugin\SlaveTestPlugin.csproj", "{4B47D33E-B22B-4E3A-8D48-C8BD5B52C2A8}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -45,6 +47,10 @@ Global
 		{D21EFCAE-E71D-4790-BE6F-029546CE2E96}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{D21EFCAE-E71D-4790-BE6F-029546CE2E96}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{D21EFCAE-E71D-4790-BE6F-029546CE2E96}.Release|Any CPU.Build.0 = Release|Any CPU
+		{4B47D33E-B22B-4E3A-8D48-C8BD5B52C2A8}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{4B47D33E-B22B-4E3A-8D48-C8BD5B52C2A8}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{4B47D33E-B22B-4E3A-8D48-C8BD5B52C2A8}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{4B47D33E-B22B-4E3A-8D48-C8BD5B52C2A8}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

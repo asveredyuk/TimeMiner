@@ -45,7 +45,7 @@ namespace TimeMiner.Master
         /// </summary>
         public void OnStartup()
         {
-            PluginRepository.Self.Init();
+            MasterPluginRepository.Self.Init();
             slaveServer.Start();
             frontendServer.Start();
         }

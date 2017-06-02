@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using TimeMiner.Core;
+using TimeMiner.Core.Plugging;
 
 namespace TimeMiner.Slave
 {
@@ -37,13 +38,20 @@ namespace TimeMiner.Slave
         /// Boundary to communicate with master
         /// </summary>
         private MasterBoundary boundary;
+
+        private TrayView trayView;
         private MainController()
         {
+            //Initialize plugin repository
+            SlavePluginRepository.Self.Init();
+
             //all them are singletones
             //TODO: remove singletone
             db = SlaveDB.Self;
             logger = Logger.Self;
             boundary = MasterBoundary.Self;
+            trayView = new TrayView();
+
             logger.onLogRecord += delegate (LogRecord record)
             {
                 //when recort is captured
@@ -72,13 +80,15 @@ namespace TimeMiner.Slave
         {
             logger.StartLogging();
             SendCachedRecordsAsync();
+            UpdatePluginsPeriodicallyAsync();
         }
 
-        const int DELAY = 30 * 1000;
+        const int CACHE_SEND_DELAY = 30 * 1000;
+        const int PLUGIN_SYNC_DELAY = 30 * 1000;
         /// <summary>
         /// Start sending records in database
         /// </summary>
-        private async Task SendCachedRecordsAsync()
+        private async void SendCachedRecordsAsync()
         {
             while (true)
             {
@@ -88,7 +98,7 @@ namespace TimeMiner.Slave
                 {
                     await boundary.SendOne(logRecord);
                 }
-                await Task.Delay(DELAY);
+                await Task.Delay(CACHE_SEND_DELAY);
             }
         }
         /// <summary>
@@ -97,6 +107,15 @@ namespace TimeMiner.Slave
         public void OnExit()
         {
             logger.StopLogging();
+        }
+
+        private async void UpdatePluginsPeriodicallyAsync()
+        {
+            while (true)
+            {
+                await SlavePluginRepository.Self.SyncWithServer();
+                await Task.Delay(PLUGIN_SYNC_DELAY);
+            }
         }
 
     }

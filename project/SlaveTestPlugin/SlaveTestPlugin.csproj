@@ -4,11 +4,11 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{376111A4-A9BD-4A63-9DE0-660908F81D8B}</ProjectGuid>
+    <ProjectGuid>{4B47D33E-B22B-4E3A-8D48-C8BD5B52C2A8}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>TimeMiner.Core</RootNamespace>
-    <AssemblyName>Core</AssemblyName>
+    <RootNamespace>SlaveTestPlugin</RootNamespace>
+    <AssemblyName>4b47d33e-b22b-4e3a-8d48-c8bd5b52c2a8</AssemblyName>
     <TargetFrameworkVersion>v4.5.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
   </PropertyGroup>
@@ -32,7 +32,7 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Core" />
-    <Reference Include="System.Drawing" />
+    <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
@@ -41,17 +41,19 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="IntPoint.cs" />
-    <Compile Include="LogRecord.cs" />
-    <Compile Include="MetaInfoClasses\OfflineActivity.cs" />
-    <Compile Include="MetaInfoClasses\TaskDescription.cs" />
-    <Compile Include="Plugging\PluginDescriptor.cs" />
-    <Compile Include="Plugging\PluginRepository.cs" />
-    <Compile Include="ProcessDescriptor.cs" />
+    <Compile Include="HelloWorldExtension.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="WindowDescriptor.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Slave\Slave.csproj">
+      <Project>{646fd047-8d0d-49e6-b05d-873ea469ab1e}</Project>
+      <Name>Slave</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <PropertyGroup>
+    <PostBuildEvent>copy "$(TargetPath)" "$(SolutionDir)\Master\bin\Debug\plugins\$(TargetFileName)</PostBuildEvent>
+  </PropertyGroup>
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">
