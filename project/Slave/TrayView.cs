@@ -49,7 +49,6 @@ namespace TimeMiner.Slave
             notifyIcon.Visible = true;
             InitExtensions();
             SlavePluginRepository.Self.onAssembliesChanged += InitExtensions;
-            BuildContextMenu();
         }
         /// <summary>
         /// Initialize extensions from plugins
@@ -88,7 +87,9 @@ namespace TimeMiner.Slave
                 }
                 menuHandlers = handlers;
             }
+            BuildContextMenu();
         }
+
         /// <summary>
         /// Build context menu from given handlers
         /// </summary>
@@ -104,8 +105,6 @@ namespace TimeMiner.Slave
                     action();
                 };
             }
-            /*contextMenu.Items.Add("SayHello").Click+= delegate(object sender, EventArgs args) { MessageBox.Show("Hello!");
-            };*/
         }
     }
 }
