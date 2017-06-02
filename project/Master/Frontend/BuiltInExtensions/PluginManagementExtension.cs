@@ -29,7 +29,7 @@ namespace TimeMiner.Master.Frontend.BuiltInExtensions
         [ApiPath("config/plugins/get")]
         public void GetPlugins(HttpListenerRequest req, HttpListenerResponse resp)
         {
-            var assemblies = PluginRepository.Self.GetAllAssemblies();
+            var assemblies = MasterPluginRepository.Self.GetAllAssemblies();
             List<object> res = new List<object>();
             foreach (var assembly in assemblies)
             {
@@ -54,7 +54,7 @@ namespace TimeMiner.Master.Frontend.BuiltInExtensions
         {
             var base64 = ReadPostString(req);
             var data = Convert.FromBase64String(base64);
-            bool result = PluginRepository.Self.TryInstallAssembly(data);
+            bool result = MasterPluginRepository.Self.TryInstallAssembly(data);
             object response = null;
             if (result)
             {
@@ -84,7 +84,7 @@ namespace TimeMiner.Master.Frontend.BuiltInExtensions
                 WriteStringAndClose(resp, "No guid or it is invalid", 400);
                 return;
             }
-            var res = PluginRepository.Self.TryUninstallAssembly(guid);
+            var res = MasterPluginRepository.Self.TryUninstallAssembly(guid);
             if (!res)
             {
                 CloseWithCode(resp, 500);

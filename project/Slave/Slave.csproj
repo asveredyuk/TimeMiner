@@ -78,10 +78,10 @@
     <Compile Include="MasterBoundary.cs" />
     <Compile Include="MetaExtractor.cs" />
     <Compile Include="SlaveDB.cs" />
+    <Compile Include="SlavePluginRepository.cs" />
     <Compile Include="TestWindow.xaml.cs">
       <DependentUpon>TestWindow.xaml</DependentUpon>
     </Compile>
-    <Compile Include="WinapiLogger.cs" />
     <Compile Include="WindowsBoundary.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>

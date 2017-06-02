@@ -99,12 +99,13 @@
     <Compile Include="Frontend\BuiltInExtensions\ApplicationListExtension.cs" />
     <Compile Include="Frontend\BuiltInExtensions\PluginManagementExtension.cs" />
     <Compile Include="Frontend\BuiltInExtensions\ProgramStatisticsExtension.cs" />
+    <Compile Include="Frontend\BuiltInExtensions\SlaveBoundaryExtension.cs" />
     <Compile Include="Frontend\BuiltInExtensions\SystemSettingsExtension.cs" />
     <Compile Include="Frontend\BuiltInExtensions\UserManagementExtension.cs" />
     <Compile Include="Frontend\FrontendPageMenuItem.cs" />
     <Compile Include="Frontend\Plugins\ApiPathAttribute.cs" />
     <Compile Include="Frontend\Plugins\MenuItemAttribute.cs" />
-    <Compile Include="Frontend\Plugins\PluginRepository.cs" />
+    <Compile Include="Frontend\Plugins\MasterPluginRepository.cs" />
     <Compile Include="Frontend\Plugins\PublicHandlerAttribute.cs" />
     <Compile Include="Frontend\TemplatePageDescriptor.cs" />
     <Compile Include="Frontend\Plugins\FrontendExtensionLoader.cs" />

@@ -45,6 +45,8 @@
     <Compile Include="LogRecord.cs" />
     <Compile Include="MetaInfoClasses\OfflineActivity.cs" />
     <Compile Include="MetaInfoClasses\TaskDescription.cs" />
+    <Compile Include="Plugging\PluginDescriptor.cs" />
+    <Compile Include="Plugging\PluginRepository.cs" />
     <Compile Include="ProcessDescriptor.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="WindowDescriptor.cs" />

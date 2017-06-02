@@ -81,18 +81,18 @@ namespace TimeMiner.Master.Frontend
             _extensions = new List<FrontendServerExtensionBase>();
             _requestHandlers = new Dictionary<string, HandlerMethodDescriptor<OnRequestHandler>>();
             _apiHandlers = new Dictionary<string, HandlerMethodDescriptor<OnApiRequestHandler>>();
-            PluginRepository.Self.onAssembliesChanged += OnAssembliesChanged;
-            this.OnAssembliesChanged(PluginRepository.Self.GetAllAssemblies());
+            MasterPluginRepository.Self.onAssembliesChanged += OnAssembliesChanged;
+            this.OnAssembliesChanged();
         }
 
-        private void OnAssembliesChanged(List<Assembly> assemblies)
+        private void OnAssembliesChanged()
         {
             //remove existing extensions and their handlers
             _extensions.Clear();
             _requestHandlers.Clear();
             _apiHandlers.Clear();
 
-            ParseExtensions(assemblies);
+            ParseExtensions();
             ParseHandlers();
             ParseMenu();
         }
@@ -121,7 +121,7 @@ namespace TimeMiner.Master.Frontend
         /// <param name="path">Path</param>
         /// <param name="dict">Dictionary with items</param>
         /// <returns>Item if found and null if not</returns>
-        private static T GetItemFromDictWithPath<T>(string path, Dictionary<string, T> dict) where T:class
+        private static T GetItemFromDictWithPath<T>(string path, Dictionary<string, T> dict) where T : class
         {
             T result;
             //slowly downgrade to the root
@@ -151,15 +151,12 @@ namespace TimeMiner.Master.Frontend
         /// <summary>
         /// Parse extensions from loaded assemblies
         /// </summary>
-        private void ParseExtensions(List<Assembly> asseblies)
+        private void ParseExtensions()
         {
-            foreach (var assembly in asseblies)
+            foreach (var exType in MasterPluginRepository.Self.GetInstantiatableTypesDerivedFrom<FrontendServerExtensionBase>())
             {
-                foreach (var exType in GetHandlersFromAssembly(assembly))
-                {
-                    FrontendServerExtensionBase ex = (FrontendServerExtensionBase) Activator.CreateInstance(exType);
-                    _extensions.Add(ex);
-                }
+                FrontendServerExtensionBase ex = (FrontendServerExtensionBase)Activator.CreateInstance(exType);
+                _extensions.Add(ex);
             }
         }
         /// <summary>
@@ -170,26 +167,26 @@ namespace TimeMiner.Master.Frontend
             foreach (var ex in _extensions)
             {
                 Type t = ex.GetType();
-                MethodInfo[] allMethods = t.GetMethods(BindingFlags.Instance|BindingFlags.Public);
+                MethodInfo[] allMethods = t.GetMethods(BindingFlags.Instance | BindingFlags.Public);
                 foreach (var methodInfo in allMethods)
                 {
                     HandlerPathAttribute[] attrs = methodInfo.GetCustomAttributes<HandlerPathAttribute>().ToArray();
                     if (attrs.Length > 0)
                     {
                         //cast method to delegate
-                        OnRequestHandler h = Delegate.CreateDelegate(typeof (OnRequestHandler), ex, methodInfo) as OnRequestHandler;
+                        OnRequestHandler h = Delegate.CreateDelegate(typeof(OnRequestHandler), ex, methodInfo) as OnRequestHandler;
                         if (h != null)
                         {
                             foreach (var attr in attrs)
                             {
                                 var desc = new HandlerMethodDescriptor<OnRequestHandler>(h);
                                 ParseExtraParamsForMethod(desc, methodInfo);
-                                AddHandler(attr.path,desc);
+                                AddHandler(attr.path, desc);
                             }
                         }
                         else
                         {
-                            Console.Out.WriteLine("{0}.{1} does not fit delegate",t.Name,methodInfo.Name);
+                            Console.Out.WriteLine("{0}.{1} does not fit delegate", t.Name, methodInfo.Name);
                         }
                     }
                     ApiPathAttribute[] apiAttrs = methodInfo.GetCustomAttributes<ApiPathAttribute>().ToArray();
@@ -237,7 +234,7 @@ namespace TimeMiner.Master.Frontend
             }
             if (_requestHandlers.ContainsKey(key))
             {
-                Console.Out.WriteLine("{0} is already occupied",key);
+                Console.Out.WriteLine("{0} is already occupied", key);
                 return;
             }
             _requestHandlers[key] = h;
@@ -255,26 +252,6 @@ namespace TimeMiner.Master.Frontend
                 return;
             }
             _apiHandlers[key] = h;
-        }
-
-        /// <summary>
-        /// Get all types from assembly, that implements IFrontendServerExtension
-        /// </summary>
-        /// <param name="assembly"></param>
-        /// <returns></returns>
-        private IEnumerable<Type> GetHandlersFromAssembly(Assembly assembly)
-        {
-            return assembly.GetTypes()
-                //only non abstract non nested classes can be extensions
-                .Where(t=>t.IsClass&&!t.IsAbstract&&!t.IsNested)
-                //it must implement interface
-                .Where(t => t.IsSubclassOf(typeof(FrontendServerExtensionBase)))
-                //it must have public constructor with no arguments
-                .Where(t =>
-                {
-                    ConstructorInfo constr = t.GetConstructor(Type.EmptyTypes);
-                    return constr != null && constr.IsPublic;
-                });
         }
         /// <summary>
         /// Parse menu from loaded extensions
