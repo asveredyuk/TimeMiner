@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using System.Windows.Forms;
+using System.Windows;
 
 namespace TimeMiner.Slave.BuiltinExtensions
 {
@@ -15,7 +15,7 @@ namespace TimeMiner.Slave.BuiltinExtensions
         [MenuItem("Exit",100)]
         public void DoExit()
         {
-            MessageBox.Show("Exit!");
+            Application.Current.Shutdown();
         }
     }
 }
