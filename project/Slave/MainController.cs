@@ -39,6 +39,8 @@ namespace TimeMiner.Slave
         /// </summary>
         private MasterBoundary boundary;
 
+        private object _sendLock = new object();
+
         private TrayView trayView;
         private MainController()
         {
@@ -63,13 +65,14 @@ namespace TimeMiner.Slave
                 //when log is added to database
                 //we try to send it immediately
                 //(if it fails, we will try to send it in SendCachedRecords coroutine
-                boundary.SendOne(item);
-            };
-            boundary.onRecordSent += delegate (LogRecord record)
-            {
-                //when record is successfully sent
-                //it can be removed from local database
-                db.RemoveLogRecord(record);
+                //boundary.SendOne(item);
+                Task.Run(async delegate
+                {
+                    var record = item;
+                    bool sent = await boundary.SendOne(record);
+                    if (sent)
+                        db.RemoveLogRecord(record);
+                });
             };
         }
 
@@ -92,11 +95,17 @@ namespace TimeMiner.Slave
         {
             while (true)
             {
-                //TODO: send some ping if server is not available, do not try to send all the things in cache
+                //TODO: FIX: possibly, sending items twice
+                //when one sending record is still in db, 
+                //this method will get it and send to server to server again (duplicate will appear)
                 var all = db.GetAllLogs();
-                foreach (var logRecord in all)
+                bool sent = await boundary.SendMany(all.ToArray());
+                if (sent)
                 {
-                    await boundary.SendOne(logRecord);
+                    foreach (var logRecord in all)
+                    {
+                        db.RemoveLogRecord(logRecord);
+                    }
                 }
                 await Task.Delay(CACHE_SEND_DELAY);
             }

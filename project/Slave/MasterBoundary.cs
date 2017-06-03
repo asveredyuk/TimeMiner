@@ -31,16 +31,7 @@ namespace TimeMiner.Slave
             }
         }
         #endregion
-        /// <summary>
-        /// Delegate for handling RecordSent event
-        /// </summary>
-        /// <param name="record">Record, that was sent</param>
-        public delegate void OnRecordSentHandler(LogRecord record);
-        /// <summary>
-        /// Event, that happens when record was sent to master
-        /// </summary>
-        public event OnRecordSentHandler onRecordSent;
-
+        
         /// <summary>
         /// Url to master
         /// </summary>
@@ -48,56 +39,81 @@ namespace TimeMiner.Slave
 
         private MasterBoundary()
         {
-            
+
         }
-        /// <summary>
-        /// Raise on record sent event
-        /// </summary>
-        /// <param name="recrd"></param>
-        private void RaiseOnRecordSent(LogRecord recrd)
+        
+        private async Task<byte[]> SendBytesToServer(byte[] data)
         {
-            if (onRecordSent != null)
+            try
             {
-                onRecordSent(recrd);
+                HttpWebRequest req = HttpWebRequest.CreateHttp(LOG_SEND_URL);
+                req.Method = "POST";
+                var stream = await req.GetRequestStreamAsync();
+                await stream.WriteAsync(data, 0, data.Length);
+                stream.Close();
+                var resp = (HttpWebResponse) await req.GetResponseAsync();
+                if (resp.StatusCode != HttpStatusCode.OK)
+                    return null;
+                var respStream = resp.GetResponseStream();
+                using (var ms = new MemoryStream())
+                {
+                    await respStream.CopyToAsync(ms);
+                    respStream.Close();
+                    return ms.ToArray();
+                }
             }
+            catch (Exception e)
+            {
+                //failed to send data
+                return null;
+            }
+
         }
         /// <summary>
         /// Send one record immediately
         /// </summary>
         /// <param name="record">Record to send</param>
         /// <returns></returns>
-        public async Task SendOne(LogRecord record)
+        public async Task<bool> SendOne(LogRecord record)
         {
-            try
+            string json = JsonConvert.SerializeObject(record, Formatting.Indented);
+            //File.AppendAllText("log.txt",data + "\r\n");
+            byte[] data = Encoding.UTF8.GetBytes(json);
+            byte[] resp = await SendBytesToServer(data);
+            if (resp == null)
             {
-                string data = JsonConvert.SerializeObject(record, Formatting.Indented);
-                File.AppendAllText("log.txt",data + "\r\n");
-                HttpWebRequest req = HttpWebRequest.CreateHttp(LOG_SEND_URL);
-                req.Method = "POST";
-                using (StreamWriter sw = new StreamWriter(await req.GetRequestStreamAsync()))
-                {
-                    await sw.WriteLineAsync(data);
-                    sw.Close();
-                    HttpWebResponse resp = (HttpWebResponse)(await req.GetResponseAsync());
-                    if (resp.StatusCode == HttpStatusCode.OK)
-                    {
-                        //successfully sent
-                        Console.WriteLine("Sent!");
-                        Console.WriteLine("-");
-                        RaiseOnRecordSent(record);
-                    }
-                    else
-                    {
-                        Console.WriteLine("Not sent!");
-                        Console.WriteLine("-");
-                    }
-                    //log was not successfully sent
-                }
+                Console.WriteLine("Not sent");
+                Console.WriteLine("-");
             }
-            catch (Exception e)
+            else
             {
-                Console.WriteLine("Exception!");
+                Console.WriteLine("Sent");
+                Console.WriteLine(resp.Length);
             }
+            return resp != null;
+        }
+        /// <summary>
+        /// Sends many records in one transaction
+        /// </summary>
+        /// <param name="records"></param>
+        /// <returns></returns>
+        public async Task<bool> SendMany(LogRecord[] records)
+        {
+            string json = JsonConvert.SerializeObject(records);
+            byte[] data = Encoding.UTF8.GetBytes(json);
+            byte[] resp = await SendBytesToServer(data);
+            if (resp == null)
+            {
+                Console.WriteLine("Not sent");
+                Console.WriteLine("-");
+
+            }
+            else
+            {
+                Console.WriteLine("Sent many");
+                Console.WriteLine(resp.Length);
+            }
+            return resp != null;
         }
         /// <summary>
         /// Get plugin descriptors from master server
@@ -109,7 +125,7 @@ namespace TimeMiner.Slave
             {
                 string URL = "http://" + "localhost" + ":" + "8080" + "/api/slave/plugins/slave_getlist";
                 HttpWebRequest req = WebRequest.CreateHttp(URL);
-                HttpWebResponse resp = (HttpWebResponse) await req.GetResponseAsync();
+                HttpWebResponse resp = (HttpWebResponse)await req.GetResponseAsync();
                 using (StreamReader sr = new StreamReader(resp.GetResponseStream()))
                 {
                     string json = sr.ReadToEnd();

@@ -39,6 +39,10 @@ namespace TimeMiner.Master
             {
                 logsDb.PutRecord(rec);
             };
+            slaveServer.onManyLogRecordsCame += delegate(LogRecord[] records)
+            {
+                logsDb.PutManyRecords(records);
+            };
         }
         /// <summary>
         /// Called when program is started
