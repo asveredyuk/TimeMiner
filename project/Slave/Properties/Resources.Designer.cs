@@ -69,5 +69,35 @@ namespace TimeMiner.Slave.Properties {
                 return ((System.Drawing.Icon)(obj));
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Icon similar to (Icon).
+        /// </summary>
+        internal static System.Drawing.Icon TrayStatusBad {
+            get {
+                object obj = ResourceManager.GetObject("TrayStatusBad", resourceCulture);
+                return ((System.Drawing.Icon)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Icon similar to (Icon).
+        /// </summary>
+        internal static System.Drawing.Icon TrayStatusGood {
+            get {
+                object obj = ResourceManager.GetObject("TrayStatusGood", resourceCulture);
+                return ((System.Drawing.Icon)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Icon similar to (Icon).
+        /// </summary>
+        internal static System.Drawing.Icon TrayStatusNeutral {
+            get {
+                object obj = ResourceManager.GetObject("TrayStatusNeutral", resourceCulture);
+                return ((System.Drawing.Icon)(obj));
+            }
+        }
     }
 }

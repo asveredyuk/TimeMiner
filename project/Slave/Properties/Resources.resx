@@ -121,4 +121,13 @@
   <data name="TrayIconDefault" type="System.Resources.ResXFileRef, System.Windows.Forms">
     <value>..\Resources\TrayIconDefault.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
   </data>
+  <data name="TrayStatusBad" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\TrayStatusBad.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="TrayStatusGood" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\TrayStatusGood.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
+  <data name="TrayStatusNeutral" type="System.Resources.ResXFileRef, System.Windows.Forms">
+    <value>..\Resources\TrayStatusNeutral.ico;System.Drawing.Icon, System.Drawing, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a</value>
+  </data>
 </root>

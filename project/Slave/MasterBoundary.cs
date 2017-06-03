@@ -6,6 +6,7 @@ using System.Net;
 using System.Text;
 using System.Threading.Tasks;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using TimeMiner.Core;
 using TimeMiner.Core.Plugging;
 
@@ -128,7 +129,7 @@ namespace TimeMiner.Slave
                 HttpWebResponse resp = (HttpWebResponse)await req.GetResponseAsync();
                 using (StreamReader sr = new StreamReader(resp.GetResponseStream()))
                 {
-                    string json = sr.ReadToEnd();
+                    string json = await sr.ReadToEndAsync();
                     return JsonConvert.DeserializeObject<PluginDescriptor[]>(json);
                 }
             }
@@ -173,6 +174,52 @@ namespace TimeMiner.Slave
             {
                 Console.WriteLine(e);
                 return null;
+            }
+        }
+
+        public enum Relevance
+        {
+            good,
+            neutral,
+            bad,
+            unknown
+        }
+
+        public async Task<Relevance> GetLastStatus()
+        {
+            try
+            {
+                string URL = "http://" + "localhost" + ":" + "8080" + "/api/slave/get_now_status";
+                HttpWebRequest req = WebRequest.CreateHttp(URL);
+                req.Method = "POST";
+                using (StreamWriter sw = new StreamWriter(await req.GetRequestStreamAsync()))
+                {
+                    var reqObj = new
+                    {
+                        Guid = ConfigManager.Self.UserId
+                    };
+                    var json = JsonConvert.SerializeObject(reqObj);
+                    await sw.WriteLineAsync(json);
+                    sw.Close();
+                }
+                HttpWebResponse resp = (HttpWebResponse)await req.GetResponseAsync();
+                var respStream = resp.GetResponseStream();
+                if (respStream == null)
+                    return Relevance.unknown;
+                string respJson = "";
+                using (var sr = new StreamReader(respStream))
+                {
+                    respJson = await sr.ReadToEndAsync();
+                    sr.Close();
+                }
+                var jobj = JObject.Parse(respJson);
+                var rel = (Relevance)jobj["Rel"].Value<int>();
+                return rel;
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                return Relevance.unknown;
             }
         }
     }

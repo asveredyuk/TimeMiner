@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Drawing;
 using System.Linq;
 using System.Reflection;
 using System.Text;
@@ -49,6 +50,39 @@ namespace TimeMiner.Slave
             notifyIcon.Visible = true;
             InitExtensions();
             SlavePluginRepository.Self.onAssembliesChanged += InitExtensions;
+
+            UpdateStatus();
+        }
+        /// <summary>
+        /// Periodically refreshes icon of current status
+        /// </summary>
+        private async void UpdateStatus()
+        {
+            while (true)
+            {
+                await Task.Delay(ConfigManager.Self.StatusRefreshInterval);
+                if (ConfigManager.Self.StatusRefreshEnabled)
+                {
+                    MasterBoundary.Relevance rel = await MasterBoundary.Self.GetLastStatus();
+                    Icon icon = null;
+                    switch (rel)
+                    {
+                        case MasterBoundary.Relevance.good:
+                            icon = Resources.TrayStatusGood;
+                            break;
+                        case MasterBoundary.Relevance.neutral:
+                            icon = Resources.TrayStatusNeutral;
+                            break;
+                        case MasterBoundary.Relevance.bad:
+                            icon = Resources.TrayStatusBad;
+                            break;
+                        case MasterBoundary.Relevance.unknown:
+                            icon = Resources.TrayIconDefault;
+                            break;
+                    }
+                    notifyIcon.Icon = icon;
+                }
+            }
         }
         /// <summary>
         /// Initialize extensions from plugins

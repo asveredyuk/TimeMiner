@@ -39,6 +39,8 @@ namespace TimeMiner.Slave
 
         public string Server { get; }
         public Guid UserId { get; }
+        public bool StatusRefreshEnabled { get; } = true;
+        public int StatusRefreshInterval { get; } = 2000;
         public ConfigManager()
         {
             

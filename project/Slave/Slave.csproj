@@ -143,7 +143,15 @@
   <ItemGroup>
     <None Include="Resources\TrayIconDefault.ico" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <None Include="Resources\TrayStatusBad.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\TrayStatusGood.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\TrayStatusNeutral.ico" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
