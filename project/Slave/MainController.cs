@@ -25,7 +25,22 @@ namespace TimeMiner.Slave
             }
         }
         #endregion
-
+        /// <summary>
+        /// Delay between cache sends
+        /// </summary>
+        const int CACHE_SEND_DELAY = 30 * 1000;
+        /// <summary>
+        /// Delay, when part of cache was sent and part is pending
+        /// </summary>
+        const int CACHE_SEND_BIGGER_DELAY = 10;
+        /// <summary>
+        /// Delay between plugin syncs
+        /// </summary>
+        const int PLUGIN_SYNC_DELAY = 30 * 1000;
+        /// <summary>
+        /// Maximum number of records in one transaction
+        /// </summary>
+        const int MAX_ITEMS_IN_TRANSACTION = 100;
         /// <summary>
         /// Database for storing cache
         /// </summary>
@@ -86,8 +101,7 @@ namespace TimeMiner.Slave
             UpdatePluginsPeriodicallyAsync();
         }
 
-        const int CACHE_SEND_DELAY = 30 * 1000;
-        const int PLUGIN_SYNC_DELAY = 30 * 1000;
+        
         /// <summary>
         /// Start sending records in database
         /// </summary>
@@ -99,6 +113,10 @@ namespace TimeMiner.Slave
                 //when one sending record is still in db, 
                 //this method will get it and send to server to server again (duplicate will appear)
                 var all = db.GetAllLogs();
+                //reduce count if needed
+                bool bigger = all.Count > MAX_ITEMS_IN_TRANSACTION;
+                if (bigger)
+                    all = all.Take(MAX_ITEMS_IN_TRANSACTION).ToList();
                 bool sent = await boundary.SendMany(all.ToArray());
                 if (sent)
                 {
@@ -106,6 +124,11 @@ namespace TimeMiner.Slave
                     {
                         db.RemoveLogRecord(logRecord);
                     }
+                }
+                if (bigger && sent)
+                {
+                    await Task.Delay(CACHE_SEND_BIGGER_DELAY);
+                    continue;
                 }
                 await Task.Delay(CACHE_SEND_DELAY);
             }
