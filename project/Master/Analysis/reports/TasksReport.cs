@@ -50,6 +50,10 @@ namespace TimeMiner.Master.Analysis.reports
 
         public override ReportResult Calculate()
         {
+            //TODO: more complex separation
+            //EX : task is set, then nothing, then same task. This will look like one task
+            //EX : problem with the night (or other break). Try to check minimal distance between objects and split by
+            //TODO: implement "splitBy", which splits collections if condition happened
             var taskOnly = log.Records.Where(t => t.GetMetaString("task") != null);
             var composed = taskOnly.ComposeBy(t => t.GetMetaString("task"));
             List<ReportItem> results = new List<ReportItem>();
