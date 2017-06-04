@@ -227,22 +227,22 @@ namespace TimeMiner.Master.Frontend.BuiltInExtensions
             }
             ILog log = LogsDB.Self.GetCompositeLog(reqData.UserId, reqData.Begin, reqData.End);
             TimeBoundsReport report = new TimeBoundsReport(log);
-            var res = report.GetFromCacheOrCalculate();
+            var res = report.Calculate();
             WriteObjectJsonAndClose(resp, res.Items);
         }
         [ApiPath("stat/offlineactivity")]
         public void HandleOfflineActivity(HttpListenerRequest req, HttpListenerResponse resp)
         {
-//            StatRequestData reqData = ParseStatRequestDataAndLocalize(req);
-//            if (reqData == null)
-//            {
-//                WriteStringAndClose(resp, "Wrong request data", 400);
-//                return;
-//            }
-            var reqData = new StatRequestData();
+            StatRequestData reqData = ParseStatRequestDataAndLocalize(req);
+            if (reqData == null)
+            {
+                WriteStringAndClose(resp, "Wrong request data", 400);
+                return;
+            }
+            /*var reqData = new StatRequestData();
             reqData.Begin = new DateTime(2017, 5, 23, 0, 0, 0, DateTimeKind.Local);
             reqData.End = reqData.Begin.AddSeconds(24 * 60 * 60 - 1);
-            reqData.UserId = Guid.Parse("e86daa6e-decd-47e1-9d01-cd8c99586b8d");
+            reqData.UserId = Guid.Parse("e86daa6e-decd-47e1-9d01-cd8c99586b8d");*/
             ILog log = LogsDB.Self.GetCompositeLog(reqData.UserId, reqData.Begin, reqData.End);
             OfflineActivityReport report = new OfflineActivityReport(log);
             var res = report.Calculate().Items;

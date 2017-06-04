@@ -35,6 +35,8 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Awesomium.Core, Version=1.7.5.1, Culture=neutral, PublicKeyToken=e1a0d7c8071a5214" />
+    <Reference Include="Awesomium.Windows.Forms, Version=1.7.5.1, Culture=neutral, PublicKeyToken=9bd24830fbe304a0, processorArchitecture=x86" />
     <Reference Include="LiteDB, Version=3.1.0.0, Culture=neutral, PublicKeyToken=4ee40123013c9f27, processorArchitecture=MSIL">
       <HintPath>..\packages\LiteDB.3.1.0\lib\net35\LiteDB.dll</HintPath>
       <Private>True</Private>
@@ -67,6 +69,13 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="BuiltinExtensions\OfflineActivityExtension.cs" />
+    <Compile Include="BuiltinExtensions\OfflineActivityExtensionForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="BuiltinExtensions\OfflineActivityExtensionForm.Designer.cs">
+      <DependentUpon>OfflineActivityExtensionForm.cs</DependentUpon>
+    </Compile>
     <Compile Include="BuiltinExtensions\TaskExtension.cs" />
     <Compile Include="BuiltinExtensions\TaskExtensionForm.cs">
       <SubType>Form</SubType>
@@ -76,6 +85,7 @@
     </Compile>
     <Compile Include="BuiltinExtractors\BrowserUrlExtractor.cs" />
     <Compile Include="BuiltinExtensions\ExitExtension.cs" />
+    <Compile Include="BuiltinExtractors\OfflineActivityExtractor.cs" />
     <Compile Include="BuiltinExtractors\TaskExtractor.cs" />
     <Compile Include="ClientInterfaceExtension.cs" />
     <Compile Include="ConfigManager.cs" />
@@ -128,6 +138,9 @@
       <DependentUpon>Settings.settings</DependentUpon>
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
     </Compile>
+    <EmbeddedResource Include="BuiltinExtensions\OfflineActivityExtensionForm.resx">
+      <DependentUpon>OfflineActivityExtensionForm.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="BuiltinExtensions\TaskExtensionForm.resx">
       <DependentUpon>TaskExtensionForm.cs</DependentUpon>
     </EmbeddedResource>
