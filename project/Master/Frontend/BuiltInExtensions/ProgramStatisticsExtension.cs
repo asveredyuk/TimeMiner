@@ -227,7 +227,9 @@ namespace TimeMiner.Master.Frontend.BuiltInExtensions
             }
             ILog log = LogsDB.Self.GetCompositeLog(reqData.UserId, reqData.Begin, reqData.End);
             TimeBoundsReport report = new TimeBoundsReport(log);
-            var res = report.Calculate();
+            report.Parameters.PeriodIgnoreMinSecs = 1;
+            report.Parameters.PeriodMergeIntervalSecs = 24* 60 * 60;//merge everything
+            var res = report.GetFromCacheOrCalculate();
             WriteObjectJsonAndClose(resp, res.Items);
         }
         [ApiPath("stat/offlineactivity")]

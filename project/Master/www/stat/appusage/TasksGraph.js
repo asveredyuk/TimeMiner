@@ -131,7 +131,7 @@ function TasksGraph(domElement){
             {
                 text.remove();
             }
-            if(lenms > 1000*60*30) {
+            //if(lenms > 1000*60*30) {
                 if ($.inArray(value.from.valueOf(), vals) < 0) {
                     times.push(value.from);
                     vals.push(value.from.valueOf());
@@ -140,15 +140,27 @@ function TasksGraph(domElement){
                     times.push(value.to);
                     vals.push(value.to.valueOf());
                 }
-            }
+            //}
         });
         //draw times
         var timesGroup = draw.group().move(LEFT_RIGHT_EMPTY,that.barsH+10);
+        var poses = []; //list of positions of added items
         for(var i = 0; i < times.length; i++) {
-
             var curTime = times[i];
             var msFromStart = curTime.diff(start);
             var curPos = msFromStart*pixPerMs;
+            var found = false;
+            for(var j =0; j < poses.length; j++){
+                var dist = Math.abs(poses[j]-curPos);
+                if(dist < 50) {
+                    found = true;
+                    break;
+                }
+            }
+            if(found) {
+                continue; // it is too near
+            }
+            poses.push(curPos);
             var text = timesGroup.plain(curTime.format('HH:mm'));
             text.font({
                 family:   'Helvetica',
@@ -159,6 +171,7 @@ function TasksGraph(domElement){
             text.move(curPos,0);
             timesGroup.line(curPos,-10,curPos,0).stroke({color:'#CCC', width:2});
         }
+        console.log(JSON.stringify(poses));
     };
     this.reloadStats = function () {
         var interval = StatController.interval();
