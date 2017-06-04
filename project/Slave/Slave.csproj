@@ -67,7 +67,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="BrowserUrlExtractor.cs" />
+    <Compile Include="BuiltinExtractors\BrowserUrlExtractor.cs" />
     <Compile Include="BuiltinExtensions\ExitExtension.cs" />
     <Compile Include="ClientInterfaceExtension.cs" />
     <Compile Include="ConfigManager.cs" />
