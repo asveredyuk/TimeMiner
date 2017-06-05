@@ -6,3 +6,6 @@
 Handlebars.registerHelper("humanizeSeconds", function(value) {
     return CommonUtils.stringifyDurationExtended(moment.duration(value,'seconds'));
 });
+Handlebars.registerHelper('formatMoment', function (value, pattern) {
+    return value.format(pattern);
+});
