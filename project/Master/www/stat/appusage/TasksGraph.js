@@ -11,8 +11,8 @@ function TasksGraph(domElement){
     var template = Handlebars.compile($('#taskPopupTemplate').html());
     var popup = $('<div class="ui popup"></div>');
     popup.appendTo(domElement);
-    var ghost = $('<div style="pointer-events: none;width: 50px; height: '+($context.height() - BOTTOM_LABELS_H) +'px;position: relative; margin-bottom: -' + ($context.height() - BOTTOM_LABELS_H)+ 'px"></div>');
-    var inner = $('<div style="width: 100%; height: 100%"></div>');
+    var ghost = $('<div style="pointer-events: none; width: 50px; height: '+($context.height() - BOTTOM_LABELS_H) +'px;position: relative; margin-bottom: -' + ($context.height() - BOTTOM_LABELS_H)+ 'px"></div>');
+    var inner = $('<div style="pointer-events: none; width: 100%; height: 100%"></div>');
     inner.appendTo(ghost);
     ghost.prependTo(domElement);
     inner.popup({
@@ -93,7 +93,6 @@ function TasksGraph(domElement){
                 {
                     ghost.css({marginLeft:moveX + LEFT_RIGHT_EMPTY + rectWidth/2-25});
                 }
-                //TODO: set template view here
                 popup.html(template(value));
                 inner.popup('reposition');
                 //show the popup
@@ -107,6 +106,7 @@ function TasksGraph(domElement){
                 size:     15,
                 anchor:   'middle'
             });
+            text.style('pointer-events','none');
             text.attr({ fill: '#FFF'});
             text.move(fromMs*pixPerMs + lenms*pixPerMs/2, that.barsH/2-8);
             if(text.bbox().width > rect.width())

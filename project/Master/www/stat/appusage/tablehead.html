@@ -29,7 +29,28 @@
 </style>
 <script id="taskPopupTemplate" type="text/x-handlebars-template">
     <div class="ui grid" style="min-width: 150px">
-        <div class="centered row" style="padding-bottom: 0"><h3>{{name}}</h3></div>
+        <div class="centered row" style="padding-bottom: 0">
+            <div class="column">
+                <h3>{{name}}</h3>
+            </div>
+        </div>
+        <div class="row">
+            <div class="eight wide column">From: <h4>{{formatMoment from 'HH:mm'}}</h4></div>
+            <div class="eight wide column">To: <h4>{{formatMoment to 'HH:mm'}}</h4></div>
+        </div>
+    </div>
+</script>
+<script id="offlinePopupTemplate" type="text/x-handlebars-template">
+    <div class="ui grid" style="min-width: 150px">
+        <div class="row" style="padding-bottom: 0">
+            <div class="column"><h3>{{ShortName}}</h3></div>
+        </div>
+        <div class="row" style="padding-bottom: 0">
+            <div class="column">
+                <!--{{Description}}-->
+                the long text about how i worked against enemies
+            </div>
+        </div>
         <div class="row">
             <div class="eight wide column">From: <h4>{{formatMoment from 'HH:mm'}}</h4></div>
             <div class="eight wide column">To: <h4>{{formatMoment to 'HH:mm'}}</h4></div>

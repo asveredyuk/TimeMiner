@@ -9,11 +9,11 @@ function OfflineActivityGraph(domElement){
     var $context = $(domElement);
     var draw = SVG(domElement);
 
-
-    var popup = $('<div class="ui popup"> <div class="header">Hello here!</div> <div class="ui star rating" data-rating="3"></div> </div>');
+    var template = Handlebars.compile($('#offlinePopupTemplate').html());
+    var popup = $('<div class="ui popup"></div>');
     popup.appendTo(domElement);
-    var ghost = $('<div style="width: 50px; height: 5px;position: relative; margin-bottom: -5px"></div>');
-    var inner = $('<div style="width: 100%; height: 100%"></div>');
+    var ghost = $('<div style="pointer-events: none;width: 50px; height: '+($context.height() - BOTTOM_LABELS_H) +'px;position: relative; margin-bottom: -' + ($context.height() - BOTTOM_LABELS_H)+ 'px"></div>');
+    var inner = $('<div style="pointer-events: none; width: 100%; height: 100%"></div>');
     inner.appendTo(ghost);
     ghost.prependTo(domElement);
     inner.popup({
@@ -88,8 +88,7 @@ function OfflineActivityGraph(domElement){
                     ghost.css({marginLeft:moveX + LEFT_RIGHT_EMPTY + rectWidth/2-25});
                 }
 
-                //TODO: set template view here
-                popup.html(value.name);
+                popup.html(template(value));
                 inner.popup('reposition');
                 //show the popup
                 inner.popup('show');
@@ -102,6 +101,7 @@ function OfflineActivityGraph(domElement){
                 size:     15,
                 anchor:   'middle'
             });
+            text.style('pointer-events','none');
             text.attr({ fill: '#FFF'});
             text.move(fromMs*pixPerMs + lenms*pixPerMs/2, that.barsH/2-8);
             if($.inArray(value.from.valueOf(), vals)<0) {
