@@ -40,11 +40,24 @@
         </div>
     </div>
 </script>
+
 <script id="offlinePopupTemplate" type="text/x-handlebars-template">
+    {{#ifCond Relevance '==' 0}}
+    <a class="ui green right corner label" style="border-radius : 0 !important; border-top-right-radius: 4px !important; overflow: hidden;">
+        <!--<i class="thumbs down icon"></i>-->
+    </a>
+    {{else}}
+    <a class="ui red right corner label" style="border-radius : 0 !important; border-top-right-radius: 4px !important; overflow: hidden;">
+        <!--<i class="thumbs down icon"></i>-->
+    </a>
+    {{/ifCond}}
     <div class="ui grid" style="min-width: 150px">
+
         <div class="row" style="padding-bottom: 0">
             <div class="column"><h3>{{ShortName}}</h3></div>
         </div>
+
+
         <div class="row" style="padding-bottom: 0">
             <div class="column">
                 <!--{{Description}}-->
