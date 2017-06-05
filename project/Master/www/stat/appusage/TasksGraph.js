@@ -11,7 +11,7 @@ function TasksGraph(domElement){
     var template = Handlebars.compile($('#taskPopupTemplate').html());
     var popup = $('<div class="ui popup"></div>');
     popup.appendTo(domElement);
-    var ghost = $('<div style="width: 50px; height: 5px;position: relative; margin-bottom: -5px"></div>');
+    var ghost = $('<div style="pointer-events: none;width: 50px; height: '+($context.height() - BOTTOM_LABELS_H) +'px;position: relative; margin-bottom: -' + ($context.height() - BOTTOM_LABELS_H)+ 'px"></div>');
     var inner = $('<div style="width: 100%; height: 100%"></div>');
     inner.appendTo(ghost);
     ghost.prependTo(domElement);
