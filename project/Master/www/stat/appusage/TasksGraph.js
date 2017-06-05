@@ -28,44 +28,19 @@ function TasksGraph(domElement){
         this.barsW = this.totalW-LEFT_RIGHT_EMPTY*2;
     };
 
-    function mktime(hours) {
-        //make time at given day at some hours
-        var day = moment().startOf('day').add(hours,'hours');
-        return day;
-    }
     function PrepareData(arr){
         $.each(arr, function (index, value) {
             value.from = moment(value.Begin);
             value.to = moment(value.End);
             value.name = value.Task.ShortName;
         });
-        //make fake log for now
-        // var per1 = {
-        //     from:mktime(12.02),
-        //     to:mktime(14.32),
-        //     name:"Writing documents"
-        // };
-        // var per2 = {
-        //     from:mktime(14.32),
-        //     to:mktime(15.14),
-        //     name:"Coding"
-        // };
-        // var per3 = {
-        //     from:mktime(17.10),
-        //     to:mktime(20.12),
-        //     name:"Testing"
-        // };
-        // var per4 = {
-        //     from:mktime(20.12),
-        //     to:mktime(23.45),
-        //     name:"Making presentation"
-        // };
-
-        // return [per1,per2,per3,per4];
     }
     this.redraw = function(){
         draw.clear();
-
+        if(inner.popup("is visible"))
+        {
+            inner.popup('hide');
+        }
         var rect = draw.rect(that.totalW, that.barsH).attr({fill:'#EEE'});
         var data = that.data;
         if(data.length == 0)
@@ -110,7 +85,14 @@ function TasksGraph(domElement){
                     return;
                 }
                 //move ghost element to the center of block
-                ghost.css({marginLeft:moveX + LEFT_RIGHT_EMPTY + rectWidth/2-25});
+                if(inner.popup("is visible"))
+                {
+                    ghost.animate({marginLeft:moveX + LEFT_RIGHT_EMPTY + rectWidth/2-25}, 150);
+                }
+                else
+                {
+                    ghost.css({marginLeft:moveX + LEFT_RIGHT_EMPTY + rectWidth/2-25});
+                }
                 //TODO: set template view here
                 popup.html(value.name);
                 inner.popup('reposition');
@@ -131,16 +113,14 @@ function TasksGraph(domElement){
             {
                 text.remove();
             }
-            //if(lenms > 1000*60*30) {
-                if ($.inArray(value.from.valueOf(), vals) < 0) {
-                    times.push(value.from);
-                    vals.push(value.from.valueOf());
-                }
-                if ($.inArray(value.to.valueOf(), vals) < 0) {
-                    times.push(value.to);
-                    vals.push(value.to.valueOf());
-                }
-            //}
+            if ($.inArray(value.from.valueOf(), vals) < 0) {
+                times.push(value.from);
+                vals.push(value.from.valueOf());
+            }
+            if ($.inArray(value.to.valueOf(), vals) < 0) {
+                times.push(value.to);
+                vals.push(value.to.valueOf());
+            }
         });
         //draw times
         var timesGroup = draw.group().move(LEFT_RIGHT_EMPTY,that.barsH+10);

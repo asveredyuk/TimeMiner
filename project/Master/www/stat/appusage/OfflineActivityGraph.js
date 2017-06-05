@@ -8,6 +8,19 @@ function OfflineActivityGraph(domElement){
     var INNER_MARGIN = 1;
     var $context = $(domElement);
     var draw = SVG(domElement);
+
+
+    var popup = $('<div class="ui popup"> <div class="header">Hello here!</div> <div class="ui star rating" data-rating="3"></div> </div>');
+    popup.appendTo(domElement);
+    var ghost = $('<div style="width: 50px; height: 5px;position: relative; margin-bottom: -5px"></div>');
+    var inner = $('<div style="width: 100%; height: 100%"></div>');
+    inner.appendTo(ghost);
+    ghost.prependTo(domElement);
+    inner.popup({
+        popup: popup,
+        on:'manual'
+    });
+
     this.recalculateSizes = function () {
         this.totalW = $context.width();
         this.totalH = $context.height();
@@ -25,7 +38,10 @@ function OfflineActivityGraph(domElement){
     }
     this.redraw = function(){
         draw.clear();
-
+        if(inner.popup("is visible"))
+        {
+            inner.popup('hide');
+        }
         var rect = draw.rect(that.totalW, that.barsH).attr({fill:'#EEE'});
         var data = that.data;
         if(data.length == 0)
@@ -51,7 +67,35 @@ function OfflineActivityGraph(domElement){
         $.each(data, function (key, value) {
             var fromMs = value.from.diff(start);
             var lenms = value.to.diff(value.from);
-            var rect = group.rect(lenms*pixPerMs-INNER_MARGIN*2,that.barsH).move(fromMs*pixPerMs+INNER_MARGIN,0).attr({fill:colors[value.type]});
+            var rectWidth = lenms*pixPerMs-INNER_MARGIN*2;
+            var moveX = fromMs*pixPerMs+INNER_MARGIN;
+            var rect = group.rect(rectWidth,that.barsH).move(moveX,0).attr({fill:colors[value.type]});
+            rect.click(function () {
+                if(inner.boundItem == rect)
+                {
+                    //popup was already shown for given element
+                    inner.popup('hide');
+                    inner.boundItem = null;
+                    return;
+                }
+                //move ghost element to the center of block
+                if(inner.popup("is visible"))
+                {
+                    ghost.animate({marginLeft:moveX + LEFT_RIGHT_EMPTY + rectWidth/2-25}, 150);
+                }
+                else
+                {
+                    ghost.css({marginLeft:moveX + LEFT_RIGHT_EMPTY + rectWidth/2-25});
+                }
+
+                //TODO: set template view here
+                popup.html(value.name);
+                inner.popup('reposition');
+                //show the popup
+                inner.popup('show');
+                //assign bound item to this
+                inner.boundItem = rect;
+            });
             var text = group.plain(value.name);
             text.font({
                 family:   'Helvetica',
@@ -71,10 +115,23 @@ function OfflineActivityGraph(domElement){
         });
         //draw times
         var timesGroup = draw.group().move(LEFT_RIGHT_EMPTY,that.barsH+10);
+        var poses = []; //list of positions of added items
         for(var i = 0; i < times.length; i++) {
             var curTime = times[i];
             var msFromStart = curTime.diff(start);
             var curPos = msFromStart*pixPerMs;
+            var found = false;
+            for(var j =0; j < poses.length; j++){
+                var dist = Math.abs(poses[j]-curPos);
+                if(dist < 50) {
+                    found = true;
+                    break;
+                }
+            }
+            if(found) {
+                continue; // it is too near
+            }
+            poses.push(curPos);
             var text = timesGroup.plain(curTime.format('HH:mm'));
             text.font({
                 family:   'Helvetica',
