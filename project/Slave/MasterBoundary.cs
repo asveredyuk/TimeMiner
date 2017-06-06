@@ -222,5 +222,50 @@ namespace TimeMiner.Slave
                 return Relevance.unknown;
             }
         }
+
+        public async Task<Stats> GetPersonalStatistics()
+        {
+            try
+            {
+                string URL = "http://" + ConfigManager.Self.Server + ":" + ConfigManager.Self.ApiPort + "/api/slave/get_personal_stats";
+                HttpWebRequest req = WebRequest.CreateHttp(URL);
+                req.Method = "POST";
+                using (StreamWriter sw = new StreamWriter(await req.GetRequestStreamAsync()))
+                {
+                    var reqObj = new
+                    {
+                        Guid = ConfigManager.Self.UserId,
+                        Begin = DateTime.Now.Date,
+                        End = DateTime.Now.Date.AddDays(1).AddSeconds(-1)
+                    };
+                    var json = JsonConvert.SerializeObject(reqObj);
+                    await sw.WriteLineAsync(json);
+                    sw.Close();
+                }
+                HttpWebResponse resp = (HttpWebResponse)await req.GetResponseAsync();
+                var respStream = resp.GetResponseStream();
+                if (respStream == null)
+                    return null;
+                string respJson = "";
+                using (var sr = new StreamReader(respStream))
+                {
+                    respJson = await sr.ReadToEndAsync();
+                    sr.Close();
+                }
+                return JsonConvert.DeserializeObject<Stats>(respJson);
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                return null;
+            }
+        }
+
+        public class Stats
+        {
+            public int ProductiveTime { get; set; }
+            public int DistractionsTime { get; set; }
+            public int TotalTime { get; set; }
+        }
     }
 }

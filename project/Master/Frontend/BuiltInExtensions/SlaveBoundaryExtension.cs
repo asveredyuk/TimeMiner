@@ -86,5 +86,30 @@ namespace TimeMiner.Master.Frontend.BuiltInExtensions
             };
             WriteStringAndClose(resp, JsonConvert.SerializeObject(answObj));
         }
+        [PublicHandler]
+        [ApiPath("slave/get_personal_stats")]
+        public void GetPersonalStats(HttpListenerRequest req, HttpListenerResponse resp)
+        {
+            string postString = ReadPostString(req);
+            var jobj = JObject.Parse(postString);
+            Guid userGuid;
+            if (jobj["Guid"] == null || !Guid.TryParse(jobj["Guid"].Value<string>(), out userGuid))
+            {
+                WriteStringAndClose(resp, "No or invalid guid", 400);
+                return;
+            }
+            DateTime dtFrom = jobj["Begin"].Value<DateTime>();
+            DateTime dtTo = jobj["End"].Value<DateTime>();
+            if ((dtFrom - dtTo).TotalDays > 1.0)
+            {
+                //max range - 1 day
+                dtTo = dtFrom.AddDays(1);
+            }
+            ILog log = LogsDB.Self.GetCompositeLog(userGuid, dtFrom, dtTo);
+            ProductivityReport rep = new ProductivityReport(log);
+            var result = rep.GetFromCacheOrCalculate();
+            WriteObjectJsonAndClose(resp, result);
+
+        }
     }
 }

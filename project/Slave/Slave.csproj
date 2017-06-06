@@ -74,6 +74,7 @@
     <Compile Include="BuiltinExtensions\OfflineActivityExtensionForm.Designer.cs">
       <DependentUpon>OfflineActivityExtensionForm.cs</DependentUpon>
     </Compile>
+    <Compile Include="BuiltinExtensions\PersonalStatisticsExtension.cs" />
     <Compile Include="BuiltinExtensions\TaskExtension.cs" />
     <Compile Include="BuiltinExtensions\TaskExtensionForm.cs">
       <SubType>Form</SubType>
