@@ -1,4 +1,5 @@
 ﻿{
   "web_interface_port": "8080",
-  "slave_data_port": "13000"
+  "slave_data_port": "13000",
+  "server": "192.168.1.4"
 }

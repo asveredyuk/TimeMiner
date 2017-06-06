@@ -98,5 +98,26 @@ namespace TimeMiner.Master.Frontend.BuiltInExtensions
             }
             SettingsDB.Self.RemoveUser(guid);
         }
+        [ApiPath("config/users/getusersconfig")]
+        public void GetUsersConfig(HttpListenerRequest req, HttpListenerResponse resp)
+        {
+            string jsonInput = ReadPostString(req);
+            JObject jobj = JObject.Parse(jsonInput);
+            Guid userGuid;
+            if (jobj["Id"] == null || !Guid.TryParse(jobj["Id"].Value<string>(), out userGuid))
+            {
+                WriteStringAndClose(resp, "No id specified or it is wrong", 400);
+                return;
+            }
+            var res = new
+            {
+                server = ConfigManager.Self.GetString("server"),
+                send_port = ConfigManager.Self.SlaveDataPort,
+                api_port = ConfigManager.Self.WebInterfacePort,
+                user_id = userGuid
+            };
+            string jsonOutput = JsonConvert.SerializeObject(res, Formatting.Indented);
+            WriteStringAndClose(resp, jsonOutput);
+        }
     }
 }

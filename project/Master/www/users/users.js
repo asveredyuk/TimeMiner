@@ -2,6 +2,20 @@
  * Created by ALEX on 06.05.2017.
  */
 var tableWrapper;
+function download(filename, text) {
+    var pom = document.createElement('a');
+    pom.setAttribute('href', 'data:text/plain;charset=utf-8,' + encodeURIComponent(text));
+    pom.setAttribute('download', filename);
+
+    if (document.createEvent) {
+        var event = document.createEvent('MouseEvents');
+        event.initEvent('click', true, true);
+        pom.dispatchEvent(event);
+    }
+    else {
+        pom.click();
+    }
+}
 function RowWrapper(tbody, data, hbstemplate)
 {
     var that = this;
@@ -15,6 +29,15 @@ function RowWrapper(tbody, data, hbstemplate)
         ApiBoundary.deleteUser(json, function () {
             that.row.remove();
         });
+    });
+    var dlcfgbutton = this.row.find('.dlcfgbutton');
+    dlcfgbutton.click(function () {
+        dlcfgbutton.addClass('loading');
+        ApiBoundary.loadConfigForUser(that.data.Id, function (text) {
+            dlcfgbutton.removeClass('loading');
+            download('config.json',text);
+        });
+        
     });
 }
 function TableWrapper(ctxt)

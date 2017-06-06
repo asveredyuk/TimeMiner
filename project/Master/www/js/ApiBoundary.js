@@ -325,6 +325,23 @@ var ApiBoundary = {
         }).fail(function () {
             ApiBoundary.whenError(ApiBoundary.uninstallPlugin, apiCallArgs);
         });
+    },
+    loadConfigForUser: function (id, callback) {
+        var jobj = {
+            Id : id
+        };
+        var json = JSON.stringify(jobj);
+        var apiCallArgs = arguments;
+        $.ajax({
+            url: "/api/config/users/getusersconfig",
+            type: 'POST',
+            data: json
+        }).done(function (msg) {
+            //var res= JSON.parse(msg);
+            callback(msg);
+        }).fail(function () {
+            ApiBoundary.whenError(ApiBoundary.loadConfigForUser, apiCallArgs);
+        });
     }
 
 };
