@@ -32,8 +32,8 @@ namespace TimeMiner.Master
             }
         }
 
-
-        const string LISTENER_PREFIX = "http://localhost:13000/";
+        public const string LISTENER_PORT = "13000";
+        public const string LISTENER_PREFIX = "http://+:" + LISTENER_PORT + "/";
 
         public event Action<LogRecord> onLogRecordCame;
         public event Action<LogRecord[]> onManyLogRecordsCame;

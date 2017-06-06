@@ -36,7 +36,7 @@ namespace TimeMiner.Slave
         /// <summary>
         /// Url to master
         /// </summary>
-        private readonly string LOG_SEND_URL = "http://" + ConfigManager.Self.Server;//"http://localhost:13000";
+        private readonly string LOG_SEND_URL = "http://" + ConfigManager.Self.Server + ":" + ConfigManager.Self.SendPort;
 
         private MasterBoundary()
         {
@@ -124,7 +124,7 @@ namespace TimeMiner.Slave
         {
             try
             {
-                string URL = "http://" + "localhost" + ":" + "8080" + "/api/slave/plugins/slave_getlist";
+                string URL = "http://" + ConfigManager.Self.Server + ":" + ConfigManager.Self.ApiPort + "/api/slave/plugins/slave_getlist";
                 HttpWebRequest req = WebRequest.CreateHttp(URL);
                 HttpWebResponse resp = (HttpWebResponse)await req.GetResponseAsync();
                 using (StreamReader sr = new StreamReader(resp.GetResponseStream()))
@@ -148,7 +148,7 @@ namespace TimeMiner.Slave
         {
             try
             {
-                string URL = "http://" + "localhost" + ":" + "8080" + "/api/slave/plugins/slave_getassembly";
+                string URL = "http://" + ConfigManager.Self.Server + ":" + ConfigManager.Self.ApiPort + "/api/slave/plugins/slave_getassembly";
                 HttpWebRequest req = WebRequest.CreateHttp(URL);
                 req.Method = "POST";
                 using (StreamWriter sw = new StreamWriter(await req.GetRequestStreamAsync()))
@@ -189,7 +189,7 @@ namespace TimeMiner.Slave
         {
             try
             {
-                string URL = "http://" + "localhost" + ":" + "8080" + "/api/slave/get_now_status";
+                string URL = "http://" + ConfigManager.Self.Server + ":" + ConfigManager.Self.ApiPort + "/api/slave/get_now_status";
                 HttpWebRequest req = WebRequest.CreateHttp(URL);
                 req.Method = "POST";
                 using (StreamWriter sw = new StreamWriter(await req.GetRequestStreamAsync()))

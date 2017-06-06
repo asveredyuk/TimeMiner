@@ -89,6 +89,7 @@
     <Compile Include="Analysis\reports\UnknownIdentificationReport.cs" />
     <Compile Include="Cache\CacheDB.cs" />
     <Compile Include="Cache\ReportResultCacheItem.cs" />
+    <Compile Include="ConfigManager.cs" />
     <Compile Include="Database\CachedStorage.cs" />
     <Compile Include="Database\LogsDB.cs" />
     <Compile Include="Database\LogsDBLiteDB.cs" />
