@@ -32,8 +32,8 @@ namespace TimeMiner.Master
             }
         }
 
-        public const string LISTENER_PORT = "13000";
-        public const string LISTENER_PREFIX = "http://+:" + LISTENER_PORT + "/";
+        
+        public static readonly string LISTENER_PREFIX = "http://+:" + ConfigManager.Self.SlaveDataPort + "/";
 
         public event Action<LogRecord> onLogRecordCame;
         public event Action<LogRecord[]> onManyLogRecordsCame;

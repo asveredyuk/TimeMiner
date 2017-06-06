@@ -50,7 +50,7 @@ namespace TimeMiner.Master
 
         private void button_Click(object sender, RoutedEventArgs e)
         {
-            System.Diagnostics.Process.Start("http://localhost:" + FrontendServer.LISTENER_PORT);
+            System.Diagnostics.Process.Start("http://localhost:" + ConfigManager.Self.WebInterfacePort);
             /*MasterDB db = MasterDB.Self;
             var records = db.GetAllRecordsForUser(0);
             List<string> lines = new List<string>();

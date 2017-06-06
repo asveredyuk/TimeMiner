@@ -1,0 +1,4 @@
+﻿{
+  "web_interface_port": "8080",
+  "slave_data_port": "13000"
+}

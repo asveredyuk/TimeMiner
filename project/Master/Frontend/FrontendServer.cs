@@ -42,11 +42,10 @@ namespace TimeMiner.Master.Frontend
         private IResourceContainer resources;
 
         private ResponseMaker responseMaker;
-        public const string LISTENER_PORT = "8080";
         /// <summary>
         /// Local server prefix including port
         /// </summary>
-        public const string LISTENER_PREFIX = "http://+:" + LISTENER_PORT + "/";//"http://localhost:80/";
+        public static readonly string LISTENER_PREFIX = "http://+:" + ConfigManager.Self.WebInterfacePort + "/";//"http://localhost:80/";
 
         /// <summary>
         /// Container with files from www folder

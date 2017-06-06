@@ -42,6 +42,11 @@ namespace TimeMiner.Master
 
         private Dictionary<string, string> data = new Dictionary<string, string>();
 
+        private ConfigManager()
+        {
+            LoadConfig();
+        }
+
         private void LoadConfig()
         {
             lock (_lock)
@@ -100,5 +105,12 @@ namespace TimeMiner.Master
         {
             PutString(key, value.ToString());
         }
+        #region fields for known properties
+
+        public string WebInterfacePort => GetString("web_interface_port");
+
+        public string SlaveDataPort => GetString("slave_data_port");
+
+        #endregion
     }
 }
