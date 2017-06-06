@@ -40,16 +40,22 @@ namespace TimeMiner.Master.Frontend
          
         public string Authorize(string login, string password)
         {
-            if (login == "admin" && password == "admin")
+            if (login == ConfigManager.Self.GetString("admin-login") && password == ConfigManager.Self.GetString("admin-password"))
             {
-                return "MasterToken";
+                return GetToken();
             }
             return null;
         }
 
+        private string GetToken()
+        {
+            string login = ConfigManager.Self.GetString("admin-login");
+            string password = ConfigManager.Self.GetString("admin-password");
+            return Util.ComputeStringMD5Hash(login + password);
+        }
         public bool ValidateToken(string token)
         {
-            return token == "MasterToken";
+            return token == GetToken();
         }
     }
 }

@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <!--Temporarily copy pasted, TODO: extract to part-->
+    <!--jquery-->
+    <script src="/libs/jquery/jquery-3.1.1.js"></script>
+    <link rel="stylesheet" href="/libs/jquery-ui/jquery-ui.css">
+    <script src="/libs/jquery-ui/jquery-ui.js"></script>
+    <!--semantic ui-->
+    <link rel="stylesheet" href="/libs/semantic/semantic.min.css">
+    <script src="/libs/semantic/semantic.min.js"></script>
+    <title>Title</title>
+    <style>
+        body {
+            background-color: #DFDFDF;
+        }
+        body > .grid {
+            height: 100%;
+        }
+        .column {
+            max-width: 450px;
+        }
+        .ui.header {
+            margin-bottom: 5px;
+        }
+    </style>
+</head>
+<body>
+<div class="ui middle aligned center aligned grid">
+    <div class="column">
+        <div class="ui segment">
+            <h2 class="ui blue header">
+                How to reset
+            </h2>
+            <div class="ui segments">
+                <div class="ui left aligned segment">
+                    <div class="ui header">1. Find config.json file</div>
+                    <div class="">File is located in the installation folder near .exe file</div>
+                </div>
+                <div class="ui left aligned segment">
+                    <div class="ui header">2. Edit authorization details</div>
+                    <div class="">Change "admin-login" and "admin-password" fields and save file</div>
+                </div>
+                <div class="ui left aligned segment">
+                    <div class="ui header">3. Restart master.exe</div>
+                    <div class="">You can login with new login and password after restart</div>
+                </div>
+            </div>
+            <!--<div class="ui fluid vertical three steps">-->
+                <!--<div class="active step">-->
+                    <!--<i class="truck icon"></i>-->
+                    <!--<div class="content">-->
+                        <!--<div class="title">Find config.json file</div>-->
+                        <!--<div class="description">File is located in the installation folder near .exe file</div>-->
+                    <!--</div>-->
+                <!--</div>-->
+                <!--<div class="step">-->
+                    <!--<div class="content">Edit authorization details</div>-->
+                    <!--<div class="description">Change "admin-login" and "admin-password" fields and save file</div>-->
+                <!--</div>-->
+                <!--<div class="step">-->
+                    <!--<div class="content">Restart master.exe</div>-->
+                    <!--<div class="description">You can login with new login and password after restart</div>-->
+                <!--</div>-->
+            <!--</div>-->
+        </div>
+        <div class="ui message">
+            <a href="/login"><i class="arrow left icon"></i>Back to login</a>
+        </div>
+    </div>
+</div>
+</body>
+</html>
