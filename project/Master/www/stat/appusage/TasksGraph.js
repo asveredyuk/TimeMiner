@@ -55,6 +55,16 @@ function TasksGraph(domElement){
             start = data[0].from;
             end= data[data.length-1].to;
         }
+        $.each(data, function (key, value) {
+            if(value.from < start)
+                value.from = start;
+            if(value.to < start)
+                value.to = start;
+            if(value.from > end)
+                value.from = end;
+            if(value.to > end)
+                value.to = end;
+        });
         //total period length
         var periodLengthMs = end.diff(start);
         //pixels per one ms
@@ -62,14 +72,17 @@ function TasksGraph(domElement){
         //draw each task on timeline
         var group = draw.group().move(LEFT_RIGHT_EMPTY,0);
         var times = [];
-        //try to add first and the last time
+        var vals = [];
         if(data.length > 0)
         {
             times.push(data[0].from);
+            vals.push(data[0].from.valueOf());
             times.push(data[data.length-1].to);
+            vals.push(data[data.length - 1].to.valueOf());
         }
-        var vals = [];
         $.each(data, function (key, value) {
+            if(value.from.valueOf() == value.to.valueOf())
+                return;
             var fromMs = value.from.diff(start);
             var lenms = value.to.diff(value.from);
             var rectWidth = lenms*pixPerMs-INNER_MARGIN*2;
