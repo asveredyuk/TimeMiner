@@ -123,6 +123,10 @@ function OfflineActivityGraph(domElement){
             text.style('pointer-events','none');
             text.attr({ fill: '#FFF'});
             text.move(fromMs*pixPerMs + lenms*pixPerMs/2, that.barsH/2-8);
+            if(text.bbox().width > rect.width())
+            {
+                text.remove();
+            }
             if($.inArray(value.from.valueOf(), vals)<0) {
                 times.push(value.from);
                 vals.push(value.from.valueOf());
