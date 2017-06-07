@@ -14,7 +14,7 @@ namespace TimeMiner.Master.Frontend.BuiltInExtensions
         [HandlerPath("config/settings")]
         public HandlerPageDescriptor Handler(HttpListenerRequest req, HttpListenerResponse resp)
         {
-            return new HandlerPageDescriptor("Settings page");
+            return new HandlerPageDescriptor("Edit \"config.json\" and restart server");
         }
     }
 }

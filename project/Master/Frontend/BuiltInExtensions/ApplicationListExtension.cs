@@ -187,14 +187,13 @@ namespace TimeMiner.Master.Frontend.BuiltInExtensions
         [ApiPath("apps/unknown")]
         public void GetUnknownApps(HttpListenerRequest req, HttpListenerResponse resp)
         {
-            //ILog log = LogsDB.Self.GetLogForUserForPeriod(Guid.Empty, new DateTime(2017, 4, 1),
-              //  new DateTime(2017, 4, 15));
+            var end = DateTime.UtcNow;
+            var begin= end.AddMonths(-1);//last month
             UserInfo[] users = SettingsDB.Self.GetAllUsers().ToArray();
             List<ILog> allLogs = new List<ILog>();
             foreach (var userInfo in users)
             {
-                ILog[] logs = LogsDB.Self.GetStorageLogsInterceptingWithInterval(userInfo.Id, DateTime.MinValue,
-                    DateTime.MaxValue);
+                ILog[] logs = LogsDB.Self.GetStorageLogsInterceptingWithInterval(userInfo.Id, begin,end);
                 allLogs.AddRange(logs);
             }
             List<UnknownIdentificationReport.ReportResult> results = new List<UnknownIdentificationReport.ReportResult>();
@@ -207,17 +206,6 @@ namespace TimeMiner.Master.Frontend.BuiltInExtensions
             var resultingReport = UnknownIdentificationReport.ReportResult.Merge(results);
             WriteObjectJsonAndClose(resp,resultingReport.Items);
         }
-        
-      /*  /// <summary>
-        /// Is called when /ajax path is handled
-        /// </summary>
-        /// <param name="req"></param>
-        /// <param name="resp"></param>
-        private void HandleAjax(HttpListenerRequest req, HttpListenerResponse resp)
-        {
-            //now we have only one ajax request
-            
-        }*/
 
         private string GetTableString(string type)
         {
